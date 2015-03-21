@@ -8,11 +8,15 @@ import org.apache.commons.lang.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class JenkinsSeedLauncher implements SeedLauncher {
 
+    private static final Logger LOGGER = Logger.getLogger(JenkinsSeedLauncher.class.getName());
+
     @Override
     public void launch(String path, Map<String, String> parameters) {
+        LOGGER.info(String.format("Launching job at %s with parameters %s", path, parameters));
         // Gets the job using its path
         final AbstractProject job = findJob(Jenkins.getInstance(), "", path);
         // Launches the job
