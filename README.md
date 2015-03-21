@@ -52,6 +52,8 @@ Those levels are hierarchical - the project configuration is taken in account fi
 
 The configuration is given using a YAML file, either entered directly in the Jenkins settings or referred to using an absolute path or a remote URL.
 
+The [format of the configuration](doc/Configuration) data is described in other page.
+
 ## Connectors
 
 The way to send events to the Seed Jenkins plug-in can done using _connectors_.
