@@ -23,6 +23,8 @@ public class HttpEndPoint implements UnprotectedRootAction {
 
     private static final Logger LOGGER = Logger.getLogger(HttpEndPoint.class.getName());
 
+    private final Injector injector = Guice.createInjector(new SeedServiceModule());
+
     @Override
     public String getIconFileName() {
         return null;
@@ -70,8 +72,6 @@ public class HttpEndPoint implements UnprotectedRootAction {
     }
 
     protected void post(SeedEvent event) {
-        // Loading the configuration
-        Injector injector = Guice.createInjector(new SeedServiceModule());
         // Gets the service
         SeedService seedService = injector.getInstance(SeedService.class);
         // Posting
