@@ -1,7 +1,8 @@
 package net.nemerosa.seed.jenkins.service;
 
-import net.nemerosa.seed.jenkins.SeedConfiguration;
+import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
 import net.nemerosa.seed.jenkins.SeedService;
+import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 
 import javax.inject.Inject;
@@ -12,11 +13,11 @@ public class SeedServiceImpl implements SeedService {
 
     private static final Logger LOGGER = Logger.getLogger(SeedService.class.getName());
 
-    private final SeedConfiguration configuration;
+    private final SeedConfigurationLoader configurationLoader;
 
     @Inject
-    public SeedServiceImpl(SeedConfiguration configuration) {
-        this.configuration = configuration;
+    public SeedServiceImpl(SeedConfigurationLoader configurationLoader) {
+        this.configurationLoader = configurationLoader;
     }
 
     @Override
@@ -30,6 +31,8 @@ public class SeedServiceImpl implements SeedService {
                     event.getType()
             ));
         }
+        // Loads the configuration
+        SeedConfiguration configuration = configurationLoader.load();
         // FIXME Method net.nemerosa.seed.jenkins.service.SeedServiceImpl.create
 
     }
