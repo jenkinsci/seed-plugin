@@ -24,7 +24,7 @@ public class JenkinsSeedLauncher implements SeedLauncher {
             String rest = StringUtils.substringAfter(path, "/");
             Item item = container.getItem(prefix);
             if (item instanceof ItemGroup) {
-                return findJob((ItemGroup) item, context + "/" + path, rest);
+                return findJob((ItemGroup) item, context + "/" + prefix, rest);
             } else {
                 throw new CannotFindJobException(context, path);
             }
