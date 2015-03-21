@@ -16,16 +16,12 @@ import org.kohsuke.stapler.interceptor.RequirePOST;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Extension
 public class HttpEndPoint implements UnprotectedRootAction {
 
     private static final Logger LOGGER = Logger.getLogger(HttpEndPoint.class.getName());
-
-    public HttpEndPoint() {
-    }
 
     @Override
     public String getIconFileName() {
@@ -78,15 +74,6 @@ public class HttpEndPoint implements UnprotectedRootAction {
         Injector injector = Guice.createInjector(new SeedServiceModule());
         // Gets the service
         SeedService seedService = injector.getInstance(SeedService.class);
-        // Logging
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info(String.format(
-                    "Event: project=%s, branch=%s, type=%s",
-                    event.getProject(),
-                    event.getBranch(),
-                    event.getType()
-            ));
-        }
         // Posting
         seedService.post(event);
     }
