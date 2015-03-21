@@ -33,8 +33,20 @@ public class SeedServiceImpl implements SeedService {
         }
         // Loads the configuration
         SeedConfiguration configuration = configurationLoader.load();
-        // FIXME Method net.nemerosa.seed.jenkins.service.SeedServiceImpl.create
+        // Dispatching
+        switch (event.getType()) {
+            case CREATION:
+                create(event, configuration);
+                break;
+            default:
+                throw new UnsupportedSeedEventType(event.getType());
+        }
+    }
 
+    protected void create(SeedEvent event, SeedConfiguration configuration) {
+        // Gets the path to the branch seed job
+        String path = configuration.getProjectSeed(event.getProject());
+        // TODO Launches the job
     }
 
 }

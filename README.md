@@ -12,7 +12,7 @@ Four events are currently supported by the Seed plug-in.
 
 Whenever a branch is created in a project, the `branch-creation` event is sent, with as a parameter the name of the branch.
 
-The _branch seed_ job is triggered.
+The _project seed_ job is triggered for the given branch.
 
 ### Deletion of a branch
 
