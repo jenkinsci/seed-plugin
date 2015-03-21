@@ -61,7 +61,11 @@ public class SeedProjectConfiguration {
     }
 
     private static String defaultName(String id) {
-        return normalise(StringUtils.substringAfterLast(id, "/"));
+        if (StringUtils.contains(id, "/")) {
+            return normalise(StringUtils.substringAfterLast(id, "/"));
+        } else {
+            return normalise(id);
+        }
     }
 
     private static String normalise(String value) {

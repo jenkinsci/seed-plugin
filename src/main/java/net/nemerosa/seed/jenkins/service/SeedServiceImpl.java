@@ -39,17 +39,18 @@ public class SeedServiceImpl implements SeedService {
         // Dispatching
         switch (event.getType()) {
             case CREATION:
-                create(event, configuration);
+                create(event.getProject(), event.getBranch(), configuration);
                 break;
             default:
                 throw new UnsupportedSeedEventType(event.getType());
         }
     }
 
-    protected void create(SeedEvent event, SeedConfiguration configuration) {
+    protected void create(String project, String branch, SeedConfiguration configuration) {
         // Gets the path to the branch seed job
-        String path = configuration.getProjectSeed(event.getProject());
+        String path = configuration.getProjectSeed(project);
         // Launches the job
+        // FIXME Branch as a parameter
         seedLauncher.launch(path);
     }
 
