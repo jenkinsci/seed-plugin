@@ -43,6 +43,9 @@ public class SeedServiceImpl implements SeedService {
             case CREATION:
                 create(event.getProject(), event.getBranch(), configuration);
                 break;
+            case DELETION:
+                delete(event.getProject(), event.getBranch(), configuration);
+                break;
             default:
                 throw new UnsupportedSeedEventType(event.getType());
         }
@@ -56,6 +59,13 @@ public class SeedServiceImpl implements SeedService {
                 Constants.BRANCH_PARAMETER,
                 branch
         ));
+    }
+
+    protected void delete(String project, String branch, SeedConfiguration configuration) {
+        // Gets the path to the branch seed job
+        String path = configuration.getProjectSeed(project);
+        // TODO Deletes the whole branch folder
+        // TODO ... or deletes the seed job only
     }
 
 }

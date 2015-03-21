@@ -52,6 +52,9 @@ public class HttpEndPoint implements UnprotectedRootAction {
         if ("create".equals(path)) {
             LOGGER.finer("Event: creation");
             post(req, rsp, SeedEventType.CREATION);
+        } else if ("delete".equals(path)) {
+            LOGGER.finer("Event: deletion");
+            post(req, rsp, SeedEventType.DELETION);
         }
         // Unknown
         else {
