@@ -18,7 +18,7 @@ projects:
 ## Global parameters
 
 | Parameter | Default | Values | Description | Project level? |
-|-----------|---------|--------|-------------|
+|-----------|---------|--------|-------------|----------------|
 | `github` | `no` | `yes` or `no` | Is a GitHub web hook active? | Yes |
 | `github-secret` | _none_ | Token | Secret token to use for securing the hook | Yes |
 
