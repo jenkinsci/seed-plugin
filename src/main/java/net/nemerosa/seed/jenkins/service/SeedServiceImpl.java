@@ -1,6 +1,7 @@
 package net.nemerosa.seed.jenkins.service;
 
 import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
+import net.nemerosa.seed.jenkins.SeedLauncher;
 import net.nemerosa.seed.jenkins.SeedService;
 import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
@@ -14,10 +15,12 @@ public class SeedServiceImpl implements SeedService {
     private static final Logger LOGGER = Logger.getLogger(SeedService.class.getName());
 
     private final SeedConfigurationLoader configurationLoader;
+    private final SeedLauncher seedLauncher;
 
     @Inject
-    public SeedServiceImpl(SeedConfigurationLoader configurationLoader) {
+    public SeedServiceImpl(SeedConfigurationLoader configurationLoader, SeedLauncher seedLauncher) {
         this.configurationLoader = configurationLoader;
+        this.seedLauncher = seedLauncher;
     }
 
     @Override
@@ -46,7 +49,8 @@ public class SeedServiceImpl implements SeedService {
     protected void create(SeedEvent event, SeedConfiguration configuration) {
         // Gets the path to the branch seed job
         String path = configuration.getProjectSeed(event.getProject());
-        // TODO Launches the job
+        // Launches the job
+        seedLauncher.launch(path);
     }
 
 }
