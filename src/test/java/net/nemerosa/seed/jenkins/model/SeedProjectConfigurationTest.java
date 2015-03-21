@@ -26,4 +26,16 @@ public class SeedProjectConfigurationTest {
         assertEquals("ontrack/ontrack-*/ontrack-*-build", c.getBranchStart());
     }
 
+    @Test
+    public void branch_seed () {
+        SeedProjectConfiguration c = SeedProjectConfiguration.of("nemerosa/ontrack");
+        assertEquals("ontrack/ontrack-master/ontrack-master-seed", c.getBranchSeed("master"));
+    }
+
+    @Test
+    public void branch_seed_feature () {
+        SeedProjectConfiguration c = SeedProjectConfiguration.of("nemerosa/ontrack");
+        assertEquals("ontrack/ontrack-feature-234-test/ontrack-feature-234-test-seed", c.getBranchSeed("feature/234-test"));
+    }
+
 }

@@ -29,6 +29,13 @@ public class SeedConfiguration {
         return configuration.getSeed();
     }
 
+    public String getBranchSeed(String project, String branch) {
+        // Gets the configuration for the project
+        SeedProjectConfiguration configuration = getProjectConfiguration(project);
+        // OK
+        return configuration.getBranchSeed(branch);
+    }
+
     public SeedProjectConfiguration getProjectConfiguration(String id) {
         SeedProjectConfiguration configuration = projects.get(id);
         if (configuration != null) {

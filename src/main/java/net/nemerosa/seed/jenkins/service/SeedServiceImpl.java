@@ -63,7 +63,7 @@ public class SeedServiceImpl implements SeedService {
 
     protected void delete(String project, String branch, SeedConfiguration configuration) {
         // Gets the path to the branch seed job
-        String path = configuration.getProjectSeed(project);
+        String path = configuration.getBranchSeed(project, branch);
         // TODO Deletes the whole branch folder
         // TODO ... or deletes the seed job only
     }

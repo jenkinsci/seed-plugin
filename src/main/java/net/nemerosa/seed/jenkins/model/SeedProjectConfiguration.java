@@ -68,7 +68,15 @@ public class SeedProjectConfiguration {
         }
     }
 
+    public String getBranchSeed(String branch) {
+        return branchSeed.replace("*", normaliseBranch(branch));
+    }
+
     private static String normalise(String value) {
         return value.replaceAll("[^A-Za-z0-9._-]", "-");
+    }
+
+    private String normaliseBranch(String branch) {
+        return normalise(branch);
     }
 }
