@@ -4,6 +4,6 @@ import net.nemerosa.seed.jenkins.model.SeedEvent;
 
 public interface SeedService {
 
-    void create(SeedEvent event);
+    void post(SeedEvent event);
 
 }

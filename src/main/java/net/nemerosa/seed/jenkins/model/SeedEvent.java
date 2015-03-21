@@ -4,10 +4,12 @@ public class SeedEvent {
 
     private final String project;
     private final String branch;
+    private final SeedEventType type;
 
-    protected SeedEvent(String project, String branch) {
+    public SeedEvent(String project, String branch, SeedEventType type) {
         this.project = project;
         this.branch = branch;
+        this.type = type;
     }
 
     public String getProject() {
@@ -16,6 +18,10 @@ public class SeedEvent {
 
     public String getBranch() {
         return branch;
+    }
+
+    public SeedEventType getType() {
+        return type;
     }
 
 }
