@@ -1,5 +1,6 @@
 package net.nemerosa.seed.jenkins.service;
 
+import net.nemerosa.seed.jenkins.Constants;
 import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
 import net.nemerosa.seed.jenkins.SeedLauncher;
 import net.nemerosa.seed.jenkins.SeedService;
@@ -7,6 +8,7 @@ import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,8 +52,10 @@ public class SeedServiceImpl implements SeedService {
         // Gets the path to the branch seed job
         String path = configuration.getProjectSeed(project);
         // Launches the job
-        // FIXME Branch as a parameter
-        seedLauncher.launch(path);
+        seedLauncher.launch(path, Collections.singletonMap(
+                Constants.BRANCH_PARAMETER,
+                branch
+        ));
     }
 
 }

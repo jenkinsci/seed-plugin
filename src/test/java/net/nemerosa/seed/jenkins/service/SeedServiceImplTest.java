@@ -19,7 +19,7 @@ public class SeedServiceImplTest {
         SeedLauncher launcher = mock(SeedLauncher.class);
         SeedServiceImpl service = new SeedServiceImpl(loader, launcher);
         service.create("nemerosa/ontrack", "master", configuration);
-        verify(launcher, times(1)).launch("ontrack/ontrack-seed");
+        verify(launcher, times(1)).launch("ontrack/ontrack-seed", Collections.singletonMap("BRANCH", "master"));
     }
 
 }
