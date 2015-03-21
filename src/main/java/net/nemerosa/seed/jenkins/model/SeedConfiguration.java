@@ -25,8 +25,8 @@ public class SeedConfiguration {
     public String getProjectSeed(String project) {
         // Gets the configuration for a project
         SeedProjectConfiguration configuration = getProjectConfiguration(project);
-        // FIXME Method net.nemerosa.seed.jenkins.model.SeedConfiguration.getProjectSeed
-        return null;
+        // OK
+        return configuration.getSeed();
     }
 
     public SeedProjectConfiguration getProjectConfiguration(String id) {
