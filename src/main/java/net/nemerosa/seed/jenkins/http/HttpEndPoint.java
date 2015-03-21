@@ -1,9 +1,13 @@
 package net.nemerosa.seed.jenkins.http;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import hudson.Extension;
 import hudson.model.UnprotectedRootAction;
+import net.nemerosa.seed.jenkins.SeedService;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
+import net.nemerosa.seed.jenkins.service.SeedServiceModule;
 import net.nemerosa.seed.jenkins.support.MissingParameterException;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
@@ -12,12 +16,16 @@ import org.kohsuke.stapler.interceptor.RequirePOST;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Extension
 public class HttpEndPoint implements UnprotectedRootAction {
 
     private static final Logger LOGGER = Logger.getLogger(HttpEndPoint.class.getName());
+
+    public HttpEndPoint() {
+    }
 
     @Override
     public String getIconFileName() {
@@ -35,17 +43,21 @@ public class HttpEndPoint implements UnprotectedRootAction {
     }
 
     @RequirePOST
-    public void doIndex(StaplerRequest req, StaplerResponse rsp) throws IOException {
-        LOGGER.info("Incoming POST");
+    public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException {
+        LOGGER.finest("Incoming POST");
         String path = req.getRestOfPath();
-        LOGGER.info("Path = " + path);
+        if (StringUtils.startsWith(path, "/")) {
+            path = path.substring(1);
+        }
+        LOGGER.finest("Path = " + path);
         // Events?
         if ("create".equals(path)) {
-            LOGGER.info("Event: creation");
+            LOGGER.finer("Event: creation");
             post(req, rsp, SeedEventType.CREATION);
         }
         // Unknown
         else {
+            LOGGER.finer("Event: unknown: " + path);
             rsp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown path: " + path);
         }
     }
@@ -62,9 +74,21 @@ public class HttpEndPoint implements UnprotectedRootAction {
     }
 
     protected void post(SeedEvent event) {
-        // Gets the configured service
-        // FIXME Method net.nemerosa.seed.jenkins.rest.RestEndPoint.post
-
+        // Loading the configuration
+        Injector injector = Guice.createInjector(new SeedServiceModule());
+        // Gets the service
+        SeedService seedService = injector.getInstance(SeedService.class);
+        // Logging
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info(String.format(
+                    "Event: project=%s, branch=%s, type=%s",
+                    event.getProject(),
+                    event.getBranch(),
+                    event.getType()
+            ));
+        }
+        // Posting
+        seedService.post(event);
     }
 
     protected SeedEvent extractEvent(StaplerRequest req, SeedEventType type) {
