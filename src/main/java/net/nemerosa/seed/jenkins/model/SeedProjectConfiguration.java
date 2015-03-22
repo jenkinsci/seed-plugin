@@ -2,7 +2,7 @@ package net.nemerosa.seed.jenkins.model;
 
 import org.apache.commons.lang.StringUtils;
 
-public class SeedProjectConfiguration {
+public class SeedProjectConfiguration extends Configuration {
 
     private final String id;
     private final String name;

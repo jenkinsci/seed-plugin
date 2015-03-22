@@ -7,7 +7,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.util.*;
 
-public class SeedConfiguration {
+public class SeedConfiguration extends Configuration {
 
     private final boolean autoConfigure;
     private final Map<String, SeedProjectConfiguration> projects;
