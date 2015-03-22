@@ -1,0 +1,9 @@
+# Global configuration
+github: yes
+# Projects
+projects:
+   - id: nemerosa/ontrack
+     # Project specific configuration
+     name: ontrack
+     # Project overridden configuration
+     github: yes
