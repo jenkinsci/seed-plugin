@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.service;
+package net.nemerosa.seed.jenkins.model;
 
 import net.nemerosa.seed.jenkins.model.SeedEventType;
 

@@ -26,6 +26,11 @@ public class SeedProjectConfiguration extends Configuration {
         return name;
     }
 
+    public String getBranchStrategy() {
+        // FIXME Method net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.getBranchStrategy
+        return "seed";
+    }
+
     public String getSeed() {
         return seed;
     }

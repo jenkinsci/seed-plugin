@@ -1,14 +1,15 @@
 package net.nemerosa.seed.jenkins.service;
 
-import net.nemerosa.seed.jenkins.Constants;
 import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
 import net.nemerosa.seed.jenkins.SeedLauncher;
 import net.nemerosa.seed.jenkins.SeedService;
 import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
+import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
+import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
+import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
 
 import javax.inject.Inject;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,11 +19,13 @@ public class SeedServiceImpl implements SeedService {
 
     private final SeedConfigurationLoader configurationLoader;
     private final SeedLauncher seedLauncher;
+    private final BranchStrategies branchStrategies;
 
     @Inject
-    public SeedServiceImpl(SeedConfigurationLoader configurationLoader, SeedLauncher seedLauncher) {
+    public SeedServiceImpl(SeedConfigurationLoader configurationLoader, SeedLauncher seedLauncher, BranchStrategies branchStrategies) {
         this.configurationLoader = configurationLoader;
         this.seedLauncher = seedLauncher;
+        this.branchStrategies = branchStrategies;
     }
 
     @Override
@@ -38,34 +41,14 @@ public class SeedServiceImpl implements SeedService {
         }
         // Loads the configuration
         SeedConfiguration configuration = configurationLoader.load();
+        // Loads the project's configuration
+        SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(event.getProject());
+        // Gets the branch strategy for the project
+        BranchStrategy branchStrategy = branchStrategies.get(
+                projectConfiguration.getBranchStrategy()
+        );
         // Dispatching
-        switch (event.getType()) {
-            case CREATION:
-                create(event.getProject(), event.getBranch(), configuration);
-                break;
-            case DELETION:
-                delete(event.getProject(), event.getBranch(), configuration);
-                break;
-            default:
-                throw new UnsupportedSeedEventType(event.getType());
-        }
-    }
-
-    protected void create(String project, String branch, SeedConfiguration configuration) {
-        // Gets the path to the branch seed job
-        String path = configuration.getProjectSeed(project);
-        // Launches the job
-        seedLauncher.launch(path, Collections.singletonMap(
-                Constants.BRANCH_PARAMETER,
-                branch
-        ));
-    }
-
-    protected void delete(String project, String branch, SeedConfiguration configuration) {
-        // Gets the path to the branch seed job
-        String path = configuration.getBranchSeed(project, branch);
-        // TODO Deletes the whole branch folder
-        // TODO ... or deletes the seed job only
+        branchStrategy.post(event, seedLauncher, configuration, projectConfiguration);
     }
 
 }
