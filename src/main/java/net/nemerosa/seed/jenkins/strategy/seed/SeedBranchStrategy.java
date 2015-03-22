@@ -10,6 +10,9 @@ import net.nemerosa.seed.jenkins.strategy.AbstractBranchStrategy;
 
 import java.util.Collections;
 
+import static net.nemerosa.seed.jenkins.model.Configuration.normalise;
+import static net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.defaultName;
+
 public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     @Override
@@ -30,7 +33,11 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     protected void create(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
         // Gets the path to the branch seed job
-        String path = configuration.getProjectSeed(event.getProject());
+        String path = projectConfiguration.getString(
+                "seed",
+                false,
+                defaultSeed(projectConfiguration.getId())
+        );
         // Launches the job
         seedLauncher.launch(path, Collections.singletonMap(
                 Constants.BRANCH_PARAMETER,
@@ -39,9 +46,25 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     }
 
     protected void delete(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
-        // TODO Gets the path to the branch seed job
-        // String path = configuration.getBranchSeed(project, branch);
+        // Gets the path to the branch seed job
+        String path = projectConfiguration.getString(
+                "branch-seed",
+                false,
+                defaultBranchSeed(projectConfiguration.getId())
+        ).replace("*", normalise(event.getBranch()));
         // TODO Deletes the whole branch folder
         // TODO ... or deletes the seed job only
     }
+
+    private static String defaultSeed(String id) {
+        return String.format("%1$s/%1$s-seed", defaultName(id));
+    }
+
+    private static String defaultBranchSeed(String id) {
+        return String.format("%1$s/%1$s-*/%1$s-*-seed", defaultName(id));
+    }
+
+//    private static String defaultBranchStart(String id) {
+//        return String.format("%1$s/%1$s-*/%1$s-*-build", defaultName(id));
+//    }
 }

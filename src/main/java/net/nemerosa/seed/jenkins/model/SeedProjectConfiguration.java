@@ -2,20 +2,18 @@ package net.nemerosa.seed.jenkins.model;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class SeedProjectConfiguration extends Configuration {
 
     private final String id;
     private final String name;
-    private final String seed;
-    private final String branchSeed;
-    private final String branchStart;
 
-    public SeedProjectConfiguration(String id, String name, String seed, String branchSeed, String branchStart) {
-        this.id = id;
-        this.name = name;
-        this.seed = seed;
-        this.branchSeed = branchSeed;
-        this.branchStart = branchStart;
+    public SeedProjectConfiguration(Map<String, ?> data) {
+        super(data);
+        this.id = getString("id");
+        this.name = getString("name", false, defaultName(id));
     }
 
     public String getId() {
@@ -27,45 +25,18 @@ public class SeedProjectConfiguration extends Configuration {
     }
 
     public String getBranchStrategy() {
-        // FIXME Method net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.getBranchStrategy
-        return "seed";
-    }
-
-    public String getSeed() {
-        return seed;
-    }
-
-    public String getBranchSeed() {
-        return branchSeed;
-    }
-
-    public String getBranchStart() {
-        return branchStart;
+        return getString("branch-strategy", false, "seed");
     }
 
     public static SeedProjectConfiguration of(String id) {
-        return new SeedProjectConfiguration(
-                id,
-                defaultName(id),
-                defaultSeed(id),
-                defaultBranchSeed(id),
-                defaultBranchStart(id)
-        );
+        return of(Collections.singletonMap("id", id));
     }
 
-    private static String defaultBranchStart(String id) {
-        return String.format("%1$s/%1$s-*/%1$s-*-build", defaultName(id));
+    public static SeedProjectConfiguration of(Map<String, ?> data) {
+        return new SeedProjectConfiguration(data);
     }
 
-    private static String defaultBranchSeed(String id) {
-        return String.format("%1$s/%1$s-*/%1$s-*-seed", defaultName(id));
-    }
-
-    private static String defaultSeed(String id) {
-        return String.format("%1$s/%1$s-seed", defaultName(id));
-    }
-
-    private static String defaultName(String id) {
+    public static String defaultName(String id) {
         if (StringUtils.contains(id, "/")) {
             return normalise(StringUtils.substringAfterLast(id, "/"));
         } else {
@@ -73,15 +44,4 @@ public class SeedProjectConfiguration extends Configuration {
         }
     }
 
-    public String getBranchSeed(String branch) {
-        return branchSeed.replace("*", normaliseBranch(branch));
-    }
-
-    private static String normalise(String value) {
-        return value.replaceAll("[^A-Za-z0-9._-]", "-");
-    }
-
-    private String normaliseBranch(String branch) {
-        return normalise(branch);
-    }
 }
