@@ -9,9 +9,11 @@ import java.util.*;
 
 public class SeedConfiguration {
 
+    private final boolean autoConfigure;
     private final Map<String, SeedProjectConfiguration> projects;
 
-    public SeedConfiguration(Collection<SeedProjectConfiguration> projects) {
+    public SeedConfiguration(Collection<SeedProjectConfiguration> projects, boolean autoConfigure) {
+        this.autoConfigure = autoConfigure;
         this.projects = Maps.uniqueIndex(
                 projects,
                 new Function<SeedProjectConfiguration, String>() {
@@ -21,6 +23,10 @@ public class SeedConfiguration {
                     }
                 }
         );
+    }
+
+    public boolean isAutoConfigure() {
+        return autoConfigure;
     }
 
     public String getProjectSeed(String project) {
@@ -41,8 +47,10 @@ public class SeedConfiguration {
         SeedProjectConfiguration configuration = projects.get(id);
         if (configuration != null) {
             return configuration;
-        } else {
+        } else if (autoConfigure) {
             return SeedProjectConfiguration.of(id);
+        } else {
+            throw new ProjectNotConfiguredException(id);
         }
     }
 
@@ -55,6 +63,8 @@ public class SeedConfiguration {
     }
 
     public static SeedConfiguration parseMap(Map<String, ?> map) {
+        // Global configuration
+        boolean autoConfigure = getBoolean(map, "auto-configure", false, true);
         // Projects
         List<SeedProjectConfiguration> parsedProjects = new ArrayList<SeedProjectConfiguration>();
         @SuppressWarnings("unchecked")
@@ -81,8 +91,17 @@ public class SeedConfiguration {
         }
         // OK
         return new SeedConfiguration(
-                parsedProjects
-        );
+                parsedProjects,
+                autoConfigure);
+    }
+
+    private static boolean getBoolean(Map<String, ?> map, String name, boolean required, boolean defaultValue) {
+        String value = get(map, name, required, null);
+        if (value == null) {
+            return defaultValue;
+        } else {
+            return "yes".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value);
+        }
     }
 
     private static String get(Map<String, ?> map, String name, String defaultValue) {

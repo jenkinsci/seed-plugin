@@ -15,7 +15,7 @@ public class SeedServiceImplTest {
     @Test
     public void create() {
         SeedConfigurationLoader loader = mock(SeedConfigurationLoader.class);
-        SeedConfiguration configuration = new SeedConfiguration(Collections.<SeedProjectConfiguration>emptyList());
+        SeedConfiguration configuration = new SeedConfiguration(Collections.<SeedProjectConfiguration>emptyList(), autoConfigure);
         SeedLauncher launcher = mock(SeedLauncher.class);
         SeedServiceImpl service = new SeedServiceImpl(loader, launcher);
         service.create("nemerosa/ontrack", "master", configuration);

@@ -74,6 +74,6 @@ The GitHub is optionally protected by a token. This token must be configured in 
 
 * [ ] Support for additional branching strategies: seed of course, but also job per branch, branch parameter for a job, only one branch supported
 * [ ] Filtering on branches
-* [ ] Enabling support for auto project configuration
+* [x] Enabling support for auto project configuration
 * [ ] including Seed in the first plugin for an easier configuration
 
