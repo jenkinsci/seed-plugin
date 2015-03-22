@@ -70,8 +70,6 @@ The GitHub hook is disabled by default and can be activated either at global lev
 
 The GitHub is optionally protected by a token. This token must be configured in the plug-in, either at global level or project level. The same token must be entered in the [GitHub configuration of the web hook](https://developer.github.com/webhooks/securing/).
 
-### Manual
+## Planned improvments 
 
-> Work in progress
 
-Finally, the plug-in exposes a page which allows a user to trigger manually an event.
