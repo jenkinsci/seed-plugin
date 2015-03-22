@@ -1,5 +1,6 @@
-package net.nemerosa.seed.jenkins.http;
+package net.nemerosa.seed.jenkins.connector.http;
 
+import net.nemerosa.seed.jenkins.connector.http.HttpEndPoint;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
 import net.nemerosa.seed.jenkins.support.MissingParameterException;

@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.http;
+package net.nemerosa.seed.jenkins.connector.http;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

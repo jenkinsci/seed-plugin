@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.github;
+package net.nemerosa.seed.jenkins.connector.github;
 
 import hudson.Extension;
 import hudson.model.UnprotectedRootAction;
