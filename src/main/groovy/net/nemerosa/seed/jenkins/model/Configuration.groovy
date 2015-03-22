@@ -41,4 +41,8 @@ class Configuration {
             return "yes".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value)
         }
     }
+
+    List<Map<String, ?>> getList(String name) {
+        return data[name] as List ?: []
+    }
 }
