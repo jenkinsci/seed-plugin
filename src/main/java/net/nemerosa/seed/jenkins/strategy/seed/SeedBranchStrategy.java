@@ -8,11 +8,15 @@ import net.nemerosa.seed.jenkins.strategy.AbstractBranchStrategy;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collections;
+import java.util.logging.Logger;
 
+import static java.lang.String.format;
 import static net.nemerosa.seed.jenkins.model.Configuration.normalise;
 import static net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.defaultName;
 
 public class SeedBranchStrategy extends AbstractBranchStrategy {
+
+    private static final Logger LOGGER = Logger.getLogger(SeedBranchStrategy.class.getName());
 
     public static final String SEED = "seed";
     public static final String PIPELINE_SEED = "pipeline-seed";
@@ -44,10 +48,13 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     protected void seed(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
         if (Configuration.getBoolean(PIPELINE_AUTO, projectConfiguration, configuration, true)) {
+            LOGGER.finer(format("Seed files changed for branch %s of project %s - regenerating the pipeline", event.getBranch(), event.getProject()));
             // Gets the path to the branch seed job
             String path = getBranchSeedPath(projectConfiguration, event.getBranch());
             // Launches the job (no parameter)
             seedLauncher.launch(path, null);
+        } else {
+            LOGGER.finer(format("Seed events are not enabled for project %s", event.getProject()));
         }
     }
 
@@ -57,6 +64,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
             String path = getBranchStartPath(projectConfiguration, event.getBranch());
             // Uses the commit (must be specified in the event)
             String commit = event.getConfiguration().getString("commit", false, "HEAD");
+            LOGGER.finer(format("Commit %s for branch %s of project %s - starting the pipeline", commit, event.getBranch(), event.getProject()));
             // Launching the job
             seedLauncher.launch(path, ImmutableMap.of(
                     Configuration.getValue(
@@ -67,10 +75,13 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
                     ),
                     commit
             ));
+        } else {
+            LOGGER.finer(format("Commit events are not enabled for project %s", event.getProject()));
         }
     }
 
     protected void create(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
+        LOGGER.finer(format("New branch %s for project %s - creating a new pipeline", event.getBranch(), event.getProject()));
         // Gets the path to the branch seed job
         String path = projectConfiguration.getString(
                 SEED,
@@ -89,6 +100,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
         String path = getBranchSeedPath(projectConfiguration, event.getBranch());
         // Deletes the whole branch folder
         if (Configuration.getBoolean(PIPELINE_DELETE, projectConfiguration, configuration, true)) {
+            LOGGER.finer(format("Deletion of the branch means deletion of the pipeline for project %s", event.getProject()));
             // Gets the folder
             path = StringUtils.substringBeforeLast(path, "/");
             if (StringUtils.isNotBlank(path)) {
@@ -97,6 +109,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
         }
         // ... or deletes the seed job only
         else {
+            LOGGER.finer(format("Deletion of the branch means deletion of the pipeline seed for project %s", event.getProject()));
             seedLauncher.delete(path);
         }
     }
@@ -118,14 +131,14 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     }
 
     private static String defaultSeed(String id) {
-        return String.format("%1$s/%1$s-seed", defaultName(id));
+        return format("%1$s/%1$s-seed", defaultName(id));
     }
 
     private static String defaultBranchSeed(String id) {
-        return String.format("%1$s/%1$s-*/%1$s-*-seed", defaultName(id));
+        return format("%1$s/%1$s-*/%1$s-*-seed", defaultName(id));
     }
 
     private static String defaultBranchStart(String id) {
-        return String.format("%1$s/%1$s-*/%1$s-*-build", defaultName(id));
+        return format("%1$s/%1$s-*/%1$s-*-build", defaultName(id));
     }
 }
