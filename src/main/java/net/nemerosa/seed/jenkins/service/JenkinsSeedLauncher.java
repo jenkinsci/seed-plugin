@@ -5,6 +5,7 @@ import jenkins.model.Jenkins;
 import net.nemerosa.seed.jenkins.SeedLauncher;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class JenkinsSeedLauncher implements SeedLauncher {
     public void launch(String path, Map<String, String> parameters) {
         LOGGER.info(String.format("Launching job at %s with parameters %s", path, parameters));
         // Gets the job using its path
-        final AbstractProject job = findJob(Jenkins.getInstance(), "", path);
+        final AbstractProject job = findJob(path);
         // Launches the job
         if (parameters != null && !parameters.isEmpty()) {
             if (job.isParameterized()) {
@@ -48,6 +49,18 @@ public class JenkinsSeedLauncher implements SeedLauncher {
         }
     }
 
+    @Override
+    public void delete(String path) {
+        Item item = findItem(path);
+        try {
+            item.delete();
+        } catch (IOException e) {
+            throw new CannotDeleteItemException(path, e);
+        } catch (InterruptedException e) {
+            throw new CannotDeleteItemException(path, e);
+        }
+    }
+
     private Cause getCause() {
         return new Cause() {
             @Override
@@ -58,20 +71,33 @@ public class JenkinsSeedLauncher implements SeedLauncher {
         };
     }
 
-    private AbstractProject findJob(ItemGroup<?> container, String context, String path) {
+    private AbstractProject findJob(String path) {
+        Item item = findItem(path);
+        if (item instanceof AbstractProject) {
+            return (AbstractProject) item;
+        } else {
+            throw new CannotFindJobException("", path);
+        }
+    }
+
+    private Item findItem(String path) {
+        return findItem(Jenkins.getInstance(), "", path);
+    }
+
+    private Item findItem(ItemGroup<?> container, String context, String path) {
         if (StringUtils.contains(path, "/")) {
             String prefix = StringUtils.substringBefore(path, "/");
             String rest = StringUtils.substringAfter(path, "/");
             Item item = container.getItem(prefix);
             if (item instanceof ItemGroup) {
-                return findJob((ItemGroup) item, context + "/" + prefix, rest);
+                return findItem((ItemGroup) item, context + "/" + prefix, rest);
             } else {
                 throw new CannotFindJobException(context, path);
             }
         } else {
             Item item = container.getItem(path);
-            if (item instanceof AbstractProject) {
-                return (AbstractProject) item;
+            if (item != null) {
+                return item;
             } else {
                 throw new CannotFindJobException(context, path);
             }

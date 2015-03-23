@@ -44,12 +44,7 @@ public class Configuration {
     }
 
     public boolean getBoolean(String name, boolean required, boolean defaultValue) {
-        String value = getString(name, required, null);
-        if (value == null) {
-            return defaultValue;
-        } else {
-            return "yes".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value);
-        }
+        return toBoolean(getString(name, required, null), defaultValue);
     }
 
     public List<Map<String, ?>> getList(String name) {
@@ -60,5 +55,32 @@ public class Configuration {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    private static boolean toBoolean(String value, boolean defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        } else {
+            return "yes".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value);
+        }
+    }
+
+    public static boolean getBoolean(String name, Configuration configuration, Configuration globalConfiguration, boolean defaultValue) {
+        return toBoolean(
+                getValue(name, configuration, globalConfiguration, null),
+                defaultValue
+        );
+    }
+
+    public static String getValue(String name, Configuration configuration, Configuration globalConfiguration, String defaultValue) {
+        return configuration.getString(
+                name,
+                false,
+                globalConfiguration.getString(
+                        name,
+                        false,
+                        defaultValue
+                )
+        );
     }
 }
