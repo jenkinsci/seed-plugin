@@ -37,6 +37,10 @@ public class SeedEvent {
         return type;
     }
 
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

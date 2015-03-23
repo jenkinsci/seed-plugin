@@ -1,13 +1,27 @@
 package net.nemerosa.seed.jenkins.model;
 
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
+
 public enum SeedEventType {
 
-    CREATION,
+    CREATION(),
 
-    DELETION,
+    DELETION(),
 
-    SEED,
+    SEED(),
 
-    COMMIT
+    COMMIT("commit");
+
+    private final List<String> parameterNames;
+
+    SeedEventType(String... parameterNames) {
+        this.parameterNames = ImmutableList.copyOf(parameterNames);
+    }
+
+    public List<String> getParameterNames() {
+        return parameterNames;
+    }
 
 }
