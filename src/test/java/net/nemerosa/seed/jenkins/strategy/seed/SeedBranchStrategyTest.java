@@ -8,8 +8,10 @@ import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
 import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 import java.util.Collections;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -101,6 +103,71 @@ public class SeedBranchStrategyTest {
         );
 
         verify(launcher, times(1)).delete("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-seed");
+    }
+
+    @Test
+    public void post_seed_default() {
+        SeedBranchStrategy strategy = new SeedBranchStrategy();
+
+        SeedLauncher launcher = mock(SeedLauncher.class);
+
+        strategy.post(
+                new SeedEvent(
+                        "nemerosa/ontrack",
+                        "feature/xxx",
+                        SeedEventType.SEED
+                ),
+                launcher,
+                new SeedConfiguration(Collections.<String, Object>emptyMap()),
+                SeedProjectConfiguration.of("nemerosa/ontrack")
+        );
+
+        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-seed", null);
+    }
+
+    @Test
+    public void post_seed_pipeline_not_auto_at_global_config() {
+        SeedBranchStrategy strategy = new SeedBranchStrategy();
+
+        SeedLauncher launcher = mock(SeedLauncher.class);
+
+        strategy.post(
+                new SeedEvent(
+                        "nemerosa/ontrack",
+                        "feature/xxx",
+                        SeedEventType.SEED
+                ),
+                launcher,
+                new SeedConfiguration(Collections.singletonMap("pipeline-auto", "no")),
+                SeedProjectConfiguration.of("nemerosa/ontrack")
+        );
+
+        verify(launcher, never()).launch(anyString(), Matchers.<Map<String, String>>any());
+    }
+
+    @Test
+    public void post_seed_pipeline_auto_at_project_config() {
+        SeedBranchStrategy strategy = new SeedBranchStrategy();
+
+        SeedLauncher launcher = mock(SeedLauncher.class);
+
+        strategy.post(
+                new SeedEvent(
+                        "nemerosa/ontrack",
+                        "feature/xxx",
+                        SeedEventType.SEED
+                ),
+                launcher,
+                new SeedConfiguration(Collections.singletonMap("pipeline-auto", "no")),
+                SeedProjectConfiguration.of(
+                        ImmutableMap.of(
+                                "id", "nemerosa/ontrack",
+                                "pipeline-auto", "yes"
+                        )
+                )
+        );
+
+        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-seed", null);
     }
 
 }

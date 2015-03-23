@@ -16,6 +16,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     public static final String SEED = "seed";
     public static final String BRANCH_SEED = "branch-seed";
     public static final String PIPELINE_DELETE = "pipeline-delete";
+    public static final String PIPELINE_AUTO = "pipeline-auto";
 
     @Override
     public void post(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
@@ -26,11 +27,31 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
             case DELETION:
                 delete(event, seedLauncher, configuration, projectConfiguration);
                 break;
+            case SEED:
+                seed(event, seedLauncher, configuration, projectConfiguration);
+                break;
             default:
                 throw new UnsupportedSeedEventType(event.getType());
         }
         // FIXME Method net.nemerosa.seed.jenkins.strategy.seed.SeedBranchStrategy.post
 
+    }
+
+    protected String getBranchSeedPath(SeedProjectConfiguration projectConfiguration, String branch) {
+        return projectConfiguration.getString(
+                BRANCH_SEED,
+                false,
+                defaultBranchSeed(projectConfiguration.getId())
+        ).replace("*", normalise(branch));
+    }
+
+    protected void seed(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
+        if (Configuration.getBoolean(PIPELINE_AUTO, projectConfiguration, configuration, true)) {
+            // Gets the path to the branch seed job
+            String path = getBranchSeedPath(projectConfiguration, event.getBranch());
+            // Launches the job (no parameter)
+            seedLauncher.launch(path, null);
+        }
     }
 
     protected void create(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
@@ -49,11 +70,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     protected void delete(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
         // Gets the path to the branch seed job
-        String path = projectConfiguration.getString(
-                BRANCH_SEED,
-                false,
-                defaultBranchSeed(projectConfiguration.getId())
-        ).replace("*", normalise(event.getBranch()));
+        String path = getBranchSeedPath(projectConfiguration, event.getBranch());
         // Deletes the whole branch folder
         if (Configuration.getBoolean(PIPELINE_DELETE, projectConfiguration, configuration, true)) {
             // Gets the folder
