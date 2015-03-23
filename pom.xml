@@ -44,6 +44,17 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.15</version>
         </dependency>
+        <!-- Plugin dependencies -->
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>parameterized-trigger</artifactId>
+            <version>2.26</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>cloudbees-folder</artifactId>
+            <version>4.7</version>
+        </dependency>
     </dependencies>
 
     <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
