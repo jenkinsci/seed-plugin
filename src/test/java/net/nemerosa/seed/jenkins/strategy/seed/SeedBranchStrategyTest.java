@@ -181,13 +181,71 @@ public class SeedBranchStrategyTest {
                         "nemerosa/ontrack",
                         "feature/xxx",
                         SeedEventType.COMMIT
+                ).withParam("commit", "abcdef"),
+                launcher,
+                new SeedConfiguration(Collections.<String, Object>emptyMap()),
+                SeedProjectConfiguration.of("nemerosa/ontrack")
+        );
+
+        verify(launcher, times(1)).launch(
+                "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build",
+                Collections.singletonMap(
+                        "COMMIT",
+                        "abcdef"
+                )
+        );
+    }
+
+    @Test
+    public void post_commit_with_custom_commit_parameter() {
+        SeedBranchStrategy strategy = new SeedBranchStrategy();
+
+        SeedLauncher launcher = mock(SeedLauncher.class);
+
+        strategy.post(
+                new SeedEvent(
+                        "nemerosa/ontrack",
+                        "feature/xxx",
+                        SeedEventType.COMMIT
+                ).withParam("commit", "abcdef"),
+                launcher,
+                new SeedConfiguration(Collections.singletonMap("pipeline-commit", "GIT_COMMIT")),
+                SeedProjectConfiguration.of("nemerosa/ontrack")
+        );
+
+        verify(launcher, times(1)).launch(
+                "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build",
+                Collections.singletonMap(
+                        "GIT_COMMIT",
+                        "abcdef"
+                )
+        );
+    }
+
+    @Test
+    public void post_commit_no_commit_in_event() {
+        SeedBranchStrategy strategy = new SeedBranchStrategy();
+
+        SeedLauncher launcher = mock(SeedLauncher.class);
+
+        strategy.post(
+                new SeedEvent(
+                        "nemerosa/ontrack",
+                        "feature/xxx",
+                        SeedEventType.COMMIT
                 ),
                 launcher,
                 new SeedConfiguration(Collections.<String, Object>emptyMap()),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
         );
 
-        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build", null);
+        verify(launcher, times(1)).launch(
+                "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build",
+                Collections.singletonMap(
+                        "COMMIT",
+                        "HEAD"
+                )
+        );
     }
 
     @Test
@@ -221,7 +279,7 @@ public class SeedBranchStrategyTest {
                         "nemerosa/ontrack",
                         "feature/xxx",
                         SeedEventType.COMMIT
-                ),
+                ).withParam("commit", "abcdef"),
                 launcher,
                 new SeedConfiguration(Collections.singletonMap("pipeline-trigger", "no")),
                 SeedProjectConfiguration.of(
@@ -232,7 +290,13 @@ public class SeedBranchStrategyTest {
                 )
         );
 
-        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build", null);
+        verify(launcher, times(1)).launch(
+                "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build",
+                Collections.singletonMap(
+                        "COMMIT",
+                        "abcdef"
+                )
+        );
     }
 
     @Test
@@ -246,7 +310,7 @@ public class SeedBranchStrategyTest {
                         "nemerosa/ontrack",
                         "feature/xxx",
                         SeedEventType.COMMIT
-                ),
+                ).withParam("commit", "abcdef"),
                 launcher,
                 new SeedConfiguration(Collections.<String, Object>emptyMap()),
                 SeedProjectConfiguration.of(
@@ -257,7 +321,13 @@ public class SeedBranchStrategyTest {
                 )
         );
 
-        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-01-quick", null);
+        verify(launcher, times(1)).launch(
+                "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-01-quick",
+                Collections.singletonMap(
+                        "COMMIT",
+                        "abcdef"
+                )
+        );
     }
 
 }

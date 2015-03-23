@@ -1,5 +1,6 @@
 package net.nemerosa.seed.jenkins.strategy.seed;
 
+import com.google.common.collect.ImmutableMap;
 import net.nemerosa.seed.jenkins.Constants;
 import net.nemerosa.seed.jenkins.SeedLauncher;
 import net.nemerosa.seed.jenkins.model.*;
@@ -19,6 +20,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     public static final String PIPELINE_DELETE = "pipeline-delete";
     public static final String PIPELINE_AUTO = "pipeline-auto";
     public static final String PIPELINE_TRIGGER = "pipeline-trigger";
+    public static final String PIPELINE_COMMIT = "pipeline-commit";
 
     @Override
     public void post(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
@@ -53,9 +55,18 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
         if (Configuration.getBoolean(PIPELINE_TRIGGER, projectConfiguration, configuration, true)) {
             // Gets the path to the branch start job
             String path = getBranchStartPath(projectConfiguration, event.getBranch());
-            // Launches the job (no parameter)
-            // FIXME Uses the commit (must be specified in the event)
-            seedLauncher.launch(path, null);
+            // Uses the commit (must be specified in the event)
+            String commit = event.getConfiguration().getString("commit", false, "HEAD");
+            // Launching the job
+            seedLauncher.launch(path, ImmutableMap.of(
+                    Configuration.getValue(
+                            PIPELINE_COMMIT,
+                            projectConfiguration,
+                            configuration,
+                            "COMMIT"
+                    ),
+                    commit
+            ));
         }
     }
 
