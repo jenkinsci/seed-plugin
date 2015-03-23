@@ -14,9 +14,11 @@ import static net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.defaultNa
 public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     public static final String SEED = "seed";
-    public static final String BRANCH_SEED = "branch-seed";
+    public static final String PIPELINE_SEED = "pipeline-seed";
+    public static final String PIPELINE_START = "pipeline-start";
     public static final String PIPELINE_DELETE = "pipeline-delete";
     public static final String PIPELINE_AUTO = "pipeline-auto";
+    public static final String PIPELINE_TRIGGER = "pipeline-trigger";
 
     @Override
     public void post(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
@@ -30,19 +32,12 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
             case SEED:
                 seed(event, seedLauncher, configuration, projectConfiguration);
                 break;
+            case COMMIT:
+                commit(event, seedLauncher, configuration, projectConfiguration);
+                break;
             default:
                 throw new UnsupportedSeedEventType(event.getType());
         }
-        // FIXME Method net.nemerosa.seed.jenkins.strategy.seed.SeedBranchStrategy.post
-
-    }
-
-    protected String getBranchSeedPath(SeedProjectConfiguration projectConfiguration, String branch) {
-        return projectConfiguration.getString(
-                BRANCH_SEED,
-                false,
-                defaultBranchSeed(projectConfiguration.getId())
-        ).replace("*", normalise(branch));
     }
 
     protected void seed(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
@@ -50,6 +45,16 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
             // Gets the path to the branch seed job
             String path = getBranchSeedPath(projectConfiguration, event.getBranch());
             // Launches the job (no parameter)
+            seedLauncher.launch(path, null);
+        }
+    }
+
+    protected void commit(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
+        if (Configuration.getBoolean(PIPELINE_TRIGGER, projectConfiguration, configuration, true)) {
+            // Gets the path to the branch start job
+            String path = getBranchStartPath(projectConfiguration, event.getBranch());
+            // Launches the job (no parameter)
+            // FIXME Uses the commit (must be specified in the event)
             seedLauncher.launch(path, null);
         }
     }
@@ -85,6 +90,22 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
         }
     }
 
+    protected String getBranchSeedPath(SeedProjectConfiguration projectConfiguration, String branch) {
+        return projectConfiguration.getString(
+                PIPELINE_SEED,
+                false,
+                defaultBranchSeed(projectConfiguration.getId())
+        ).replace("*", normalise(branch));
+    }
+
+    protected String getBranchStartPath(SeedProjectConfiguration projectConfiguration, String branch) {
+        return projectConfiguration.getString(
+                PIPELINE_START,
+                false,
+                defaultBranchStart(projectConfiguration.getId())
+        ).replace("*", normalise(branch));
+    }
+
     private static String defaultSeed(String id) {
         return String.format("%1$s/%1$s-seed", defaultName(id));
     }
@@ -93,7 +114,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
         return String.format("%1$s/%1$s-*/%1$s-*-seed", defaultName(id));
     }
 
-//    private static String defaultBranchStart(String id) {
-//        return String.format("%1$s/%1$s-*/%1$s-*-build", defaultName(id));
-//    }
+    private static String defaultBranchStart(String id) {
+        return String.format("%1$s/%1$s-*/%1$s-*-build", defaultName(id));
+    }
 }

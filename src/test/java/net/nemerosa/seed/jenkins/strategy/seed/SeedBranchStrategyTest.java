@@ -170,4 +170,94 @@ public class SeedBranchStrategyTest {
         verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-seed", null);
     }
 
+    @Test
+    public void post_commit_default() {
+        SeedBranchStrategy strategy = new SeedBranchStrategy();
+
+        SeedLauncher launcher = mock(SeedLauncher.class);
+
+        strategy.post(
+                new SeedEvent(
+                        "nemerosa/ontrack",
+                        "feature/xxx",
+                        SeedEventType.COMMIT
+                ),
+                launcher,
+                new SeedConfiguration(Collections.<String, Object>emptyMap()),
+                SeedProjectConfiguration.of("nemerosa/ontrack")
+        );
+
+        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build", null);
+    }
+
+    @Test
+    public void post_commit_disabled_at_global_config() {
+        SeedBranchStrategy strategy = new SeedBranchStrategy();
+
+        SeedLauncher launcher = mock(SeedLauncher.class);
+
+        strategy.post(
+                new SeedEvent(
+                        "nemerosa/ontrack",
+                        "feature/xxx",
+                        SeedEventType.COMMIT
+                ),
+                launcher,
+                new SeedConfiguration(Collections.singletonMap("pipeline-trigger", "no")),
+                SeedProjectConfiguration.of("nemerosa/ontrack")
+        );
+
+        verify(launcher, never()).launch(anyString(), Matchers.<Map<String, String>>any());
+    }
+
+    @Test
+    public void post_commit_enabled_at_project_config() {
+        SeedBranchStrategy strategy = new SeedBranchStrategy();
+
+        SeedLauncher launcher = mock(SeedLauncher.class);
+
+        strategy.post(
+                new SeedEvent(
+                        "nemerosa/ontrack",
+                        "feature/xxx",
+                        SeedEventType.COMMIT
+                ),
+                launcher,
+                new SeedConfiguration(Collections.singletonMap("pipeline-trigger", "no")),
+                SeedProjectConfiguration.of(
+                        ImmutableMap.of(
+                                "id", "nemerosa/ontrack",
+                                "pipeline-trigger", "yes"
+                        )
+                )
+        );
+
+        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build", null);
+    }
+
+    @Test
+    public void post_commit_custom_build_path() {
+        SeedBranchStrategy strategy = new SeedBranchStrategy();
+
+        SeedLauncher launcher = mock(SeedLauncher.class);
+
+        strategy.post(
+                new SeedEvent(
+                        "nemerosa/ontrack",
+                        "feature/xxx",
+                        SeedEventType.COMMIT
+                ),
+                launcher,
+                new SeedConfiguration(Collections.<String, Object>emptyMap()),
+                SeedProjectConfiguration.of(
+                        ImmutableMap.of(
+                                "id", "nemerosa/ontrack",
+                                "pipeline-start", "ontrack/ontrack-*/ontrack-*-01-quick"
+                        )
+                )
+        );
+
+        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-01-quick", null);
+    }
+
 }
