@@ -1,10 +1,9 @@
 package net.nemerosa.seed.jenkins.connector.http;
 
 import net.nemerosa.seed.jenkins.SeedService;
-import net.nemerosa.seed.jenkins.connector.http.HttpEndPoint;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
-import net.nemerosa.seed.jenkins.support.MissingParameterException;
+import net.nemerosa.seed.jenkins.model.MissingParameterException;
 import org.junit.Test;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;

@@ -1,7 +1,9 @@
 package net.nemerosa.seed.jenkins.service;
 
-public class JobNotParameterizedException extends RuntimeException {
+import net.nemerosa.seed.jenkins.model.SeedException;
+
+public class JobNotParameterizedException extends SeedException {
     public JobNotParameterizedException(String name) {
-        super(String.format("Job %s is not parameterized.", name));
+        super("Job %s is not parameterized.", name);
     }
 }

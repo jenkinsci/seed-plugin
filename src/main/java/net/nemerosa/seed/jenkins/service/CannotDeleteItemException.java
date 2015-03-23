@@ -1,13 +1,13 @@
 package net.nemerosa.seed.jenkins.service;
 
-public class CannotDeleteItemException extends RuntimeException {
+import net.nemerosa.seed.jenkins.model.SeedException;
+
+public class CannotDeleteItemException extends SeedException {
     public CannotDeleteItemException(String path, Exception e) {
         super(
-                String.format(
-                        "Cannot delete item at %s",
-                        path
-                ),
-                e
+                e,
+                "Cannot delete item at %s",
+                path
         );
     }
 }

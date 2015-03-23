@@ -1,6 +1,5 @@
 package net.nemerosa.seed.jenkins.model;
 
-import net.nemerosa.seed.jenkins.support.MissingParameterException;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collections;

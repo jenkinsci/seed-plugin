@@ -42,7 +42,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
                 commit(event, seedLauncher, configuration, projectConfiguration);
                 break;
             default:
-                throw new UnsupportedSeedEventType(event.getType());
+                throw new UnsupportedSeedEventTypeException(event.getType());
         }
     }
 

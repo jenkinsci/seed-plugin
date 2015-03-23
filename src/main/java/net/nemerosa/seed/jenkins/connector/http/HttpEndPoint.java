@@ -7,7 +7,7 @@ import net.nemerosa.seed.jenkins.SeedService;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
 import net.nemerosa.seed.jenkins.service.SeedServiceModule;
-import net.nemerosa.seed.jenkins.support.MissingParameterException;
+import net.nemerosa.seed.jenkins.model.MissingParameterException;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;

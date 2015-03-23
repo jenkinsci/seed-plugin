@@ -1,7 +1,9 @@
 package net.nemerosa.seed.jenkins.service;
 
-public class UnsupportedBranchStrategyException extends RuntimeException {
+import net.nemerosa.seed.jenkins.model.SeedException;
+
+public class UnsupportedBranchStrategyException extends SeedException {
     public UnsupportedBranchStrategyException(String branchStrategyId) {
-        super(String.format("Unsupported branch strategy: %s", branchStrategyId));
+        super("Unsupported branch strategy: %s", branchStrategyId);
     }
 }

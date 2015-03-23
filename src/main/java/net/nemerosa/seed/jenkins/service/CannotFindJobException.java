@@ -1,7 +1,9 @@
 package net.nemerosa.seed.jenkins.service;
 
-public class CannotFindJobException extends RuntimeException {
+import net.nemerosa.seed.jenkins.model.SeedException;
+
+public class CannotFindJobException extends SeedException {
     public CannotFindJobException(String context, String path) {
-        super(String.format("Cannot find job in path %s with name %s", context, path));
+        super("Cannot find job in path %s with name %s", context, path);
     }
 }
