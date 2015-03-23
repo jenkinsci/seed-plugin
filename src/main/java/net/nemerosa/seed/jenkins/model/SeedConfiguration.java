@@ -3,8 +3,10 @@ package net.nemerosa.seed.jenkins.model;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class SeedConfiguration extends Configuration {
@@ -48,11 +50,15 @@ public class SeedConfiguration extends Configuration {
     }
 
     public static SeedConfiguration parseYaml(String text) {
-        Yaml yaml = new Yaml();
-        @SuppressWarnings("unchecked")
-        Map<String, ?> result = (Map<String, ?>) yaml.load(text);
-        // Parsing
-        return new SeedConfiguration(result);
+        if (StringUtils.isBlank(text)) {
+            return new SeedConfiguration(Collections.<String, Object>emptyMap());
+        } else {
+            Yaml yaml = new Yaml();
+            @SuppressWarnings("unchecked")
+            Map<String, ?> result = (Map<String, ?>) yaml.load(text);
+            // Parsing
+            return new SeedConfiguration(result);
+        }
     }
 
 }
