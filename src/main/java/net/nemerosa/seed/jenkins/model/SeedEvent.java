@@ -37,4 +37,25 @@ public class SeedEvent {
         return type;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SeedEvent event = (SeedEvent) o;
+
+        return branch.equals(event.branch) &&
+                parameters.equals(event.parameters)
+                && project.equals(event.project)
+                && type == event.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = project.hashCode();
+        result = 31 * result + branch.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + parameters.hashCode();
+        return result;
+    }
 }
