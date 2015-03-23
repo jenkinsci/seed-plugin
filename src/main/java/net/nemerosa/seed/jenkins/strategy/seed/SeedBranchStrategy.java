@@ -67,17 +67,21 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
             LOGGER.finer(format("Commit %s for branch %s of project %s - starting the pipeline", commit, event.getBranch(), event.getProject()));
             // Launching the job
             seedLauncher.launch(path, ImmutableMap.of(
-                    Configuration.getValue(
-                            PIPELINE_COMMIT,
-                            projectConfiguration,
-                            configuration,
-                            "COMMIT"
-                    ),
+                    getCommitParameter(configuration, projectConfiguration),
                     commit
             ));
         } else {
             LOGGER.finer(format("Commit events are not enabled for project %s", event.getProject()));
         }
+    }
+
+    protected String getCommitParameter(SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
+        return Configuration.getValue(
+                PIPELINE_COMMIT,
+                projectConfiguration,
+                configuration,
+                "COMMIT"
+        );
     }
 
     protected void create(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
@@ -119,7 +123,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
                 PIPELINE_SEED,
                 false,
                 defaultBranchSeed(projectConfiguration.getId())
-        ).replace("*", normalise(branch));
+        ).replace("*", getBranchName(branch));
     }
 
     protected String getBranchStartPath(SeedProjectConfiguration projectConfiguration, String branch) {
@@ -127,18 +131,22 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
                 PIPELINE_START,
                 false,
                 defaultBranchStart(projectConfiguration.getId())
-        ).replace("*", normalise(branch));
+        ).replace("*", getBranchName(branch));
     }
 
-    private static String defaultSeed(String id) {
+    protected String getBranchName(String branch) {
+        return normalise(branch);
+    }
+
+    protected String defaultSeed(String id) {
         return format("%1$s/%1$s-seed", defaultName(id));
     }
 
-    private static String defaultBranchSeed(String id) {
+    protected String defaultBranchSeed(String id) {
         return format("%1$s/%1$s-*/%1$s-*-seed", defaultName(id));
     }
 
-    private static String defaultBranchStart(String id) {
+    protected String defaultBranchStart(String id) {
         return format("%1$s/%1$s-*/%1$s-*-build", defaultName(id));
     }
 }
