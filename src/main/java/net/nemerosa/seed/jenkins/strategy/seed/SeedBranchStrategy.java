@@ -1,6 +1,7 @@
 package net.nemerosa.seed.jenkins.strategy.seed;
 
 import com.google.common.collect.ImmutableMap;
+import hudson.Extension;
 import net.nemerosa.seed.jenkins.Constants;
 import net.nemerosa.seed.jenkins.SeedLauncher;
 import net.nemerosa.seed.jenkins.model.*;
@@ -14,6 +15,7 @@ import static java.lang.String.format;
 import static net.nemerosa.seed.jenkins.model.Configuration.normalise;
 import static net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.defaultName;
 
+@Extension
 public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     private static final Logger LOGGER = Logger.getLogger(SeedBranchStrategy.class.getName());
@@ -25,6 +27,11 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     public static final String PIPELINE_AUTO = "pipeline-auto";
     public static final String PIPELINE_TRIGGER = "pipeline-trigger";
     public static final String PIPELINE_COMMIT = "pipeline-commit";
+
+    @Override
+    public String getId() {
+        return "seed";
+    }
 
     @Override
     public void post(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {

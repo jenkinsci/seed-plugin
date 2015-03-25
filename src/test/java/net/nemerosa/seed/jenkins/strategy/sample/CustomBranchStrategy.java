@@ -1,5 +1,6 @@
 package net.nemerosa.seed.jenkins.strategy.sample;
 
+import hudson.Extension;
 import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
 import net.nemerosa.seed.jenkins.strategy.seed.SeedBranchStrategy;
@@ -8,7 +9,13 @@ import org.apache.commons.lang.StringUtils;
 import static java.lang.String.format;
 import static net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.defaultName;
 
+@Extension
 public class CustomBranchStrategy extends SeedBranchStrategy {
+
+    @Override
+    public String getId() {
+        return "custom";
+    }
 
     @Override
     protected String defaultSeed(String id) {
