@@ -5,6 +5,7 @@ import hudson.model.UnprotectedRootAction;
 import net.nemerosa.seed.jenkins.SeedService;
 import net.nemerosa.seed.jenkins.connector.AbstractEndPoint;
 import net.nemerosa.seed.jenkins.connector.UnknownRequestException;
+import net.nemerosa.seed.jenkins.model.SeedChannel;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
 import org.apache.commons.lang.StringUtils;
@@ -67,7 +68,8 @@ public class HttpEndPoint extends AbstractEndPoint implements UnprotectedRootAct
         SeedEvent event = new SeedEvent(
                 extractParameter(req, "project"),
                 extractParameter(req, "branch"),
-                type
+                type,
+                SeedChannel.of("Seed HTTP end point")
         );
         // Additional parameters
         for (String parameterName : type.getParameterNames()) {

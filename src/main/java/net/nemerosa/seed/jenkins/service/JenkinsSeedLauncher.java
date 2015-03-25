@@ -3,6 +3,7 @@ package net.nemerosa.seed.jenkins.service;
 import hudson.model.*;
 import jenkins.model.Jenkins;
 import net.nemerosa.seed.jenkins.SeedLauncher;
+import net.nemerosa.seed.jenkins.model.SeedChannel;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public class JenkinsSeedLauncher implements SeedLauncher {
     private static final Logger LOGGER = Logger.getLogger(JenkinsSeedLauncher.class.getName());
 
     @Override
-    public void launch(String path, Map<String, String> parameters) {
+    public void launch(SeedChannel channel, String path, Map<String, String> parameters) {
         LOGGER.info(String.format("Launching job at %s with parameters %s", path, parameters));
         // Gets the job using its path
         final AbstractProject job = findJob(path);
@@ -39,13 +40,13 @@ public class JenkinsSeedLauncher implements SeedLauncher {
                                 job,
                                 0,
                                 new ParametersAction(parameterValues),
-                                new CauseAction(getCause())
+                                new CauseAction(getCause(channel))
                         );
             } else {
                 throw new JobNotParameterizedException(job.getName());
             }
         } else {
-            job.scheduleBuild(getCause());
+            job.scheduleBuild(getCause(channel));
         }
     }
 
@@ -61,12 +62,11 @@ public class JenkinsSeedLauncher implements SeedLauncher {
         }
     }
 
-    private Cause getCause() {
+    private Cause getCause(final SeedChannel channel) {
         return new Cause() {
             @Override
             public String getShortDescription() {
-                // FIXME Use the end point as a source of information
-                return "Seed plug-in";
+                return channel.getName();
             }
         };
     }

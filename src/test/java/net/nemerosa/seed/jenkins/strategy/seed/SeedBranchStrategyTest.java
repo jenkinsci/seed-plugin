@@ -3,10 +3,7 @@ package net.nemerosa.seed.jenkins.strategy.seed;
 import com.google.common.collect.ImmutableMap;
 import net.nemerosa.seed.jenkins.Constants;
 import net.nemerosa.seed.jenkins.SeedLauncher;
-import net.nemerosa.seed.jenkins.model.SeedConfiguration;
-import net.nemerosa.seed.jenkins.model.SeedEvent;
-import net.nemerosa.seed.jenkins.model.SeedEventType;
-import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
+import net.nemerosa.seed.jenkins.model.*;
 import org.junit.Test;
 import org.mockito.Matchers;
 
@@ -16,6 +13,8 @@ import java.util.Map;
 import static org.mockito.Mockito.*;
 
 public class SeedBranchStrategyTest {
+
+    public static final SeedChannel TEST_CHANNEL = SeedChannel.of("Test");
 
     @Test
     public void post_create() {
@@ -27,14 +26,14 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "master",
-                        SeedEventType.CREATION
-                ),
+                        SeedEventType.CREATION,
+                        TEST_CHANNEL),
                 launcher,
                 new SeedConfiguration(Collections.<String, Object>emptyMap()),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
         );
 
-        verify(launcher, times(1)).launch("ontrack/ontrack-seed", Collections.singletonMap(
+        verify(launcher, times(1)).launch(TEST_CHANNEL, "ontrack/ontrack-seed", Collections.singletonMap(
                 Constants.BRANCH_PARAMETER,
                 "master"
         ));
@@ -50,8 +49,8 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.DELETION
-                ),
+                        SeedEventType.DELETION,
+                        TEST_CHANNEL),
                 launcher,
                 new SeedConfiguration(Collections.<String, Object>emptyMap()),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
@@ -70,8 +69,8 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.DELETION
-                ),
+                        SeedEventType.DELETION,
+                        TEST_CHANNEL),
                 launcher,
                 new SeedConfiguration(Collections.singletonMap("pipeline-delete", "no")),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
@@ -90,8 +89,8 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.DELETION
-                ),
+                        SeedEventType.DELETION,
+                        TEST_CHANNEL),
                 launcher,
                 new SeedConfiguration(Collections.singletonMap("pipeline-delete", "yes")),
                 SeedProjectConfiguration.of(
@@ -115,14 +114,14 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.SEED
-                ),
+                        SeedEventType.SEED,
+                        TEST_CHANNEL),
                 launcher,
                 new SeedConfiguration(Collections.<String, Object>emptyMap()),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
         );
 
-        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-seed", null);
+        verify(launcher, times(1)).launch(TEST_CHANNEL, "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-seed", null);
     }
 
     @Test
@@ -135,14 +134,14 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.SEED
-                ),
+                        SeedEventType.SEED,
+                        TEST_CHANNEL),
                 launcher,
                 new SeedConfiguration(Collections.singletonMap("pipeline-auto", "no")),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
         );
 
-        verify(launcher, never()).launch(anyString(), Matchers.<Map<String, String>>any());
+        verify(launcher, never()).launch(eq(TEST_CHANNEL), anyString(), Matchers.<Map<String, String>>any());
     }
 
     @Test
@@ -155,8 +154,8 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.SEED
-                ),
+                        SeedEventType.SEED,
+                        TEST_CHANNEL),
                 launcher,
                 new SeedConfiguration(Collections.singletonMap("pipeline-auto", "no")),
                 SeedProjectConfiguration.of(
@@ -167,7 +166,7 @@ public class SeedBranchStrategyTest {
                 )
         );
 
-        verify(launcher, times(1)).launch("ontrack/ontrack-feature-xxx/ontrack-feature-xxx-seed", null);
+        verify(launcher, times(1)).launch(TEST_CHANNEL, "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-seed", null);
     }
 
     @Test
@@ -180,20 +179,20 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.COMMIT
-                ).withParam("commit", "abcdef"),
+                        SeedEventType.COMMIT,
+                        TEST_CHANNEL).withParam("commit", "abcdef"),
                 launcher,
                 new SeedConfiguration(Collections.<String, Object>emptyMap()),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
         );
 
         verify(launcher, times(1)).launch(
+                TEST_CHANNEL,
                 "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build",
                 Collections.singletonMap(
                         "COMMIT",
                         "abcdef"
-                )
-        );
+                ));
     }
 
     @Test
@@ -206,20 +205,20 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.COMMIT
-                ).withParam("commit", "abcdef"),
+                        SeedEventType.COMMIT,
+                        TEST_CHANNEL).withParam("commit", "abcdef"),
                 launcher,
                 new SeedConfiguration(Collections.singletonMap("pipeline-commit", "GIT_COMMIT")),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
         );
 
         verify(launcher, times(1)).launch(
+                TEST_CHANNEL,
                 "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build",
                 Collections.singletonMap(
                         "GIT_COMMIT",
                         "abcdef"
-                )
-        );
+                ));
     }
 
     @Test
@@ -232,20 +231,20 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.COMMIT
-                ),
+                        SeedEventType.COMMIT,
+                        TEST_CHANNEL),
                 launcher,
                 new SeedConfiguration(Collections.<String, Object>emptyMap()),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
         );
 
         verify(launcher, times(1)).launch(
+                TEST_CHANNEL,
                 "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build",
                 Collections.singletonMap(
                         "COMMIT",
                         "HEAD"
-                )
-        );
+                ));
     }
 
     @Test
@@ -258,14 +257,16 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.COMMIT
-                ),
+                        SeedEventType.COMMIT,
+                        TEST_CHANNEL),
                 launcher,
                 new SeedConfiguration(Collections.singletonMap("pipeline-trigger", "no")),
                 SeedProjectConfiguration.of("nemerosa/ontrack")
         );
 
-        verify(launcher, never()).launch(anyString(), Matchers.<Map<String, String>>any());
+        verify(launcher, never()).launch(
+                eq(TEST_CHANNEL),
+                anyString(), Matchers.<Map<String, String>>any());
     }
 
     @Test
@@ -278,8 +279,8 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.COMMIT
-                ).withParam("commit", "abcdef"),
+                        SeedEventType.COMMIT,
+                        TEST_CHANNEL).withParam("commit", "abcdef"),
                 launcher,
                 new SeedConfiguration(Collections.singletonMap("pipeline-trigger", "no")),
                 SeedProjectConfiguration.of(
@@ -291,12 +292,12 @@ public class SeedBranchStrategyTest {
         );
 
         verify(launcher, times(1)).launch(
+                TEST_CHANNEL,
                 "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-build",
                 Collections.singletonMap(
                         "COMMIT",
                         "abcdef"
-                )
-        );
+                ));
     }
 
     @Test
@@ -309,8 +310,8 @@ public class SeedBranchStrategyTest {
                 new SeedEvent(
                         "nemerosa/ontrack",
                         "feature/xxx",
-                        SeedEventType.COMMIT
-                ).withParam("commit", "abcdef"),
+                        SeedEventType.COMMIT,
+                        TEST_CHANNEL).withParam("commit", "abcdef"),
                 launcher,
                 new SeedConfiguration(Collections.<String, Object>emptyMap()),
                 SeedProjectConfiguration.of(
@@ -322,12 +323,12 @@ public class SeedBranchStrategyTest {
         );
 
         verify(launcher, times(1)).launch(
+                TEST_CHANNEL,
                 "ontrack/ontrack-feature-xxx/ontrack-feature-xxx-01-quick",
                 Collections.singletonMap(
                         "COMMIT",
                         "abcdef"
-                )
-        );
+                ));
     }
 
 }

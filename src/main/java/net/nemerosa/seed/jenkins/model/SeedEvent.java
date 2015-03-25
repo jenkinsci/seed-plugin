@@ -8,12 +8,14 @@ public class SeedEvent {
     private final String project;
     private final String branch;
     private final SeedEventType type;
+    private final SeedChannel channel;
     private final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
 
-    public SeedEvent(String project, String branch, SeedEventType type) {
+    public SeedEvent(String project, String branch, SeedEventType type, SeedChannel channel) {
         this.project = project;
         this.branch = branch;
         this.type = type;
+        this.channel = channel;
     }
 
     public SeedEvent withParam(String name, Object value) {
@@ -35,6 +37,10 @@ public class SeedEvent {
 
     public SeedEventType getType() {
         return type;
+    }
+
+    public SeedChannel getChannel() {
+        return channel;
     }
 
     public Map<String, Object> getParameters() {

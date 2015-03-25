@@ -3,6 +3,7 @@ package net.nemerosa.seed.jenkins.connector.http;
 import net.nemerosa.seed.jenkins.SeedService;
 import net.nemerosa.seed.jenkins.connector.UnknownRequestException;
 import net.nemerosa.seed.jenkins.model.MissingParameterException;
+import net.nemerosa.seed.jenkins.model.SeedChannel;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
 import org.junit.Test;
@@ -127,8 +128,8 @@ public class HttpEndPointTest {
                 new SeedEvent(
                         "nemerosa/seed",
                         "master",
-                        SeedEventType.COMMIT
-                ).withParam("commit", "abcdef")
+                        SeedEventType.COMMIT,
+                        SeedChannel.of("Seed HTTP end point")).withParam("commit", "abcdef")
         );
     }
 
@@ -154,8 +155,8 @@ public class HttpEndPointTest {
                 new SeedEvent(
                         "nemerosa/seed",
                         "master",
-                        SeedEventType.COMMIT
-                )
+                        SeedEventType.COMMIT,
+                        SeedChannel.of("Seed HTTP end point"))
         );
     }
 

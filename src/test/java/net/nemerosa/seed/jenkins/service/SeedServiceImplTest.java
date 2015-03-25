@@ -2,6 +2,7 @@ package net.nemerosa.seed.jenkins.service;
 
 import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
 import net.nemerosa.seed.jenkins.SeedLauncher;
+import net.nemerosa.seed.jenkins.model.SeedChannel;
 import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
@@ -28,9 +29,9 @@ public class SeedServiceImplTest {
         SeedLauncher launcher = mock(SeedLauncher.class);
 
         SeedServiceImpl service = new SeedServiceImpl(loader, launcher, branchStrategies);
-        service.post(new SeedEvent("nemerosa/ontrack", "master", SeedEventType.CREATION));
+        service.post(new SeedEvent("nemerosa/ontrack", "master", SeedEventType.CREATION, SeedChannel.of("Test")));
 
-        verify(launcher, times(1)).launch("ontrack/ontrack-seed", Collections.singletonMap("BRANCH", "master"));
+        verify(launcher, times(1)).launch(SeedChannel.of("Test"), "ontrack/ontrack-seed", Collections.singletonMap("BRANCH", "master"));
     }
 
 }

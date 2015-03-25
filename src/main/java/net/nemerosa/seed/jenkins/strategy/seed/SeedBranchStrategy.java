@@ -52,7 +52,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
             // Gets the path to the branch seed job
             String path = getBranchSeedPath(projectConfiguration, event.getBranch());
             // Launches the job (no parameter)
-            seedLauncher.launch(path, null);
+            seedLauncher.launch(event.getChannel(), path, null);
         } else {
             LOGGER.finer(format("Seed events are not enabled for project %s", event.getProject()));
         }
@@ -66,7 +66,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
             String commit = event.getConfiguration().getString("commit", false, "HEAD");
             LOGGER.finer(format("Commit %s for branch %s of project %s - starting the pipeline", commit, event.getBranch(), event.getProject()));
             // Launching the job
-            seedLauncher.launch(path, ImmutableMap.of(
+            seedLauncher.launch(event.getChannel(), path, ImmutableMap.of(
                     getCommitParameter(configuration, projectConfiguration),
                     commit
             ));
@@ -93,7 +93,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
                 defaultSeed(projectConfiguration.getId())
         );
         // Launches the job
-        seedLauncher.launch(path, Collections.singletonMap(
+        seedLauncher.launch(event.getChannel(), path, Collections.singletonMap(
                 Constants.BRANCH_PARAMETER,
                 event.getBranch()
         ));
