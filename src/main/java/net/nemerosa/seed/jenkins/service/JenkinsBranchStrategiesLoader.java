@@ -2,6 +2,7 @@ package net.nemerosa.seed.jenkins.service;
 
 import hudson.Extension;
 import jenkins.model.Jenkins;
+import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategiesLoader;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
 
@@ -14,7 +15,7 @@ import java.util.Collection;
 public class JenkinsBranchStrategiesLoader implements BranchStrategiesLoader {
 
     @Override
-    public Collection<BranchStrategy> load() {
+    public Collection<BranchStrategy> load(SeedConfiguration configuration) {
         return Jenkins.getInstance().getExtensionList(BranchStrategy.class);
     }
 }

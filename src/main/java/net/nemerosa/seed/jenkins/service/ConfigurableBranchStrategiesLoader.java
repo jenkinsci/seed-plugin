@@ -1,14 +1,15 @@
 package net.nemerosa.seed.jenkins.service;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import hudson.Extension;
+import net.nemerosa.seed.jenkins.model.ConfigurableBranchStrategyConfiguration;
+import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategiesLoader;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
-import net.nemerosa.seed.jenkins.model.ConfigurableBranchStrategyConfiguration;
+import net.nemerosa.seed.jenkins.strategy.configurable.ConfigurableBranchStrategy;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Gets a list of configurable branch strategies.
@@ -18,20 +19,17 @@ import java.util.List;
 @Extension
 public class ConfigurableBranchStrategiesLoader implements BranchStrategiesLoader {
 
-    private final List<ConfigurableBranchStrategyConfiguration> branchStrategyConfigurations =
-            new ArrayList<ConfigurableBranchStrategyConfiguration>();
-
-    /**
-     * List of configurations
-     */
-    public List<ConfigurableBranchStrategyConfiguration> getBranchStrategyConfigurations() {
-        return branchStrategyConfigurations;
-    }
-
     @Override
-    public Collection<BranchStrategy> load() {
-        // FIXME Method net.nemerosa.seed.jenkins.service.ConfigurableBranchStrategiesLoader.load
-        return Collections.emptyList();
+    public Collection<BranchStrategy> load(SeedConfiguration configuration) {
+        return Collections2.transform(
+                configuration.getConfigurableBranchStrategyConfigurations().values(),
+                new Function<ConfigurableBranchStrategyConfiguration, BranchStrategy>() {
+                    @Override
+                    public BranchStrategy apply(ConfigurableBranchStrategyConfiguration input) {
+                        return new ConfigurableBranchStrategy(input);
+                    }
+                }
+        );
     }
 
 }

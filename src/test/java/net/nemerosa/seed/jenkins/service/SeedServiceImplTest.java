@@ -24,7 +24,7 @@ public class SeedServiceImplTest {
         when(loader.load()).thenReturn(configuration);
 
         BranchStrategies branchStrategies = mock(BranchStrategies.class);
-        when(branchStrategies.get("seed")).thenReturn(new SeedBranchStrategy());
+        when(branchStrategies.get(eq("seed"), any(SeedConfiguration.class))).thenReturn(new SeedBranchStrategy());
 
         SeedLauncher launcher = mock(SeedLauncher.class);
 

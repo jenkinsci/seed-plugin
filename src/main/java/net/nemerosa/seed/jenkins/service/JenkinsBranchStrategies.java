@@ -2,6 +2,7 @@ package net.nemerosa.seed.jenkins.service;
 
 import hudson.ExtensionList;
 import jenkins.model.Jenkins;
+import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategiesLoader;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
@@ -15,13 +16,13 @@ import java.util.Collection;
 public class JenkinsBranchStrategies implements BranchStrategies {
 
     @Override
-    public BranchStrategy get(final String branchStrategyId) {
+    public BranchStrategy get(final String branchStrategyId, SeedConfiguration configuration) {
         // Gets the list of loaders
         ExtensionList<BranchStrategiesLoader> branchStrategiesLoaders =
                 Jenkins.getInstance().getExtensionList(BranchStrategiesLoader.class);
         // Looking for the extension with the correct ID
         for (BranchStrategiesLoader branchStrategiesLoader : branchStrategiesLoaders) {
-            Collection<BranchStrategy> branchStrategies = branchStrategiesLoader.load();
+            Collection<BranchStrategy> branchStrategies = branchStrategiesLoader.load(configuration);
             for (BranchStrategy branchStrategy : branchStrategies) {
                 if (StringUtils.equals(branchStrategyId, branchStrategy.getId())) {
                     return branchStrategy;

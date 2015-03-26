@@ -67,6 +67,10 @@ public class SeedConfiguration extends Configuration {
         }
     }
 
+    public Map<String, ConfigurableBranchStrategyConfiguration> getConfigurableBranchStrategyConfigurations() {
+        return configurableBranchStrategyConfigurations;
+    }
+
     public static SeedConfiguration parseYaml(String text) {
         if (StringUtils.isBlank(text)) {
             return new SeedConfiguration(Collections.<String, Object>emptyMap());
