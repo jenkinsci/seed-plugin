@@ -12,6 +12,7 @@ import java.util.Map;
 public class SeedConfiguration extends Configuration {
 
     private final Map<String, SeedProjectConfiguration> projects;
+    private final Map<String, ConfigurableBranchStrategyConfiguration> configurableBranchStrategyConfigurations;
 
     public SeedConfiguration(Map<String, ?> data) {
         super(data);
@@ -28,6 +29,23 @@ public class SeedConfiguration extends Configuration {
                 new Function<SeedProjectConfiguration, String>() {
                     @Override
                     public String apply(SeedProjectConfiguration input) {
+                        return input.getId();
+                    }
+                }
+        );
+        this.configurableBranchStrategyConfigurations = Maps.uniqueIndex(
+                Lists.transform(
+                        getList("strategies"),
+                        new Function<Map<String, ?>, ConfigurableBranchStrategyConfiguration>() {
+                            @Override
+                            public ConfigurableBranchStrategyConfiguration apply(Map<String, ?> input) {
+                                return ConfigurableBranchStrategyConfiguration.of(input);
+                            }
+                        }
+                ),
+                new Function<ConfigurableBranchStrategyConfiguration, String>() {
+                    @Override
+                    public String apply(ConfigurableBranchStrategyConfiguration input) {
                         return input.getId();
                     }
                 }
