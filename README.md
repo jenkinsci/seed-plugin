@@ -58,23 +58,5 @@ The [format of the configuration](doc/Configuration.md) data is described in oth
 
 The way to send events to the Seed Jenkins plug-in can done using _connectors_.
 
-### REST
-
-The plug-in exposes a REST API to send events.
-
-### GitHub
-
-If configured, the plug-in exposes a [hook for GitHub](https://developer.github.com/webhooks/) events.
-
-The GitHub hook is disabled by default and can be activated either at global level or at project level.
-
-The GitHub is optionally protected by a token. This token must be configured in the plug-in, either at global level or project level. The same token must be entered in the [GitHub configuration of the web hook](https://developer.github.com/webhooks/securing/).
-
-## Planned improvments 
-
-* [x] Support for additional branching strategies: seed of course, but also job per branch, branch parameter for a job, only one branch supported
-* [x] Sample of custom strategy in the tests
-* [ ] Filtering on branches
-* [x] Enabling support for auto project configuration
-* [ ] including Seed in the first plugin for an easier configuration
-
+* [HTTP API](doc/connector/HTTP.md)
+* [GitHub Web hook](doc/connector/GitHub.md)
