@@ -74,6 +74,26 @@ public class GitHubEndPointTest {
         );
     }
 
+    @Test
+    public void commit_event() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockGitHubRequest("push", "/github-payload-commit.json");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        // Call
+        new GitHubEndPoint(seedService).doDynamic(request, response);
+        // Verifying
+        verify(seedService, times(1)).post(
+                new SeedEvent(
+                        "nemerosa/seed-demo",
+                        "master",
+                        SeedEventType.COMMIT,
+                        SeedChannel.of("Seed GitHub end point"))
+                        .withParam("commit", "3e872d2dddac526ab5c6ea23226ac4db47735166")
+        );
+    }
+
     private StaplerRequest mockGitHubRequest(String event, String payload) throws IOException {
         StaplerRequest request = mock(StaplerRequest.class);
         when(request.getHeader("X-GitHub-Event")).thenReturn(event);
