@@ -56,6 +56,16 @@ public class Configuration {
         }
     }
 
+    public List<String> getListString(String name) {
+        @SuppressWarnings("unchecked")
+        List<String> list = (List<String>) data.get(name);
+        if (list != null) {
+            return list;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     private static boolean toBoolean(String value, boolean defaultValue) {
         if (value == null) {
             return defaultValue;

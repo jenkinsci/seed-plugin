@@ -2,6 +2,7 @@ package net.nemerosa.seed.jenkins.strategy.configurable;
 
 import net.nemerosa.seed.jenkins.model.ConfigurableBranchStrategyConfiguration;
 import net.nemerosa.seed.jenkins.strategy.seed.SeedBranchStrategy;
+import org.apache.commons.lang.StringUtils;
 
 import static net.nemerosa.seed.jenkins.support.Evaluator.evaluate;
 
@@ -35,7 +36,11 @@ public class ConfigurableBranchStrategy extends SeedBranchStrategy {
 
     @Override
     protected String getBranchName(String branch) {
-        return evaluate(configuration.getBranchNameExpression(), "branch", branch);
+        String value = branch;
+        for (String prefix : configuration.getBranchNamePrefixes()) {
+            value = StringUtils.removeStart(value, prefix);
+        }
+        return evaluate(configuration.getBranchNameExpression(), "branch", value);
     }
 
     @Override

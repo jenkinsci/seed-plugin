@@ -1,5 +1,9 @@
 package net.nemerosa.seed.jenkins.model;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
+import java.util.Collection;
 import java.util.Map;
 
 public class ConfigurableBranchStrategyConfiguration extends Configuration {
@@ -9,6 +13,7 @@ public class ConfigurableBranchStrategyConfiguration extends Configuration {
     private final String branchSeedExpression;
     private final String branchStartExpression;
     private final String branchNameExpression;
+    private final Collection<String> branchNamePrefixes;
     private final String commitParameter;
 
     public ConfigurableBranchStrategyConfiguration(Map<String, ?> data) {
@@ -18,6 +23,7 @@ public class ConfigurableBranchStrategyConfiguration extends Configuration {
         this.branchSeedExpression = getString("branch-seed-expression", false, "${project}/${project}-*/${project}-*-seed");
         this.branchStartExpression = getString("branch-start-expression", false, "${project}/${project}-*/${project}-*-build");
         this.branchNameExpression = getString("branch-name-expression", false, "${branch}");
+        this.branchNamePrefixes = getListString("branch-name-prefixes");
         this.commitParameter = getString("commit-parameter", false, "COMMIT");
     }
 
@@ -39,6 +45,10 @@ public class ConfigurableBranchStrategyConfiguration extends Configuration {
 
     public String getBranchNameExpression() {
         return branchNameExpression;
+    }
+
+    public Collection<String> getBranchNamePrefixes() {
+        return branchNamePrefixes;
     }
 
     public String getCommitParameter() {

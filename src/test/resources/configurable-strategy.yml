@@ -1,0 +1,12 @@
+strategies:
+  - id: upper
+    seed-expression: "${PROJECT}/${PROJECT}_GENERATOR"
+    branch-seed-expression: "${PROJECT}/${PROJECT}_*/${PROJECT}_*_GENERATOR"
+    branch-start-expression: "${PROJECT}/${PROJECT}_*/${PROJECT}_*_010_BUILD"
+    branch-name-expression: "${BRANCH}"
+    branch-name-prefixes:
+      - "branches/"
+    commit-parameter: "REVISION"
+projects:
+  - id: PRJ
+    branch-strategy: upper
