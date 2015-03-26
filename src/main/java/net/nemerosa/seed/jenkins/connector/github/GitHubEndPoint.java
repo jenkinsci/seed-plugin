@@ -47,8 +47,8 @@ public class GitHubEndPoint extends AbstractEndPoint {
         // Event type
         if ("create".equals(ghEvent)) {
             return createEvent(json);
-//        } else if ("delete".equals(ghEvent)) {
-//            type = SeedEventType.DELETION;
+        } else if ("delete".equals(ghEvent)) {
+            return deleteEvent(json);
 //        } else if ("seed".equals(ghEvent)) {
 //            type = SeedEventType.SEED;
 //        } else if ("commit".equals(ghEvent)) {
@@ -61,6 +61,14 @@ public class GitHubEndPoint extends AbstractEndPoint {
     }
 
     private SeedEvent createEvent(JSONObject json) {
+        return branchEvent(json, SeedEventType.CREATION);
+    }
+
+    private SeedEvent deleteEvent(JSONObject json) {
+        return branchEvent(json, SeedEventType.DELETION);
+    }
+
+    private SeedEvent branchEvent(JSONObject json, SeedEventType eventType) {
         // Checks the ref_type
         String ref_type = json.getString("ref_type");
         if (!"branch".equals(ref_type)) {
@@ -74,7 +82,7 @@ public class GitHubEndPoint extends AbstractEndPoint {
         return new SeedEvent(
                 project,
                 branch,
-                SeedEventType.CREATION,
+                eventType,
                 SEED_CHANNEL
         );
     }

@@ -21,16 +21,7 @@ public class GitHubEndPointTest {
     public void create_branch() throws IOException {
         StaplerResponse response = mockStaplerResponse();
         // Request
-        StaplerRequest request = mock(StaplerRequest.class);
-        when(request.getHeader("X-GitHub-Event")).thenReturn("create");
-        when(request.getReader()).thenReturn(
-                new BufferedReader(
-                        new InputStreamReader(
-                                getClass().getResourceAsStream("/github-payload-create.json"),
-                                "UTF-8"
-                        )
-                )
-        );
+        StaplerRequest request = mockGitHubRequest("create", "/github-payload-create.json");
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
@@ -43,5 +34,38 @@ public class GitHubEndPointTest {
                         SeedEventType.CREATION,
                         SeedChannel.of("Seed GitHub end point"))
         );
+    }
+
+    @Test
+    public void delete_branch() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockGitHubRequest("delete", "/github-payload-delete.json");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        // Call
+        new GitHubEndPoint(seedService).doDynamic(request, response);
+        // Verifying
+        verify(seedService, times(1)).post(
+                new SeedEvent(
+                        "nemerosa/seed-demo",
+                        "test-4",
+                        SeedEventType.DELETION,
+                        SeedChannel.of("Seed GitHub end point"))
+        );
+    }
+
+    private StaplerRequest mockGitHubRequest(String event, String payload) throws IOException {
+        StaplerRequest request = mock(StaplerRequest.class);
+        when(request.getHeader("X-GitHub-Event")).thenReturn(event);
+        when(request.getReader()).thenReturn(
+                new BufferedReader(
+                        new InputStreamReader(
+                                getClass().getResourceAsStream(payload),
+                                "UTF-8"
+                        )
+                )
+        );
+        return request;
     }
 }
