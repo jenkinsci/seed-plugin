@@ -68,4 +68,13 @@ public class SeedEvent {
         result = 31 * result + parameters.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "SeedEvent{" + "project='" + project + '\'' +
+                ", branch='" + branch + '\'' +
+                ", type=" + type +
+                ", channel=" + channel +
+                ", parameters=" + parameters + '}';
+    }
 }

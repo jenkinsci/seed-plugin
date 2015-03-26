@@ -22,6 +22,7 @@ public class GitHubEndPointTest {
         StaplerResponse response = mockStaplerResponse();
         // Request
         StaplerRequest request = mock(StaplerRequest.class);
+        when(request.getHeader("X-GitHub-Event")).thenReturn("create");
         when(request.getReader()).thenReturn(
                 new BufferedReader(
                         new InputStreamReader(
@@ -37,8 +38,8 @@ public class GitHubEndPointTest {
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
-                        "nemerosa/ontrack",
-                        "feature/123-test",
+                        "nemerosa/seed-demo",
+                        "test-4",
                         SeedEventType.CREATION,
                         SeedChannel.of("Seed GitHub end point"))
         );

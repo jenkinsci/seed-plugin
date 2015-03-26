@@ -44,19 +44,24 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
         try {
             // Extracts the event
             SeedEvent event = extractEvent(req);
-            LOGGER.finer(
-                    String.format(
-                            "Event to process: project=%s, branch=%s, type=%s, parameters=%s",
-                            event.getProject(),
-                            event.getBranch(),
-                            event.getType(),
-                            event.getParameters()
-                    )
-            );
-            // Posts the event
-            post(event);
-            // OK
-            sendOk(rsp, event);
+            if (event == null) {
+                LOGGER.finer("Event not accepted");
+                sendError(rsp, StaplerResponse.SC_NOT_MODIFIED, "Event not accepted");
+            } else {
+                LOGGER.finer(
+                        String.format(
+                                "Event to process: project=%s, branch=%s, type=%s, parameters=%s",
+                                event.getProject(),
+                                event.getBranch(),
+                                event.getType(),
+                                event.getParameters()
+                        )
+                );
+                // Posts the event
+                post(event);
+                // OK
+                sendOk(rsp, event);
+            }
         } catch (IOException ex) {
             throw ex;
         } catch (Exception ex) {
