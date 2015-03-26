@@ -1,6 +1,7 @@
 package net.nemerosa.seed.jenkins.connector;
 
 import com.google.inject.Guice;
+import hudson.model.UnprotectedRootAction;
 import net.nemerosa.seed.jenkins.SeedService;
 import net.nemerosa.seed.jenkins.model.MissingParameterException;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
@@ -13,7 +14,7 @@ import org.kohsuke.stapler.interceptor.RequirePOST;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public abstract class AbstractEndPoint {
+public abstract class AbstractEndPoint implements UnprotectedRootAction {
 
     private static final Logger LOGGER = Logger.getLogger(AbstractEndPoint.class.getName());
 
@@ -25,6 +26,16 @@ public abstract class AbstractEndPoint {
 
     public AbstractEndPoint() {
         this(Guice.createInjector(new SeedServiceModule()).getInstance(SeedService.class));
+    }
+
+    @Override
+    public String getIconFileName() {
+        return null;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return null;
     }
 
     @RequirePOST

@@ -11,8 +11,8 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
+import static net.nemerosa.seed.jenkins.connector.EndPointTestSupport.mockStaplerResponse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
@@ -131,12 +131,6 @@ public class HttpEndPointTest {
                         SeedEventType.COMMIT,
                         SeedChannel.of("Seed HTTP end point")).withParam("commit", "abcdef")
         );
-    }
-
-    private StaplerResponse mockStaplerResponse() throws IOException {
-        StaplerResponse response = mock(StaplerResponse.class);
-        when(response.getWriter()).thenReturn(new PrintWriter(System.out));
-        return response;
     }
 
     @Test

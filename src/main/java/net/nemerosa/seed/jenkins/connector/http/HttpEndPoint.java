@@ -27,16 +27,6 @@ public class HttpEndPoint extends AbstractEndPoint implements UnprotectedRootAct
     }
 
     @Override
-    public String getIconFileName() {
-        return null;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return null;
-    }
-
-    @Override
     public String getUrlName() {
         return "seed-http";
     }
