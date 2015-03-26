@@ -7,8 +7,10 @@ import net.nemerosa.seed.jenkins.connector.UnknownRequestException;
 import net.nemerosa.seed.jenkins.model.SeedChannel;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.IOException;
@@ -49,14 +51,59 @@ public class GitHubEndPoint extends AbstractEndPoint {
             return createEvent(json);
         } else if ("delete".equals(ghEvent)) {
             return deleteEvent(json);
-//        } else if ("seed".equals(ghEvent)) {
-//            type = SeedEventType.SEED;
-//        } else if ("commit".equals(ghEvent)) {
-//            type = SeedEventType.COMMIT;
+        } else if ("push".equals(ghEvent)) {
+            return pushEvent(json);
         }
         // Unknown
         else {
             throw new UnknownRequestException("Unknown event: " + ghEvent);
+        }
+    }
+
+    private SeedEvent pushEvent(JSONObject json) {
+        // Gets the branch reference
+        String ref = json.getString("ref");
+        // Parses the branch name
+        String branch = StringUtils.removeStart(ref, "refs/heads/");
+        // List of commits
+        JSONArray commits = json.optJSONArray("commits");
+        Commits commitContext = new Commits();
+        if (commits != null) {
+            for (Object o : commits) {
+                JSONObject commit = (JSONObject) o;
+                scanCommits(commitContext, commit, "added");
+                scanCommits(commitContext, commit, "removed");
+                scanCommits(commitContext, commit, "modified");
+            }
+        }
+        // Event according to the context
+        if (commitContext.isOnlySeed()) {
+            // Seed update only
+            return new SeedEvent(
+                    getProject(json),
+                    branch,
+                    SeedEventType.SEED,
+                    SEED_CHANNEL
+            );
+        } else {
+            // Normal push
+            return new SeedEvent(
+                    getProject(json),
+                    branch,
+                    SeedEventType.COMMIT,
+                    SEED_CHANNEL
+            ).withParam("commit", json.getJSONObject("head_commit").getString("id"));
+        }
+    }
+
+    private void scanCommits(Commits commitContext, JSONObject commit, String mode) {
+        JSONArray paths = commit.optJSONArray(mode);
+        if (paths != null) {
+            for (Object o : paths) {
+                String path = (String) o;
+                boolean seedPath = StringUtils.startsWith(path, "seed/");
+                commitContext.feed(seedPath);
+            }
         }
     }
 
@@ -75,7 +122,7 @@ public class GitHubEndPoint extends AbstractEndPoint {
             return null;
         }
         // Repository ID = project
-        String project = json.getJSONObject("repository").getString("full_name");
+        String project = getProject(json);
         // Branch = ref
         String branch = json.getString("ref");
         // OK
@@ -85,6 +132,10 @@ public class GitHubEndPoint extends AbstractEndPoint {
                 eventType,
                 SEED_CHANNEL
         );
+    }
+
+    private String getProject(JSONObject json) {
+        return json.getJSONObject("repository").getString("full_name");
     }
 
 }

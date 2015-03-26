@@ -55,6 +55,25 @@ public class GitHubEndPointTest {
         );
     }
 
+    @Test
+    public void seed_event() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockGitHubRequest("push", "/github-payload-seed.json");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        // Call
+        new GitHubEndPoint(seedService).doDynamic(request, response);
+        // Verifying
+        verify(seedService, times(1)).post(
+                new SeedEvent(
+                        "nemerosa/seed-demo",
+                        "master",
+                        SeedEventType.SEED,
+                        SeedChannel.of("Seed GitHub end point"))
+        );
+    }
+
     private StaplerRequest mockGitHubRequest(String event, String payload) throws IOException {
         StaplerRequest request = mock(StaplerRequest.class);
         when(request.getHeader("X-GitHub-Event")).thenReturn(event);
