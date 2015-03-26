@@ -98,7 +98,7 @@ public class GitHubEndPointTest {
     public void commit_event_with_signature() throws IOException {
         StaplerResponse response = mockStaplerResponse();
         // Request
-        StaplerRequest request = mockGitHubRequest("push", "/github-payload-commit.json");
+        StaplerRequest request = mockGitHubRequest("push", "/github-payload-commit-signed.json");
         when(request.getHeader("X-Hub-Signature")).thenReturn("sha1=0152b9c1b5171f7162fd98c45d81f37fdf03846c");
         // Service mock
         SeedService seedService = mock(SeedService.class);
