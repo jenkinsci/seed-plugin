@@ -3,6 +3,7 @@ package net.nemerosa.seed.jenkins.service;
 import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
 import net.nemerosa.seed.jenkins.SeedLauncher;
 import net.nemerosa.seed.jenkins.SeedService;
+import net.nemerosa.seed.jenkins.model.Configuration;
 import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
@@ -50,6 +51,21 @@ public class SeedServiceImpl implements SeedService {
         );
         // Dispatching
         branchStrategy.post(event, seedLauncher, configuration, projectConfiguration);
+    }
+
+    @Override
+    public String getSecretKey(String project) {
+        // Loads the configuration
+        SeedConfiguration configuration = configurationLoader.load();
+        // Loads the project's configuration
+        SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(project);
+        // Gets the secret key
+        return Configuration.getValue(
+                "secret-key",
+                configuration,
+                projectConfiguration,
+                System.getenv("SECRET_KEY")
+        );
     }
 
 }

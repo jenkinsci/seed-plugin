@@ -3,23 +3,32 @@ package net.nemerosa.seed.jenkins.connector.github;
 import hudson.Extension;
 import net.nemerosa.seed.jenkins.SeedService;
 import net.nemerosa.seed.jenkins.connector.AbstractEndPoint;
+import net.nemerosa.seed.jenkins.connector.CannotHandleRequestException;
+import net.nemerosa.seed.jenkins.connector.RequestNonAuthorizedException;
 import net.nemerosa.seed.jenkins.connector.UnknownRequestException;
 import net.nemerosa.seed.jenkins.model.SeedChannel;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedEventType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
 @Extension
 public class GitHubEndPoint extends AbstractEndPoint {
 
     private static final String X_GIT_HUB_EVENT = "X-GitHub-Event";
+    private static final String X_GIT_HUB_SIGNATURE = "X-Hub-Signature";
 
     private static final Logger LOGGER = Logger.getLogger(GitHubEndPoint.class.getName());
     private static final SeedChannel SEED_CHANNEL = SeedChannel.of("Seed GitHub end point");
@@ -46,6 +55,10 @@ public class GitHubEndPoint extends AbstractEndPoint {
         String payload = IOUtils.toString(req.getReader());
         // Parses as JSON
         JSONObject json = JSONObject.fromObject(payload);
+        // Gets the project name
+        String project = getProject(json);
+        // Checks the signature
+        checkSignature(req, payload, project);
         // Event type
         if ("create".equals(ghEvent)) {
             return createEvent(json);
@@ -57,6 +70,40 @@ public class GitHubEndPoint extends AbstractEndPoint {
         // Unknown
         else {
             throw new UnknownRequestException("Unknown event: " + ghEvent);
+        }
+    }
+
+    protected void checkSignature(StaplerRequest req, String payload, String project) throws UnsupportedEncodingException {
+        // Gets the secret key for the project
+        String secretKey = seedService.getSecretKey(project);
+        if (StringUtils.isBlank(secretKey)) {
+            return;
+        }
+
+        // Gets the signature header
+        String ghSignature = req.getHeader(X_GIT_HUB_SIGNATURE);
+
+        // Secret key specification
+        SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA1");
+
+        // HMac signature
+        try {
+            Mac mac = Mac.getInstance("HmacMD5");
+            mac.init(keySpec);
+
+            byte[] rawHmac = mac.doFinal(payload.getBytes("UTF-8"));
+
+            // HMac Hex signature
+            String hmac = Hex.encodeHexString(rawHmac);
+
+            // Comparison
+            if (!StringUtils.equals(hmac, ghSignature)) {
+                throw new RequestNonAuthorizedException();
+            }
+        } catch (NoSuchAlgorithmException ex) {
+            throw new CannotHandleRequestException(ex);
+        } catch (InvalidKeyException ex) {
+            throw new CannotHandleRequestException(ex);
         }
     }
 

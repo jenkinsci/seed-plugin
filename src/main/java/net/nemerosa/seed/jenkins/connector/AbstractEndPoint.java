@@ -64,6 +64,8 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
             }
         } catch (IOException ex) {
             throw ex;
+        } catch (RequestNonAuthorizedException ex) {
+            sendError(rsp, StaplerResponse.SC_FORBIDDEN, ex.getMessage());
         } catch (Exception ex) {
             sendError(rsp, StaplerResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
         }
