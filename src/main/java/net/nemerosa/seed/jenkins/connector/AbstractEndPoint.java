@@ -79,7 +79,7 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
         }
     }
 
-    protected abstract SeedEvent extractEvent(StaplerRequest req);
+    protected abstract SeedEvent extractEvent(StaplerRequest req) throws IOException;
 
     protected void sendOk(StaplerResponse rsp, SeedEvent event) throws IOException {
         rsp.setStatus(getHttpCodeForEvent(event));
