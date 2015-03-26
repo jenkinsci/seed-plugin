@@ -87,8 +87,12 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
                 PIPELINE_COMMIT,
                 projectConfiguration,
                 configuration,
-                "COMMIT"
+                defaultCommitParameter()
         );
+    }
+
+    protected String defaultCommitParameter() {
+        return "COMMIT";
     }
 
     protected void create(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
