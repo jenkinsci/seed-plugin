@@ -90,7 +90,7 @@ public class GitHubEndPointTest {
                         "master",
                         SeedEventType.COMMIT,
                         SeedChannel.of("Seed GitHub end point"))
-                        .withParam("commit", "3e872d2dddac526ab5c6ea23226ac4db47735166")
+                        .withParam("commit", "a10c3027a04ab066adc7a2a3d4735a7026fc1c59")
         );
     }
 

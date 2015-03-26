@@ -1,19 +1,19 @@
 {
   "ref": "refs/heads/master",
-  "before": "5241d2b8d2433d0ed2eaca8d056e1716beac1fd6",
-  "after": "3e872d2dddac526ab5c6ea23226ac4db47735166",
+  "before": "3e872d2dddac526ab5c6ea23226ac4db47735166",
+  "after": "a10c3027a04ab066adc7a2a3d4735a7026fc1c59",
   "created": false,
   "deleted": false,
   "forced": false,
   "base_ref": null,
-  "compare": "https://github.com/nemerosa/seed-demo/compare/5241d2b8d243...3e872d2dddac",
+  "compare": "https://github.com/nemerosa/seed-demo/compare/3e872d2dddac...a10c3027a04a",
   "commits": [
     {
-      "id": "3e872d2dddac526ab5c6ea23226ac4db47735166",
+      "id": "a10c3027a04ab066adc7a2a3d4735a7026fc1c59",
       "distinct": true,
       "message": "Test",
-      "timestamp": "2015-03-26T14:29:14+01:00",
-      "url": "https://github.com/nemerosa/seed-demo/commit/3e872d2dddac526ab5c6ea23226ac4db47735166",
+      "timestamp": "2015-03-26T21:49:09+01:00",
+      "url": "https://github.com/nemerosa/seed-demo/commit/a10c3027a04ab066adc7a2a3d4735a7026fc1c59",
       "author": {
         "name": "Damien Coraboeuf",
         "email": "damien.coraboeuf@gmail.com",
@@ -36,11 +36,11 @@
     }
   ],
   "head_commit": {
-    "id": "3e872d2dddac526ab5c6ea23226ac4db47735166",
+    "id": "a10c3027a04ab066adc7a2a3d4735a7026fc1c59",
     "distinct": true,
     "message": "Test",
-    "timestamp": "2015-03-26T14:29:14+01:00",
-    "url": "https://github.com/nemerosa/seed-demo/commit/3e872d2dddac526ab5c6ea23226ac4db47735166",
+    "timestamp": "2015-03-26T21:49:09+01:00",
+    "url": "https://github.com/nemerosa/seed-demo/commit/a10c3027a04ab066adc7a2a3d4735a7026fc1c59",
     "author": {
       "name": "Damien Coraboeuf",
       "email": "damien.coraboeuf@gmail.com",
@@ -110,8 +110,8 @@
     "labels_url": "https://api.github.com/repos/nemerosa/seed-demo/labels{/name}",
     "releases_url": "https://api.github.com/repos/nemerosa/seed-demo/releases{/id}",
     "created_at": 1421829970,
-    "updated_at": "2015-03-26T13:29:19Z",
-    "pushed_at": 1427376559,
+    "updated_at": "2015-03-26T20:49:15Z",
+    "pushed_at": 1427402954,
     "git_url": "git://github.com/nemerosa/seed-demo.git",
     "ssh_url": "git@github.com:nemerosa/seed-demo.git",
     "clone_url": "https://github.com/nemerosa/seed-demo.git",
