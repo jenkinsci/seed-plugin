@@ -88,13 +88,13 @@ public class GitHubEndPoint extends AbstractEndPoint {
 
         // HMac signature
         try {
-            Mac mac = Mac.getInstance("HmacMD5");
+            Mac mac = Mac.getInstance("HmacSHA1");
             mac.init(keySpec);
 
             byte[] rawHmac = mac.doFinal(payload.getBytes("UTF-8"));
 
             // HMac Hex signature
-            String hmac = Hex.encodeHexString(rawHmac);
+            String hmac = "sha1=" + Hex.encodeHexString(rawHmac);
 
             // Comparison
             if (!StringUtils.equals(hmac, ghSignature)) {

@@ -75,12 +75,34 @@ public class GitHubEndPointTest {
     }
 
     @Test
-    public void commit_event() throws IOException {
+    public void commit_event_without_signature() throws IOException {
         StaplerResponse response = mockStaplerResponse();
         // Request
         StaplerRequest request = mockGitHubRequest("push", "/github-payload-commit.json");
         // Service mock
         SeedService seedService = mock(SeedService.class);
+        // Call
+        new GitHubEndPoint(seedService).doDynamic(request, response);
+        // Verifying
+        verify(seedService, times(1)).post(
+                new SeedEvent(
+                        "nemerosa/seed-demo",
+                        "master",
+                        SeedEventType.COMMIT,
+                        SeedChannel.of("Seed GitHub end point"))
+                        .withParam("commit", "a10c3027a04ab066adc7a2a3d4735a7026fc1c59")
+        );
+    }
+
+    @Test
+    public void commit_event_with_signature() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockGitHubRequest("push", "/github-payload-commit.json");
+        when(request.getHeader("X-Hub-Signature")).thenReturn("sha1=0152b9c1b5171f7162fd98c45d81f37fdf03846c");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        when(seedService.getSecretKey("nemerosa/seed-demo")).thenReturn("ABCDEF123456");
         // Call
         new GitHubEndPoint(seedService).doDynamic(request, response);
         // Verifying
