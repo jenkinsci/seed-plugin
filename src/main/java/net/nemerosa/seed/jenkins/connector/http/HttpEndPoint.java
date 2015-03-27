@@ -4,6 +4,7 @@ import hudson.Extension;
 import hudson.model.UnprotectedRootAction;
 import net.nemerosa.seed.jenkins.SeedService;
 import net.nemerosa.seed.jenkins.connector.AbstractEndPoint;
+import net.nemerosa.seed.jenkins.connector.RequestNonAuthorizedException;
 import net.nemerosa.seed.jenkins.connector.UnknownRequestException;
 import net.nemerosa.seed.jenkins.model.SeedChannel;
 import net.nemerosa.seed.jenkins.model.SeedEvent;
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 public class HttpEndPoint extends AbstractEndPoint implements UnprotectedRootAction {
 
     private static final Logger LOGGER = Logger.getLogger(HttpEndPoint.class.getName());
+    public static final String X_SEED_TOKEN = "X-Seed-Token";
 
     public HttpEndPoint(SeedService seedService) {
         super(seedService);
@@ -54,9 +56,13 @@ public class HttpEndPoint extends AbstractEndPoint implements UnprotectedRootAct
         else {
             throw new UnknownRequestException("Unknown path: " + path);
         }
+        // Gets the project
+        String project = extractParameter(req, "project");
+        // Checks the token
+        checkToken(req, project);
         // Extracts the event
         SeedEvent event = new SeedEvent(
-                extractParameter(req, "project"),
+                project,
                 extractParameter(req, "branch"),
                 type,
                 SeedChannel.of("Seed HTTP end point")
@@ -70,6 +76,23 @@ public class HttpEndPoint extends AbstractEndPoint implements UnprotectedRootAct
         }
         // OK
         return event;
+    }
+
+    private void checkToken(StaplerRequest req, String project) {
+        // Gets the secret key for the project
+        String secretToken = seedService.getSecretKey(project, "http");
+        if (StringUtils.isBlank(secretToken)) {
+            return;
+        }
+
+        // Gets the token header
+        String reqToken = req.getHeader(X_SEED_TOKEN);
+
+        // Comparison
+        if (!StringUtils.equals(secretToken, reqToken)) {
+            throw new RequestNonAuthorizedException();
+        }
+
     }
 
 }
