@@ -54,17 +54,24 @@ public class SeedServiceImpl implements SeedService {
     }
 
     @Override
-    public String getSecretKey(String project) {
+    public String getSecretKey(String project, String context) {
+        // Property name
+        String property = String.format(
+                "%s-secret-key",
+                context
+        );
+        // Environment variable name
+        String env = property.replace("-", "_").toUpperCase();
         // Loads the configuration
         SeedConfiguration configuration = configurationLoader.load();
         // Loads the project's configuration
         SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(project);
         // Gets the secret key
         return Configuration.getValue(
-                "secret-key",
+                property,
                 configuration,
                 projectConfiguration,
-                System.getenv("SECRET_KEY")
+                System.getenv(env)
         );
     }
 

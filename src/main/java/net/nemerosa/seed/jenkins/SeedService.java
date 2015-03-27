@@ -9,5 +9,5 @@ public interface SeedService {
     /**
      * Gets the signature key for a given project
      */
-    String getSecretKey(String project);
+    String getSecretKey(String project, String context);
 }

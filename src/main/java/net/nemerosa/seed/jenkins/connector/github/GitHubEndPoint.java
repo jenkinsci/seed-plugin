@@ -75,7 +75,7 @@ public class GitHubEndPoint extends AbstractEndPoint {
 
     protected void checkSignature(StaplerRequest req, String payload, String project) throws UnsupportedEncodingException {
         // Gets the secret key for the project
-        String secretKey = seedService.getSecretKey(project);
+        String secretKey = seedService.getSecretKey(project, "github");
         if (StringUtils.isBlank(secretKey)) {
             return;
         }

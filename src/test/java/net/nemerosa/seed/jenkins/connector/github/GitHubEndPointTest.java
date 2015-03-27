@@ -102,7 +102,7 @@ public class GitHubEndPointTest {
         when(request.getHeader("X-Hub-Signature")).thenReturn("sha1=0152b9c1b5171f7162fd98c45d81f37fdf03846c");
         // Service mock
         SeedService seedService = mock(SeedService.class);
-        when(seedService.getSecretKey("nemerosa/seed-demo")).thenReturn("ABCDEF123456");
+        when(seedService.getSecretKey("nemerosa/seed-demo", "github")).thenReturn("ABCDEF123456");
         // Call
         new GitHubEndPoint(seedService).doDynamic(request, response);
         // Verifying
