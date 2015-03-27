@@ -24,10 +24,6 @@ public class SeedProjectConfiguration extends Configuration {
         return name;
     }
 
-    public String getBranchStrategy() {
-        return getString("branch-strategy", false, "seed");
-    }
-
     public static SeedProjectConfiguration of(String id) {
         return of(Collections.singletonMap("id", id));
     }

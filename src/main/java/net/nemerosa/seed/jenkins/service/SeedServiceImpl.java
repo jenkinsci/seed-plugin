@@ -46,7 +46,12 @@ public class SeedServiceImpl implements SeedService {
         SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(event.getProject());
         // Gets the branch strategy for the project
         BranchStrategy branchStrategy = branchStrategies.get(
-                projectConfiguration.getBranchStrategy(),
+                Configuration.getValue(
+                        "branch-strategy",
+                        projectConfiguration,
+                        configuration,
+                        "seed"
+                ),
                 configuration
         );
         // Dispatching

@@ -20,25 +20,13 @@ Whenever a branch is deleted in a project, the `branch-deletion` event is sent, 
 
 The _branch seed_ job is deleted. The associated pipeline is deleted or not according the configuration of the plug-in.
 
-Configuration parameters:
-
-* deletion of the branch pipeline on branch deletion
-
 ### Update of Seed files in a branch
 
 Whenever the Seed files are updated in a branch (files under the `/seed` folder), the _branch seed_ job is triggered, in order to regenerate the pipeline, if this configuration parameter is enabled.
 
-Configuration parameters:
-
-* branch pipeline regeneration on seed update
-
 ### Push on a branch
 
 Whenever some branch files are updated (outside of the Seed files), the branch pipeline start job is triggered.
-
-Configuration parameters:
-
-* branch pipeline trigger on update
 
 ## Configuration
 
