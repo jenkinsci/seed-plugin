@@ -143,4 +143,28 @@ strategies:
 For more complex strategies, you can always create a Jenkins plug-in which provides a
 [new branching strategy](extension/BranchingStrategy.md).
 
+### Project level parameters for the Seed branching strategy
+
+Those parameters can also be defined in the global configuration.
+
+* `pipeline-delete` - defaults to `yes` - defines if the whole pipeline is
+  deleted when a branch is deleted, or only its pipeline generator.
+* `pipeline-auto` - defaults to `yes` - defines if the pipeline must be
+automatically regenerated (by triggering the branch seed job) if a file
+changes in the `seed` folder
+* `pipeline-trigger` - defaults to `yes` - defines if the pipeline must
+be started in case of a commit
+* `seed` - default to `${project}/${project}-seed` - path to the job which
+generates a new branch pipeline seed. The `BRANCH` parameter
+contains the name of the branch to initialise.
+* `pipeline-seed` - default to `${project}/${project}-*/${project}-*-seed` -
+path to the job which is triggered to generate a new branch pipeline
+* `pipeline-start` - default to `${project}/${project}-*/${project}-*-build` -
+path to the job which is triggered to start a pipeline.
+* `pipeline-commit` - defaults to `COMMIT` - defines the name of the parameter
+to send to the pipeline start job to contain the commit or the revision to build
+
 ## Connectors
+
+* [HTTP API](connector/HTTP.md)
+* [GitHub Web hook](connector/GitHub.md)
