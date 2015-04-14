@@ -69,3 +69,14 @@ Those levels are hierarchical - the project configuration is taken in account fi
 The configuration is given using a YAML file, either entered directly in the Jenkins settings or referred to using an absolute path or a remote URL.
 
 The [format of the configuration](doc/Configuration.md) data is described in other page.
+
+## Seed job creation
+
+Several _root_ seed jobs can be created.
+
+1. Create a free style job
+1. Add a _Project seed_ build step
+1. The parameters of the project seed step can be filled either directly or by using the `${PARAM}` syntax
+
+A very basic seed job can be created by clicking in _Manage Jenkins > Create seed job_. 
+
