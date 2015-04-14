@@ -75,7 +75,7 @@ The [format of the configuration](doc/Configuration.md) data is described in oth
 Several _root_ seed jobs can be created.
 
 1. Create a free style job
-1. Add a _Project seed_ build step
+1. Add a _Project seed generator_ build step
 1. The parameters of the project seed step can be filled either directly or by using the `${PARAM}` syntax
 
 A very basic seed job can be created by clicking in _Manage Jenkins > Create seed job_. 
