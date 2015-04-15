@@ -6,6 +6,8 @@ import net.nemerosa.seed.jenkins.Constants;
 import net.nemerosa.seed.jenkins.SeedLauncher;
 import net.nemerosa.seed.jenkins.model.*;
 import net.nemerosa.seed.jenkins.strategy.AbstractBranchStrategy;
+import net.nemerosa.seed.jenkins.strategy.SeedNamingStrategy;
+import net.nemerosa.seed.jenkins.strategy.naming.DefaultSeedNamingStrategy;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collections;
@@ -13,7 +15,6 @@ import java.util.logging.Logger;
 
 import static java.lang.String.format;
 import static net.nemerosa.seed.jenkins.model.Configuration.normalise;
-import static net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.defaultName;
 
 @Extension
 public class SeedBranchStrategy extends AbstractBranchStrategy {
@@ -27,6 +28,16 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     public static final String PIPELINE_AUTO = "pipeline-auto";
     public static final String PIPELINE_TRIGGER = "pipeline-trigger";
     public static final String PIPELINE_COMMIT = "pipeline-commit";
+
+    private final SeedNamingStrategy seedNamingStrategy;
+
+    public SeedBranchStrategy() {
+        this(new DefaultSeedNamingStrategy());
+    }
+
+    protected SeedBranchStrategy(SeedNamingStrategy seedNamingStrategy) {
+        this.seedNamingStrategy = seedNamingStrategy;
+    }
 
     @Override
     public String getId() {
@@ -95,7 +106,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
         return "COMMIT";
     }
 
-    protected void create(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
+    protected void create(SeedEvent event, SeedLauncher seedLauncher, @SuppressWarnings("UnusedParameters") SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
         LOGGER.finer(format("New branch %s for project %s - creating a new pipeline", event.getBranch(), event.getProject()));
         // Gets the path to the branch seed job
         String path = projectConfiguration.getString(
@@ -150,14 +161,14 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     }
 
     protected String defaultSeed(String id) {
-        return format("%1$s/%1$s-seed", defaultName(id));
+        return seedNamingStrategy.getProjectSeed(id);
     }
 
     protected String defaultBranchSeed(String id) {
-        return format("%1$s/%1$s-*/%1$s-*-seed", defaultName(id));
+        return seedNamingStrategy.getBranchSeed(id);
     }
 
     protected String defaultBranchStart(String id) {
-        return format("%1$s/%1$s-*/%1$s-*-build", defaultName(id));
+        return seedNamingStrategy.getBranchStart(id);
     }
 }
