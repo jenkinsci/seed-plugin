@@ -1,8 +1,29 @@
 Seed Jenkins plug-in
 ====================
 
-This plug-in interacts with a Jenkins instance in order to pilot [Seed](https://github.com/nemerosa/seed) jobs
-when some events are received.
+The Seed project aims to help automating the generation of pipelines
+for branches of a project in Jenkins.
+
+Its behaviour is illustrated by the diagram below:
+
+```
+seed*
+project/
+   project-seed*
+   branch-x/
+      branch-x-seed*
+      (branch-x-pipeline-jobs*)
+```
+
+* having an initial _Seed_ job to generate/update _Project seed_ jobs
+* each project is hold in its own [folder](https://wiki.jenkins-ci.org/display/JENKINS/CloudBees+Folders+Plugin)
+* the _Project seed_ job is used to generate/update one _Branch seed_ job for a given branch
+* each branch is hold in its own [folder](https://wiki.jenkins-ci.org/display/JENKINS/CloudBees+Folders+Plugin)
+* the _Branch seed_ job is used to generate/update the pipeline for the branch
+
+Those jobs can be triggered automatically when some _events_ are received on some _connectors_.
+
+Note that the names and contents of the different levels of seed jobs can be configured to suit your needs.
 
 ## Events
 
@@ -28,6 +49,13 @@ Whenever the Seed files are updated in a branch (files under the `/seed` folder)
 
 Whenever some branch files are updated (outside of the Seed files), the branch pipeline start job is triggered.
 
+## Connectors
+
+The way to send events to the Seed Jenkins plug-in can done using _connectors_.
+
+* [HTTP API](doc/connector/HTTP.md)
+* [GitHub Web hook](doc/connector/GitHub.md)
+
 ## Configuration
 
 The configuration of the plug-in has three levels:
@@ -42,9 +70,13 @@ The configuration is given using a YAML file, either entered directly in the Jen
 
 The [format of the configuration](doc/Configuration.md) data is described in other page.
 
-## Connectors
+## Seed job creation
 
-The way to send events to the Seed Jenkins plug-in can done using _connectors_.
+Several _root_ seed jobs can be created.
 
-* [HTTP API](doc/connector/HTTP.md)
-* [GitHub Web hook](doc/connector/GitHub.md)
+1. Create a free style job
+1. Add a _Project seed generator_ build step
+1. The parameters of the project seed step can be filled either directly or by using the `${PARAM}` syntax
+
+A very basic seed job can be created by clicking in _Manage Jenkins > Create seed job_. 
+

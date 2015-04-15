@@ -44,6 +44,12 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.15</version>
         </dependency>
+        <!-- Groovy -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.8.9</version>
+        </dependency>
         <!-- Plugin dependencies -->
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -54,6 +60,16 @@
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>cloudbees-folder</artifactId>
             <version>4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>job-dsl</artifactId>
+            <version>1.32</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>job-dsl-core</artifactId>
+            <version>1.32</version>
         </dependency>
     </dependencies>
 
