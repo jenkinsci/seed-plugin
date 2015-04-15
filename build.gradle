@@ -32,8 +32,10 @@ jenkinsPlugin {
 dependencies {
     compile 'org.yaml:snakeyaml:1.15'
 
-    jenkinsPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26'
-    jenkinsPlugins 'org.jenkins-ci.plugins:cloudbees-folder:4.7'
+    jenkinsPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26@jar'
+    jenkinsPlugins 'org.jenkins-ci.plugins:cloudbees-folder:4.7@jar'
+    jenkinsPlugins 'org.jenkins-ci.plugins:job-dsl:1.32@jar'
+    compile 'org.jenkins-ci.plugins:job-dsl-core:1.32@jar'
 
     testCompile 'org.mockito:mockito-core:1.9.5'
 }
