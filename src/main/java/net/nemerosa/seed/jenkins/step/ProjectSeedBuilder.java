@@ -6,6 +6,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Descriptor;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import javaposse.jobdsl.dsl.*;
@@ -33,6 +34,11 @@ public class ProjectSeedBuilder extends Builder {
         this.project = project;
         this.projectScmType = projectScmType;
         this.projectScmUrl = projectScmUrl;
+    }
+
+    @Override
+    public Descriptor<Builder> getDescriptor() {
+        return DESCRIPTOR;
     }
 
     public String getProject() {
@@ -97,8 +103,10 @@ public class ProjectSeedBuilder extends Builder {
         return true;
     }
 
+    public static final ProjectSeedBuilderDescriptor DESCRIPTOR = new ProjectSeedBuilderDescriptor();
+
     @Extension
-    public static class OntrackDSLStepDescription extends BuildStepDescriptor<Builder> {
+    public static class ProjectSeedBuilderDescriptor extends BuildStepDescriptor<Builder> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
