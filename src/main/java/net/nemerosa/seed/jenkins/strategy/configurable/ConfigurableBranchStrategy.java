@@ -11,6 +11,7 @@ public class ConfigurableBranchStrategy extends SeedBranchStrategy {
     private final ConfigurableBranchStrategyConfiguration configuration;
 
     public ConfigurableBranchStrategy(ConfigurableBranchStrategyConfiguration configuration) {
+        super();
         this.configuration = configuration;
     }
 

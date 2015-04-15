@@ -6,6 +6,8 @@ import net.nemerosa.seed.jenkins.Constants;
 import net.nemerosa.seed.jenkins.SeedLauncher;
 import net.nemerosa.seed.jenkins.model.*;
 import net.nemerosa.seed.jenkins.strategy.AbstractBranchStrategy;
+import net.nemerosa.seed.jenkins.strategy.SeedNamingStrategy;
+import net.nemerosa.seed.jenkins.strategy.naming.DefaultSeedNamingStrategy;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collections;
@@ -27,6 +29,16 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     public static final String PIPELINE_AUTO = "pipeline-auto";
     public static final String PIPELINE_TRIGGER = "pipeline-trigger";
     public static final String PIPELINE_COMMIT = "pipeline-commit";
+
+    private final SeedNamingStrategy seedNamingStrategy;
+
+    public SeedBranchStrategy() {
+        this(new DefaultSeedNamingStrategy());
+    }
+
+    public SeedBranchStrategy(SeedNamingStrategy seedNamingStrategy) {
+        this.seedNamingStrategy = seedNamingStrategy;
+    }
 
     @Override
     public String getId() {
