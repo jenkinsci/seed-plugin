@@ -9,6 +9,7 @@ import net.nemerosa.seed.jenkins.model.SeedEvent;
 import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
+import net.nemerosa.seed.jenkins.strategy.BranchStrategyHelper;
 
 import javax.inject.Inject;
 import java.util.logging.Level;
@@ -44,15 +45,11 @@ public class SeedServiceImpl implements SeedService {
         SeedConfiguration configuration = configurationLoader.load();
         // Loads the project's configuration
         SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(event.getProject());
-        // Gets the branch strategy for the project
-        BranchStrategy branchStrategy = branchStrategies.get(
-                Configuration.getValue(
-                        "branch-strategy",
-                        projectConfiguration,
-                        configuration,
-                        "seed"
-                ),
-                configuration
+        // Gets the branch strategy
+        BranchStrategy branchStrategy = BranchStrategyHelper.getBranchStrategy(
+                configuration,
+                projectConfiguration,
+                branchStrategies
         );
         // Dispatching
         branchStrategy.post(event, seedLauncher, configuration, projectConfiguration);
