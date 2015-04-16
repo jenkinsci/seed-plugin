@@ -45,6 +45,11 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     }
 
     @Override
+    public SeedNamingStrategy getSeedNamingStrategy() {
+        return seedNamingStrategy;
+    }
+
+    @Override
     public void post(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
         switch (event.getType()) {
             case CREATION:

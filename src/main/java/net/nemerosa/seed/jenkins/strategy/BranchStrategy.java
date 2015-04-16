@@ -13,6 +13,19 @@ public interface BranchStrategy extends ExtensionPoint {
      */
     String getId();
 
+    /**
+     * Gets the associated naming strategy.
+     */
+    SeedNamingStrategy getSeedNamingStrategy();
+
+    /**
+     * Resolving an event for this branching strategy.
+     *
+     * @param event                Event to post
+     * @param seedLauncher         Connection with the seed jobs
+     * @param configuration        Global configuration
+     * @param projectConfiguration Specific project configuration
+     */
     void post(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration);
 
 }
