@@ -1,6 +1,10 @@
 package net.nemerosa.seed.jenkins.step;
 
-import hudson.model.*;
+import com.cloudbees.hudson.plugins.folder.Folder;
+import hudson.model.Cause;
+import hudson.model.FreeStyleBuild;
+import hudson.model.FreeStyleProject;
+import hudson.model.Result;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,7 +27,7 @@ public class ProjectSeedBuilderTest {
     public JenkinsRule j = new JenkinsRule();
 
     @Test
-    // @WithPlugin("cloudbees-folder.jpi")
+    @WithPlugin("cloudbees-folder.hpi")
     public void seed_generation() throws Exception {
         FreeStyleProject project = j.getInstance().createProject(FreeStyleProject.class, "seed");
         project.getBuildersList().add(new ProjectSeedBuilder(
@@ -35,10 +39,15 @@ public class ProjectSeedBuilderTest {
         FreeStyleBuild build = future.get(10, TimeUnit.SECONDS);
         j.assertBuildStatus(Result.SUCCESS, build);
 
-        // Gets the created job
-        TopLevelItem item = j.getInstance().getItem("my_project");
-        assertNotNull(item);
-        assertEquals("my_project", item.getName());
+        // Gets the created folder
+        Folder folder = (Folder) j.getInstance().getItem("my_project");
+        assertNotNull(folder);
+        assertEquals("my_project", folder.getName());
+
+        // Gets the created project seed
+        FreeStyleProject projectSeed = (FreeStyleProject) folder.getItem("my_project-seed");
+        assertNotNull(projectSeed);
     }
 
 }
+
