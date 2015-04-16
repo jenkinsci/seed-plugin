@@ -23,7 +23,7 @@ public class ProjectSeedBuilderTest {
     public JenkinsRule j = new JenkinsRule();
 
     @Test
-    @WithPlugin("cloudbees-folder.jpi")
+    // @WithPlugin("cloudbees-folder.jpi")
     public void seed_generation() throws Exception {
         FreeStyleProject project = j.getInstance().createProject(FreeStyleProject.class, "seed");
         project.getBuildersList().add(new ProjectSeedBuilder(
