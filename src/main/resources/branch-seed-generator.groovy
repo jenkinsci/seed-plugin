@@ -1,3 +1,4 @@
+import net.nemerosa.seed.jenkins.scm.SCMHelper
 import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper
 import net.nemerosa.seed.jenkins.support.SeedDSLHelper
 
@@ -10,7 +11,6 @@ import net.nemerosa.seed.jenkins.support.SeedDSLHelper
  * - PROJECT_SCM_TYPE
  * - PROJECT_SCM_URL
  * - BRANCH
- * - TODO SCM parameters for the branch
  */
 
 def namingStrategy = SeedDSLHelper.getSeedNamingStrategy(PROJECT as String)
@@ -27,4 +27,7 @@ folder(SeedNamingStrategyHelper.getBranchSeedFolder(namingStrategy, PROJECT as S
 
 freeStyleJob(namingStrategy.getBranchSeed(PROJECT as String, BRANCH as String)) {
     description "Branch seed for ${BRANCH} in ${PROJECT} - generates the pipeline for the ${BRANCH} branch."
+    scm {
+        SCMHelper.downloadPartial(delegate, PROJECT_SCM_TYPE, PROJECT_SCM_URL, BRANCH, 'seed')
+    }
 }

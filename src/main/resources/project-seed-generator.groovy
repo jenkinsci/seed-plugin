@@ -20,8 +20,7 @@ folder(SeedNamingStrategyHelper.getProjectSeedFolder(namingStrategy, PROJECT as 
 freeStyleJob(namingStrategy.getProjectSeed(PROJECT as String)) {
     description "Project seed for ${PROJECT} - generates one branch folder and seed."
     parameters {
-        stringParam('BRANCH', '', 'Name of the branch, used as identifier')
-        // TODO Additional parameters, like the SCM branch is requested by the project
+        stringParam('BRANCH', '', 'Path to the branch')
     }
     wrappers {
         environmentVariables {
