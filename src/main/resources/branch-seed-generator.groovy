@@ -28,6 +28,6 @@ folder(SeedNamingStrategyHelper.getBranchSeedFolder(namingStrategy, PROJECT as S
 freeStyleJob(namingStrategy.getBranchSeed(PROJECT as String, BRANCH as String)) {
     description "Branch seed for ${BRANCH} in ${PROJECT} - generates the pipeline for the ${BRANCH} branch."
     scm {
-        SCMHelper.downloadPartial(delegate, PROJECT_SCM_TYPE, PROJECT_SCM_URL, BRANCH, 'seed')
+        SCMHelper.downloadPartial(delegate, PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String, BRANCH as String, 'seed')
     }
 }
