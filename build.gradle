@@ -8,10 +8,14 @@ buildscript {
     }
 }
 
+plugins {
+    id 'net.nemerosa.versioning' version '1.4.0'
+}
+
 apply plugin: 'org.jenkins-ci.jpi'
 
 group = 'org.jenkins-ci.plugins'
-version = '0.0.1-SNAPSHOT'    // TODO Use the versioning plug-in
+version = versioning.info.full
 description = "Seed Jenkins plug-in"
 
 jenkinsPlugin {
