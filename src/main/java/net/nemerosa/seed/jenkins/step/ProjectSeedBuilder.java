@@ -14,7 +14,7 @@ import javaposse.jobdsl.plugin.JenkinsJobManagement;
 import javaposse.jobdsl.plugin.LookupStrategy;
 import javaposse.jobdsl.plugin.ScriptRequestGenerator;
 import jenkins.model.Jenkins;
-import org.apache.commons.io.IOUtils;
+import net.nemerosa.seed.jenkins.support.SeedDSLHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -71,7 +71,7 @@ public class ProjectSeedBuilder extends Builder {
         env.put("PROJECT_SCM_URL", theProjectScmUrl);
 
         // Project seed generation script
-        String script = IOUtils.toString(getClass().getResource("/project-seed-generator.groovy"));
+        String script = SeedDSLHelper.getResourceAsText("/project-seed-generator.groovy");
 
         // Jobs are created at the Jenkins root level
         JenkinsJobManagement jm = new JenkinsJobManagement(listener.getLogger(), env, build, LookupStrategy.JENKINS_ROOT);

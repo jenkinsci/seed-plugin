@@ -7,6 +7,8 @@ import net.nemerosa.seed.jenkins.support.SeedDSLHelper
  * Parameters are:
  *
  * - PROJECT - Name (identifier) of the project
+ * - PROJECT_SCM_TYPE
+ * - PROJECT_SCM_URL
  */
 
 def namingStrategy = SeedDSLHelper.getSeedNamingStrategy(PROJECT as String)
@@ -16,5 +18,27 @@ folder(SeedNamingStrategyHelper.getProjectSeedFolder(namingStrategy, PROJECT as 
 }
 
 freeStyleJob(namingStrategy.getProjectSeed(PROJECT as String)) {
-    description "Project seed for ${PROJECT}"
+    description "Project seed for ${PROJECT} - generates one branch folder and seed."
+    parameters {
+        stringParam('BRANCH', '', 'Name of the branch, used as identifier')
+        // TODO Additional parameters, like the SCM branch is requested by the project
+    }
+    wrappers {
+        environmentVariables {
+            env('PROJECT', PROJECT)
+            env('PROJECT_SCM_TYPE', PROJECT_SCM_TYPE)
+            env('PROJECT_SCM_URL', PROJECT_SCM_URL)
+        }
+    }
+    scm {
+        // TODO Download of the branch code? Might not be needed at this stage
+    }
+    steps {
+        // TODO Generates the branch folder and seed job
+        dsl {
+            removeAction 'IGNORE' // Existing branches are kept of course
+            text SeedDSLHelper.getResourceAsText('/branch-seed-generator.groovy')
+            ignoreExisting false  // Always update
+        }
+    }
 }
