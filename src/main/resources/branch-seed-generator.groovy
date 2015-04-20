@@ -14,19 +14,19 @@ import net.nemerosa.seed.jenkins.support.SeedDSLHelper
  * - BRANCH
  */
 
-def namingStrategy = SeedDSLHelper.getSeedNamingStrategy(PROJECT as String, PROJECT_CLASS as String)
+def projectHelper = SeedDSLHelper.getProjectHelper(PROJECT as String, PROJECT_CLASS as String)
 
 /**
  * Branch folder
  */
 
-folder(SeedNamingStrategyHelper.getBranchSeedFolder(namingStrategy, PROJECT as String, BRANCH as String)) {}
+folder(SeedNamingStrategyHelper.getBranchSeedFolder(projectHelper.namingStrategy, PROJECT as String, BRANCH as String)) {}
 
 /**
  * Branch seed
  */
 
-freeStyleJob(namingStrategy.getBranchSeed(PROJECT as String, BRANCH as String)) {
+freeStyleJob(projectHelper.namingStrategy.getBranchSeed(PROJECT as String, BRANCH as String)) {
     description "Branch seed for ${BRANCH} in ${PROJECT} - generates the pipeline for the ${BRANCH} branch."
     scm {
         SCMHelper.downloadPartial(delegate, PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String, BRANCH as String, 'seed')

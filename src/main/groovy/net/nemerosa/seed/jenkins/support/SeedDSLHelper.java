@@ -20,13 +20,19 @@ public final class SeedDSLHelper {
     private static final JenkinsBranchStrategies branchStrategies = new JenkinsBranchStrategies();
 
     /**
-     * Gets the naming strategy for a project
+     * Gets the configuration for a project
      */
-    public static SeedNamingStrategy getSeedNamingStrategy(String project, String projectClass) {
+    public static SeedProjectHelper getProjectHelper(String project, String projectClass) {
         SeedConfiguration configuration = configurationLoader.load();
         SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(project, projectClass);
         BranchStrategy branchStrategy = BranchStrategyHelper.getBranchStrategy(configuration, projectConfiguration, branchStrategies);
-        return branchStrategy.getSeedNamingStrategy();
+        SeedNamingStrategy namingStrategy = branchStrategy.getSeedNamingStrategy();
+        return new SeedProjectHelper(
+                configuration,
+                projectConfiguration,
+                branchStrategy,
+                namingStrategy
+        );
     }
 
     /**
