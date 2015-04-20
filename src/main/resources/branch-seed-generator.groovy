@@ -20,3 +20,11 @@ def namingStrategy = SeedDSLHelper.getSeedNamingStrategy(PROJECT as String)
  */
 
 folder(SeedNamingStrategyHelper.getBranchSeedFolder(namingStrategy, PROJECT as String, BRANCH as String)) {}
+
+/**
+ * Branch seed
+ */
+
+freeStyleJob(namingStrategy.getBranchSeed(PROJECT as String, BRANCH as String)) {
+    description "Branch seed for ${BRANCH} in ${PROJECT} - generates the pipeline for the ${BRANCH} branch."
+}

@@ -22,6 +22,15 @@ public interface SeedNamingStrategy {
     String getBranchSeed(String id);
 
     /**
+     * Gets the expanded path to a project's branch seed, given the project ID and the branch name
+     *
+     * @param project Project's ID
+     * @param branch  Branch
+     * @return Path to a project's branch seed
+     */
+    String getBranchSeed(String project, String branch);
+
+    /**
      * Gets the path pattern to a project's branch start job, given the project ID
      *
      * @param id Project's ID

@@ -5,6 +5,14 @@ import net.nemerosa.seed.jenkins.strategy.SeedNamingStrategy;
 
 public abstract class AbstractSeedNamingStrategy implements SeedNamingStrategy {
 
+    @Override
+    public String getBranchSeed(String project, String branch) {
+        return SeedNamingStrategyHelper.getBranchPath(
+                getBranchSeed(project),
+                getBranchName(branch)
+        );
+    }
+
     /**
      * By default, replaces all special characters by "-"
      */
@@ -12,5 +20,5 @@ public abstract class AbstractSeedNamingStrategy implements SeedNamingStrategy {
     public String getBranchName(String branch) {
         return Configuration.normalise(branch);
     }
-    
+
 }

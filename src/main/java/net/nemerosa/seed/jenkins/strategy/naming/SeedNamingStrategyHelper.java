@@ -13,12 +13,7 @@ public final class SeedNamingStrategyHelper {
     }
 
     public static String getBranchSeedFolder(SeedNamingStrategy seedNamingStrategy, String project, String branch) {
-        return getBranchPath(
-                getFolder(
-                        seedNamingStrategy.getBranchSeed(project)
-                ),
-                seedNamingStrategy.getBranchName(branch)
-        );
+        return getFolder(seedNamingStrategy.getBranchSeed(project, branch));
     }
 
     public static String getBranchPath(String path, String pathBranchName) {
