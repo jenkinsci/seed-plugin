@@ -40,4 +40,11 @@ freeStyleJob(projectHelper.namingStrategy.getBranchSeed(PROJECT as String, BRANC
     scm {
         SCMHelper.downloadPartial(delegate, projectHelper.projectConfiguration, PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String, BRANCH as String, 'seed')
     }
+    steps {
+        dsl {
+            removeAction 'DELETE'        // Jobs no longer in the pipeline definition are removed
+            external 'seed/seed.groovy'  // seed.groovy provided by the branch itself
+            ignoreExisting false         // Always update
+        }
+    }
 }

@@ -35,7 +35,7 @@ freeStyleJob(projectHelper.namingStrategy.getProjectSeed(PROJECT as String)) {
         // TODO Download of the branch code? Might not be needed at this stage
     }
     steps {
-        // TODO Generates the branch folder and seed job
+        // Generates the branch folder and seed job
         dsl {
             removeAction 'IGNORE' // Existing branches are kept of course
             text SeedDSLHelper.getResourceAsText('/branch-seed-generator.groovy')
