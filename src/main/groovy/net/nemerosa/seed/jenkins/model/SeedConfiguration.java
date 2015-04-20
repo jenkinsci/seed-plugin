@@ -88,7 +88,7 @@ public class SeedConfiguration extends Configuration {
     public SeedProjectConfiguration getProjectConfiguration(String id, String projectClass) {
         SeedProjectConfiguration projectCfg = getProjectConfiguration(id);
         if (StringUtils.isNotBlank(projectClass)) {
-            SeedProjectConfiguration projectClassCfg = classes.get(projectClass);
+            SeedProjectConfiguration projectClassCfg = getProjectClassConfiguration(projectClass);
             if (projectClassCfg != null) {
                 return projectClassCfg.merge(projectCfg);
             } else {
@@ -97,6 +97,20 @@ public class SeedConfiguration extends Configuration {
         } else {
             return projectCfg;
         }
+    }
+
+    private SeedProjectConfiguration getProjectClassConfiguration(String projectClass) {
+        SeedProjectConfiguration cfg = classes.get(projectClass);
+        if (cfg != null) {
+            String cfgClass = cfg.getProjectClass();
+            if (StringUtils.isNotBlank(cfgClass)) {
+                SeedProjectConfiguration cfgParent = getProjectClassConfiguration(cfgClass);
+                if (cfgParent != null) {
+                    cfg = cfgParent.merge(cfg);
+                }
+            }
+        }
+        return cfg;
     }
 
     public Map<String, ConfigurableBranchStrategyConfiguration> getConfigurableBranchStrategyConfigurations() {

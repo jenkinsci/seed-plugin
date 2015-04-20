@@ -43,4 +43,8 @@ public class SeedProjectConfiguration extends Configuration {
     public SeedProjectConfiguration merge(SeedProjectConfiguration cfg) {
         return new SeedProjectConfiguration(mergeData(cfg));
     }
+
+    public String getProjectClass() {
+        return getString("project-class", false, null);
+    }
 }
