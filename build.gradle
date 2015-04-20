@@ -34,6 +34,14 @@ jenkinsPlugin {
     }
 }
 
+// Joint compilation (Java + Groovy)
+sourceSets {
+    main {
+        java { srcDirs = [] }
+        groovy { srcDir "src/main/groovy" }
+    }
+}
+
 dependencies {
     compile 'org.yaml:snakeyaml:1.15'
 
