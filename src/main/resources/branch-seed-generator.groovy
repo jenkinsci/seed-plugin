@@ -8,12 +8,13 @@ import net.nemerosa.seed.jenkins.support.SeedDSLHelper
  * Parameters are:
  *
  * - PROJECT - Name (identifier) of the project
+ * - PROJECT_CLASS - Class of project
  * - PROJECT_SCM_TYPE
  * - PROJECT_SCM_URL
  * - BRANCH
  */
 
-def namingStrategy = SeedDSLHelper.getSeedNamingStrategy(PROJECT as String)
+def namingStrategy = SeedDSLHelper.getSeedNamingStrategy(PROJECT as String, PROJECT_CLASS as String)
 
 /**
  * Branch folder
