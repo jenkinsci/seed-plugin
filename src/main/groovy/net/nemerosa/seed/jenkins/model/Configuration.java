@@ -2,10 +2,7 @@ package net.nemerosa.seed.jenkins.model;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Configuration {
 
@@ -17,6 +14,12 @@ public class Configuration {
 
     public Configuration(Map<String, ?> data) {
         this.data = data;
+    }
+
+    protected Map<String, ?> mergeData(Configuration cfg) {
+        Map<String, Object> result = new HashMap<>(data);
+        result.putAll(cfg.data);
+        return result;
     }
 
     public String getString(String name) {

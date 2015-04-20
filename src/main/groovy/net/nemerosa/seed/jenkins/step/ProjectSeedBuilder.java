@@ -26,12 +26,14 @@ import java.util.Set;
 public class ProjectSeedBuilder extends Builder {
 
     private final String project;
+    private final String projectClass;
     private final String projectScmType;
     private final String projectScmUrl;
 
     @DataBoundConstructor
-    public ProjectSeedBuilder(String project, String projectScmType, String projectScmUrl) {
+    public ProjectSeedBuilder(String project, String projectClass, String projectScmType, String projectScmUrl) {
         this.project = project;
+        this.projectClass = projectClass;
         this.projectScmType = projectScmType;
         this.projectScmUrl = projectScmUrl;
     }
@@ -43,6 +45,10 @@ public class ProjectSeedBuilder extends Builder {
 
     public String getProject() {
         return project;
+    }
+
+    public String getProjectClass() {
+        return projectClass;
     }
 
     public String getProjectScmType() {
@@ -62,11 +68,13 @@ public class ProjectSeedBuilder extends Builder {
 
         // Gets actual properties
         String theProject = env.expand(project);
+        String theProjectClass = env.expand(projectClass);
         String theProjectScmType = env.expand(projectScmType);
         String theProjectScmUrl = env.expand(projectScmUrl);
 
         // Adds to the environment
         env.put("PROJECT", theProject);
+        env.put("PROJECT_CLASS", theProjectClass);
         env.put("PROJECT_SCM_TYPE", theProjectScmType);
         env.put("PROJECT_SCM_URL", theProjectScmUrl);
 

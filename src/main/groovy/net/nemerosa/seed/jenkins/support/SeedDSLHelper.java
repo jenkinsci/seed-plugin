@@ -22,9 +22,9 @@ public final class SeedDSLHelper {
     /**
      * Gets the naming strategy for a project
      */
-    public static SeedNamingStrategy getSeedNamingStrategy(String project) {
+    public static SeedNamingStrategy getSeedNamingStrategy(String project, String projectClass) {
         SeedConfiguration configuration = configurationLoader.load();
-        SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(project);
+        SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(project, projectClass);
         BranchStrategy branchStrategy = BranchStrategyHelper.getBranchStrategy(configuration, projectConfiguration, branchStrategies);
         return branchStrategy.getSeedNamingStrategy();
     }

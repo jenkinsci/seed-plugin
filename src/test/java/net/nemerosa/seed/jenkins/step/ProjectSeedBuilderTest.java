@@ -8,7 +8,6 @@ import hudson.model.Result;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.recipes.WithPlugin;
 
@@ -33,6 +32,7 @@ public class ProjectSeedBuilderTest {
         FreeStyleProject project = j.getInstance().createProject(FreeStyleProject.class, "seed");
         project.getBuildersList().add(new ProjectSeedBuilder(
                 "my_project",
+                "",
                 "test",
                 "/seed/sample"
         ));

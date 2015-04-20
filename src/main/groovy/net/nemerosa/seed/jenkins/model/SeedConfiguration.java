@@ -12,6 +12,7 @@ import java.util.Map;
 public class SeedConfiguration extends Configuration {
 
     private final Map<String, SeedProjectConfiguration> projects;
+    private final Map<String, SeedProjectConfiguration> classes;
     private final Map<String, ConfigurableBranchStrategyConfiguration> configurableBranchStrategyConfigurations;
 
     public SeedConfiguration(Map<String, ?> data) {
@@ -19,6 +20,23 @@ public class SeedConfiguration extends Configuration {
         this.projects = Maps.uniqueIndex(
                 Lists.transform(
                         getList("projects"),
+                        new Function<Map<String, ?>, SeedProjectConfiguration>() {
+                            @Override
+                            public SeedProjectConfiguration apply(Map<String, ?> input) {
+                                return SeedProjectConfiguration.of(input);
+                            }
+                        }
+                ),
+                new Function<SeedProjectConfiguration, String>() {
+                    @Override
+                    public String apply(SeedProjectConfiguration input) {
+                        return input.getId();
+                    }
+                }
+        );
+        this.classes = Maps.uniqueIndex(
+                Lists.transform(
+                        getList("classes"),
                         new Function<Map<String, ?>, SeedProjectConfiguration>() {
                             @Override
                             public SeedProjectConfiguration apply(Map<String, ?> input) {
@@ -64,6 +82,20 @@ public class SeedConfiguration extends Configuration {
             return SeedProjectConfiguration.of(id);
         } else {
             throw new ProjectNotConfiguredException(id);
+        }
+    }
+
+    public SeedProjectConfiguration getProjectConfiguration(String id, String projectClass) {
+        SeedProjectConfiguration projectCfg = getProjectConfiguration(id);
+        if (StringUtils.isNotBlank(projectClass)) {
+            SeedProjectConfiguration projectClassCfg = classes.get(projectClass);
+            if (projectClassCfg != null) {
+                return projectClassCfg.merge(projectCfg);
+            } else {
+                return projectCfg;
+            }
+        } else {
+            return projectCfg;
         }
     }
 

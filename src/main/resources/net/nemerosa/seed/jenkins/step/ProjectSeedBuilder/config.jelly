@@ -2,6 +2,9 @@
     <f:entry title="Project identifier" field="project">
         <f:textbox/>
     </f:entry>
+    <f:entry title="Project class (optional)" field="projectClass">
+        <f:textbox/>
+    </f:entry>
     <f:entry title="Project SCM type" field="projectScmType">
         <f:textbox/>
     </f:entry>

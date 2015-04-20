@@ -40,4 +40,7 @@ public class SeedProjectConfiguration extends Configuration {
         }
     }
 
+    public SeedProjectConfiguration merge(SeedProjectConfiguration cfg) {
+        return new SeedProjectConfiguration(mergeData(cfg));
+    }
 }
