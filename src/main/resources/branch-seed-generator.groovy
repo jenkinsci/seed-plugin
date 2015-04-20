@@ -43,6 +43,7 @@ freeStyleJob(projectHelper.namingStrategy.getBranchSeed(PROJECT as String, BRANC
     steps {
         dsl {
             removeAction 'DELETE'        // Jobs no longer in the pipeline definition are removed
+            // TODO Direct seed/groovy, or external script + seed.properties, or other?
             external 'seed/seed.groovy'  // seed.groovy provided by the branch itself
             ignoreExisting false         // Always update
         }

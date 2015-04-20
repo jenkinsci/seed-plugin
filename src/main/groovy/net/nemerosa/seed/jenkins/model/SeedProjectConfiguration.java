@@ -44,6 +44,7 @@ public class SeedProjectConfiguration extends Configuration {
         return new SeedProjectConfiguration(mergeData(cfg));
     }
 
+    // TODO Allows several classes + detect cycles
     public String getProjectClass() {
         return getString("project-class", false, null);
     }
