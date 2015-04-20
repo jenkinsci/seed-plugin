@@ -26,6 +26,7 @@ freeStyleJob(projectHelper.namingStrategy.getProjectSeed(PROJECT as String)) {
     wrappers {
         environmentVariables {
             env('PROJECT', PROJECT)
+            env('PROJECT_CLASS', PROJECT_CLASS)
             env('PROJECT_SCM_TYPE', PROJECT_SCM_TYPE)
             env('PROJECT_SCM_URL', PROJECT_SCM_URL)
         }
