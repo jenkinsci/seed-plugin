@@ -8,13 +8,13 @@ import net.nemerosa.seed.jenkins.model.*;
 import net.nemerosa.seed.jenkins.strategy.AbstractBranchStrategy;
 import net.nemerosa.seed.jenkins.strategy.SeedNamingStrategy;
 import net.nemerosa.seed.jenkins.strategy.naming.DefaultSeedNamingStrategy;
+import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collections;
 import java.util.logging.Logger;
 
 import static java.lang.String.format;
-import static net.nemerosa.seed.jenkins.model.Configuration.normalise;
 
 @Extension
 public class SeedBranchStrategy extends AbstractBranchStrategy {
@@ -146,23 +146,29 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     }
 
     protected String getBranchSeedPath(SeedProjectConfiguration projectConfiguration, String branch) {
-        return projectConfiguration.getString(
-                PIPELINE_SEED,
-                false,
-                defaultBranchSeed(projectConfiguration.getId())
-        ).replace("*", getBranchName(branch));
+        return SeedNamingStrategyHelper.getBranchPath(
+                projectConfiguration.getString(
+                        PIPELINE_SEED,
+                        false,
+                        defaultBranchSeed(projectConfiguration.getId())
+                ),
+                getBranchName(branch)
+        );
     }
 
     protected String getBranchStartPath(SeedProjectConfiguration projectConfiguration, String branch) {
-        return projectConfiguration.getString(
-                PIPELINE_START,
-                false,
-                defaultBranchStart(projectConfiguration.getId())
-        ).replace("*", getBranchName(branch));
+        return SeedNamingStrategyHelper.getBranchPath(
+                projectConfiguration.getString(
+                        PIPELINE_START,
+                        false,
+                        defaultBranchStart(projectConfiguration.getId())
+                ),
+                getBranchName(branch)
+        );
     }
 
     protected String getBranchName(String branch) {
-        return normalise(branch);
+        return seedNamingStrategy.getBranchName(branch);
     }
 
     protected String defaultSeed(String id) {

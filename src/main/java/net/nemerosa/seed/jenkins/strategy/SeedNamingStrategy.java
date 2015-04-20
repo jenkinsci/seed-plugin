@@ -29,4 +29,11 @@ public interface SeedNamingStrategy {
      */
     String getBranchStart(String id);
 
+    /**
+     * Gets a name useable for a branch in path pattern.
+     *
+     * @param branch Branch as given by the project seed job or by the connectors.
+     * @return Branch path fragment
+     */
+    String getBranchName(String branch);
 }

@@ -1,6 +1,7 @@
 package net.nemerosa.seed.jenkins.strategy.naming;
 
 import net.nemerosa.seed.jenkins.model.ConfigurableBranchStrategyConfiguration;
+import org.apache.commons.lang.StringUtils;
 
 import static net.nemerosa.seed.jenkins.support.Evaluator.evaluate;
 
@@ -25,5 +26,14 @@ public class ConfigurableSeedNamingStrategy extends AbstractSeedNamingStrategy {
     @Override
     public String getBranchStart(String id) {
         return evaluate(configuration.getBranchStartExpression(), "project", id);
+    }
+
+    @Override
+    public String getBranchName(String branch) {
+        String value = branch;
+        for (String prefix : configuration.getBranchNamePrefixes()) {
+            value = StringUtils.removeStart(value, prefix);
+        }
+        return evaluate(configuration.getBranchNameExpression(), "branch", value);
     }
 }

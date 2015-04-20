@@ -12,6 +12,19 @@ public final class SeedNamingStrategyHelper {
         return getFolder(seedNamingStrategy.getProjectSeed(id));
     }
 
+    public static String getBranchSeedFolder(SeedNamingStrategy seedNamingStrategy, String project, String branch) {
+        return getBranchPath(
+                getFolder(
+                        seedNamingStrategy.getBranchSeed(project)
+                ),
+                seedNamingStrategy.getBranchName(branch)
+        );
+    }
+
+    public static String getBranchPath(String path, String pathBranchName) {
+        return path.replace("*", pathBranchName);
+    }
+
     private static String getFolder(String path) {
         return StringUtils.substringBeforeLast(path, "/");
     }
