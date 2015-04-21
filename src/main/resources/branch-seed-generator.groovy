@@ -1,3 +1,4 @@
+import net.nemerosa.seed.jenkins.pipeline.PipelineHelper
 import net.nemerosa.seed.jenkins.scm.SCMHelper
 import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper
 import net.nemerosa.seed.jenkins.support.SeedDSLHelper
@@ -42,13 +43,5 @@ freeStyleJob(projectEnvironment.namingStrategy.getBranchSeed(PROJECT as String, 
     scm {
         SCMHelper.downloadPartial(delegate, projectEnvironment.projectConfiguration, PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String, BRANCH as String, 'seed')
     }
-    steps {
-        // TODO PipelineHelper.generate(delegate, projectEnvironment)
-        dsl {
-            removeAction 'DELETE'        // Jobs no longer in the pipeline definition are removed
-            // TODO Direct seed/groovy, or external script + seed.properties, or other?
-            external 'seed/seed.groovy'  // seed.groovy provided by the branch itself
-            ignoreExisting false         // Always update
-        }
-    }
+    PipelineHelper.pipelineGenerationSteps delegate, projectEnvironment
 }
