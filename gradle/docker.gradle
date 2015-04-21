@@ -1,0 +1,32 @@
+/**
+ * Docker build
+ */
+
+// Getting the DSL Core library
+
+configurations {
+    dslCore
+}
+
+dependencies {
+    dslCore(group: 'org.jenkins-ci.plugins', name: 'job-dsl-core', version: '1.32')
+}
+
+clean << {
+    delete 'src/main/docker/job-dsl-core.jar'
+}
+
+task prepareLibs(type: Copy) {
+    from configurations.dslCore
+    into 'src/main/docker'
+    rename { String fileName -> "job-dsl-core.jar" }
+}
+
+// Image build
+
+task buildImage(dependsOn: prepareLibs)
+
+// Link with the build
+
+buildImage.dependsOn jpi
+build.dependsOn buildImage

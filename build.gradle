@@ -55,3 +55,6 @@ dependencies {
 
     testCompile 'org.mockito:mockito-core:1.9.5'
 }
+
+// Docker build
+apply from: 'gradle/docker.gradle'
