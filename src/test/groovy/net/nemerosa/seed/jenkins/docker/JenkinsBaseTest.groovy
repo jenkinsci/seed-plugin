@@ -13,7 +13,12 @@ class JenkinsBaseTest {
 
     @Test
     void 'Jenkins started'() {
+    }
 
+    @Test
+    void 'Default seed job created'() {
+        // TODO Checks the job
+        jenkins.job('seed')
     }
 
 }
