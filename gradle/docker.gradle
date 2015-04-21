@@ -41,6 +41,32 @@ task buildImage(type: Exec, dependsOn: [prepareDslLib, prepareSeedHpi]) {
     ]
 }
 
+task buildLatest(type: Exec, dependsOn: buildImage) {
+    executable 'docker'
+    args = [
+            'tag',
+            '--force',
+            "nemerosa/seed:${versioning.info.full}",
+            'nemerosa/seed:latest'
+    ]
+}
+
+task build(dependsOn: [versionDisplay, buildImage, buildLatest])
+
+if (versioning.info.branchType == 'release') {
+    task buildRelease(type: Exec, dependsOn: buildImage) {
+        executable 'docker'
+        args = [
+                'tag',
+                '--force',
+                "nemerosa/seed:${versioning.info.full}",
+                "nemerosa/seed:${versioning.info.display}"
+        ]
+    }
+
+    build.dependsOn buildRelease
+}
+
 // Link with the build
 
-build.dependsOn buildImage
+build.dependsOn([buildImage, buildLatest])
