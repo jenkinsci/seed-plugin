@@ -8,8 +8,8 @@ class JenkinsAccessRule implements TestRule {
 
     @Override
     Statement apply(Statement base, Description description) {
-        String jenkinsUrl = System.getProperty('jenkinsUrl', 'http://localhost:8080')
-        println "Running "${description.methodName}" against ${jenkinsUrl}"
+        String jenkinsUrl = System.getProperty('jenkinsUrl')
+        println """Running "${description.methodName}" against ${jenkinsUrl}"""
         // FIXME Method org.junit.rules.TestRule.apply
         return base
     }
