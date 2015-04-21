@@ -1,6 +1,5 @@
 package net.nemerosa.seed.jenkins.docker
 
-import hudson.cli.CLI
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -10,7 +9,6 @@ import static org.junit.Assert.fail
 class JenkinsAccessRule implements TestRule {
 
     URL jenkinsUrl
-    CLI cli
 
     @Override
     Statement apply(Statement base, Description description) {
@@ -45,7 +43,7 @@ class JenkinsAccessRule implements TestRule {
                         } finally {
                             connection.disconnect()
                         }
-                    } catch (ConnectException ignored) {
+                    } catch (SocketException ignored) {
                         // Trying again...
                         println "Cannot connect"
                     }
