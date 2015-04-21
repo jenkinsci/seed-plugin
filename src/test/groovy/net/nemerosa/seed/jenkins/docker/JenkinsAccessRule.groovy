@@ -14,8 +14,8 @@ class JenkinsAccessRule implements TestRule {
 
     @Override
     Statement apply(Statement base, Description description) {
-        // Connection timeout (in seconds, defaults to 5 minutes)
-        int jenkinsTimeoutMin = System.getProperty('jenkinsTimeout', '5') as int
+        // Connection timeout (in seconds, defaults to 2 minutes)
+        int jenkinsTimeoutMin = System.getProperty('jenkinsTimeout', '2') as int
         int jenkinsTimeout = jenkinsTimeoutMin * 60
         int connectionTries = (jenkinsTimeout + 9) / 10
         // Jenkins end point
