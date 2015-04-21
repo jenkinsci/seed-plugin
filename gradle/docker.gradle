@@ -1,0 +1,165 @@
+import java.util.regex.Pattern
+
+/**
+ * Docker build
+ */
+
+// Getting the DSL Core library
+
+configurations {
+    dslCore
+}
+
+dependencies {
+    dslCore(group: 'org.jenkins-ci.plugins', name: 'job-dsl-core', version: '1.32')
+}
+
+clean << {
+    delete 'src/main/docker/job-dsl-core.jar'
+}
+
+task prepareDslLib(type: Copy) {
+    from configurations.dslCore
+    into 'src/main/docker'
+    rename { String fileName -> "job-dsl-core.jar" }
+}
+
+// Getting the Seed plug-in
+
+task prepareSeedHpi(type: Copy, dependsOn: jpi) {
+    from jpi.archivePath
+    into 'src/main/docker'
+}
+
+// Image build
+
+task buildImage(type: Exec, dependsOn: [prepareDslLib, prepareSeedHpi]) {
+    executable 'docker'
+    args = [
+            'build',
+            '--tag',
+            "nemerosa/seed:${versioning.info.full}",
+            "${projectDir}/src/main/docker"
+    ]
+}
+
+task buildLatest(type: Exec, dependsOn: buildImage) {
+    executable 'docker'
+    args = [
+            'tag',
+            '--force',
+            "nemerosa/seed:${versioning.info.full}",
+            'nemerosa/seed:latest'
+    ]
+}
+
+task build(dependsOn: [versionDisplay, buildImage, buildLatest])
+
+if (versioning.info.branchType == 'release') {
+    task buildRelease(type: Exec, dependsOn: buildImage) {
+        executable 'docker'
+        args = [
+                'tag',
+                '--force',
+                "nemerosa/seed:${versioning.info.full}",
+                "nemerosa/seed:${versioning.info.display}"
+        ]
+    }
+
+    build.dependsOn buildRelease
+}
+
+// Link with the build
+
+buildImage.dependsOn test
+build.dependsOn([buildImage, buildLatest])
+
+// Docker Jenkins integration tests
+
+ext {
+    // Parameters
+    getParameter = { String key, String defaultValue ->
+        if (project.hasProperty(key)) {
+            project.properties[key]
+        } else {
+            defaultValue
+        }
+    }
+    // Default integration test configuration
+    jenkinsScheme = getParameter('jenkinsScheme', 'http')
+    jenkinsHost = getParameter('jenkinsHost', 'localhost')
+    jenkinsPort = getParameter('jenkinsPort', '8080') as int
+}
+
+task dockerIntegrationTest(type: Test) {
+    doFirst {
+        def jenkinsUrl = "${jenkinsScheme}://${jenkinsHost}:${jenkinsPort}"
+        println "Docker tests against: ${jenkinsUrl}"
+        systemProperty 'jenkinsUrl', jenkinsUrl
+    }
+    include 'net/nemerosa/seed/jenkins/docker/**'
+}
+
+// Exclude the Docker tests from the default tests
+test {
+    exclude 'net/nemerosa/seed/jenkins/docker/**'
+}
+
+// Docker deployment
+
+ext {
+    getPublishedPort = { String cid, int port ->
+        new ByteArrayOutputStream().withStream { os ->
+            exec {
+                executable = 'docker'
+                args = ['port', cid, port]
+                standardOutput = os
+            }
+            def output = os.toString().trim()
+            def m = Pattern.compile(/^.*:(\d+)$/).matcher(output)
+            if (m.matches()) {
+                m.group(1) as int
+            } else {
+                throw new GradleException("Cannot parse port from ${output}")
+            }
+
+        }
+    }
+}
+
+task dockerDeploy(type: Exec) {
+    executable 'docker'
+    args = [
+            'run',
+            '--detach',
+            '--publish-all=true',
+            "nemerosa/seed:latest"
+    ]
+    standardOutput = new ByteArrayOutputStream()
+    ext.cid = {
+        standardOutput.toString().trim()
+    }
+    doLast {
+        def cid = ext.cid()
+        int port = getPublishedPort(cid, 8080)
+        println "Deploying container ${cid} on port ${port}"
+        project.ext.jenkinsPort = port
+    }
+}
+
+// Use the -x dockerUndeploy flag to keep the container at the end of the tests
+task dockerUndeploy(dependsOn: dockerDeploy) << {
+    def cid = dockerDeploy.ext.cid()
+    println "Undeploying container ${cid}"
+    exec {
+        executable = 'docker'
+        args = ['rm', '--force', cid]
+    }
+}
+
+task localDockerIntegrationTest {
+    dependsOn buildImage
+    dependsOn dockerIntegrationTest
+    dependsOn dockerDeploy
+    finalizedBy dockerUndeploy
+}
