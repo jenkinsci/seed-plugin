@@ -83,7 +83,14 @@ ext {
     jenkinsPort = 8080
 }
 
-task dockerIntegrationTest(dependsOn: buildImage)
+task dockerIntegrationTest(type: Test) {
+    include 'net/nemerosa/seed/jenkins/docker/**'
+}
+
+// Exclude the Docker tests from the default tests
+test {
+    exclude 'net/nemerosa/seed/jenkins/docker/**'
+}
 
 // Docker deployment
 
