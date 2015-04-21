@@ -16,17 +16,23 @@ clean << {
     delete 'src/main/docker/job-dsl-core.jar'
 }
 
-task prepareLibs(type: Copy) {
+task prepareDslLib(type: Copy) {
     from configurations.dslCore
     into 'src/main/docker'
     rename { String fileName -> "job-dsl-core.jar" }
 }
 
+// Getting the Seed plug-in
+
+task prepareSeedHpi(type: Copy, dependsOn: jpi) {
+    from jpi.archivePath
+    into 'src/main/docker'
+}
+
 // Image build
 
-task buildImage(dependsOn: prepareLibs)
+task buildImage(dependsOn: [prepareDslLib, prepareSeedHpi])
 
 // Link with the build
 
-buildImage.dependsOn jpi
 build.dependsOn buildImage
