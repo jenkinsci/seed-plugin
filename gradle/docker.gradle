@@ -31,7 +31,15 @@ task prepareSeedHpi(type: Copy, dependsOn: jpi) {
 
 // Image build
 
-task buildImage(dependsOn: [prepareDslLib, prepareSeedHpi])
+task buildImage(type: Exec, dependsOn: [prepareDslLib, prepareSeedHpi]) {
+    executable 'docker'
+    args = [
+            'build',
+            '--tag',
+            "nemerosa/seed:${versioning.info.full}",
+            "${projectDir}/src/main/docker"
+    ]
+}
 
 // Link with the build
 
