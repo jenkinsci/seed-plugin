@@ -69,4 +69,22 @@ if (versioning.info.branchType == 'release') {
 
 // Link with the build
 
+buildImage.dependsOn test
 build.dependsOn([buildImage, buildLatest])
+
+// Docker Jenkins integration tests
+
+task dockerIntegrationTest(dependsOn: buildImage)
+
+// Docker deployment
+
+task dockerDeploy
+
+task dockerUndeploy
+
+task localDockerIntegrationTest {
+    dependsOn buildImage
+    dependsOn dockerIntegrationTest
+    dependsOn dockerDeploy
+    finalizedBy dockerUndeploy
+}
