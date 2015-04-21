@@ -85,6 +85,7 @@ ext {
 
 task dockerIntegrationTest(type: Test) {
     include 'net/nemerosa/seed/jenkins/docker/**'
+    systemProperty 'jenkinsUrl', "${jenkinsScheme}://${jenkinsHost}:${jenkinsPort}"
 }
 
 // Exclude the Docker tests from the default tests
