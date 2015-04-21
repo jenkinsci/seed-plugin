@@ -14,19 +14,21 @@ import net.nemerosa.seed.jenkins.support.SeedDSLHelper
  * - BRANCH
  */
 
-def projectHelper = SeedDSLHelper.getProjectHelper(PROJECT as String, PROJECT_CLASS as String)
+def projectEnvironment = SeedDSLHelper.getProjectEnvironment(
+        PROJECT as String, PROJECT_CLASS as String,
+        PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String)
 
 /**
  * Branch folder
  */
 
-folder(SeedNamingStrategyHelper.getBranchSeedFolder(projectHelper.namingStrategy, PROJECT as String, BRANCH as String)) {}
+folder(SeedNamingStrategyHelper.getBranchSeedFolder(projectEnvironment.namingStrategy, PROJECT as String, BRANCH as String)) {}
 
 /**
  * Branch seed
  */
 
-freeStyleJob(projectHelper.namingStrategy.getBranchSeed(PROJECT as String, BRANCH as String)) {
+freeStyleJob(projectEnvironment.namingStrategy.getBranchSeed(PROJECT as String, BRANCH as String)) {
     description "Branch seed for ${BRANCH} in ${PROJECT} - generates the pipeline for the ${BRANCH} branch."
     wrappers {
         environmentVariables {
@@ -38,9 +40,10 @@ freeStyleJob(projectHelper.namingStrategy.getBranchSeed(PROJECT as String, BRANC
         }
     }
     scm {
-        SCMHelper.downloadPartial(delegate, projectHelper.projectConfiguration, PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String, BRANCH as String, 'seed')
+        SCMHelper.downloadPartial(delegate, projectEnvironment.projectConfiguration, PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String, BRANCH as String, 'seed')
     }
     steps {
+        // TODO PipelineHelper.generate(delegate, projectEnvironment)
         dsl {
             removeAction 'DELETE'        // Jobs no longer in the pipeline definition are removed
             // TODO Direct seed/groovy, or external script + seed.properties, or other?

@@ -12,13 +12,15 @@ import net.nemerosa.seed.jenkins.support.SeedDSLHelper
  * - PROJECT_SCM_URL
  */
 
-def projectHelper = SeedDSLHelper.getProjectHelper(PROJECT as String, PROJECT_CLASS as String)
+def projectEnvironment = SeedDSLHelper.getProjectEnvironment(
+        PROJECT as String, PROJECT_CLASS as String,
+        PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String)
 
-folder(SeedNamingStrategyHelper.getProjectSeedFolder(projectHelper.namingStrategy, PROJECT as String)) {
+folder(SeedNamingStrategyHelper.getProjectSeedFolder(projectEnvironment.namingStrategy, PROJECT as String)) {
     // TODO Authorisations for the project, part of the project configuration
 }
 
-freeStyleJob(projectHelper.namingStrategy.getProjectSeed(PROJECT as String)) {
+freeStyleJob(projectEnvironment.namingStrategy.getProjectSeed(PROJECT as String)) {
     description "Project seed for ${PROJECT} - generates one branch folder and seed."
     parameters {
         stringParam('BRANCH', '', 'Path to the branch')

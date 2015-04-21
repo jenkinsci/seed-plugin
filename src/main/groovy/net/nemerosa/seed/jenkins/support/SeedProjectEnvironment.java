@@ -5,18 +5,36 @@ import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
 import net.nemerosa.seed.jenkins.strategy.SeedNamingStrategy;
 
-public class SeedProjectHelper {
+public class SeedProjectEnvironment {
 
+    private final String id;
+    private final String scmType;
+    private final String scmUrl;
     private final SeedConfiguration globalConfiguration;
     private final SeedProjectConfiguration projectConfiguration;
     private final BranchStrategy branchStrategy;
     private final SeedNamingStrategy namingStrategy;
 
-    public SeedProjectHelper(SeedConfiguration globalConfiguration, SeedProjectConfiguration projectConfiguration, BranchStrategy branchStrategy, SeedNamingStrategy namingStrategy) {
+    public SeedProjectEnvironment(String id, String scmType, String scmUrl, SeedConfiguration globalConfiguration, SeedProjectConfiguration projectConfiguration, BranchStrategy branchStrategy, SeedNamingStrategy namingStrategy) {
+        this.id = id;
+        this.scmType = scmType;
+        this.scmUrl = scmUrl;
         this.globalConfiguration = globalConfiguration;
         this.projectConfiguration = projectConfiguration;
         this.branchStrategy = branchStrategy;
         this.namingStrategy = namingStrategy;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getScmType() {
+        return scmType;
+    }
+
+    public String getScmUrl() {
+        return scmUrl;
     }
 
     public SeedConfiguration getGlobalConfiguration() {

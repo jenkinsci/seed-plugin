@@ -22,12 +22,13 @@ public final class SeedDSLHelper {
     /**
      * Gets the configuration for a project
      */
-    public static SeedProjectHelper getProjectHelper(String project, String projectClass) {
+    public static SeedProjectEnvironment getProjectEnvironment(String project, String projectClass, String scmType, String scmUrl) {
         SeedConfiguration configuration = configurationLoader.load();
         SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(project, projectClass);
         BranchStrategy branchStrategy = BranchStrategyHelper.getBranchStrategy(configuration, projectConfiguration, branchStrategies);
         SeedNamingStrategy namingStrategy = branchStrategy.getSeedNamingStrategy();
-        return new SeedProjectHelper(
+        return new SeedProjectEnvironment(
+                project, scmType, scmUrl,
                 configuration,
                 projectConfiguration,
                 branchStrategy,
