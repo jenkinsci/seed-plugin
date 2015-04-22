@@ -80,3 +80,6 @@ Several _root_ seed jobs can be created.
 
 A very basic seed job can be created by clicking in _Manage Jenkins > Create seed job_. 
 
+## Development
+
+* [How to test](doc/Testing.md)

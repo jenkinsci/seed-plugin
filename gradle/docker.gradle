@@ -91,7 +91,7 @@ ext {
     jenkinsPort = getParameter('jenkinsPort', '8080') as int
 }
 
-task dockerIntegrationTest(type: Test) {
+task dockerAcceptanceTest(type: Test) {
     doFirst {
         def jenkinsUrl = "${jenkinsScheme}://${jenkinsHost}:${jenkinsPort}"
         println "Docker tests against: ${jenkinsUrl}"
@@ -157,9 +157,9 @@ task dockerUndeploy(dependsOn: dockerDeploy) << {
     }
 }
 
-task localDockerIntegrationTest {
+task localDockerAcceptanceTest {
     dependsOn buildImage
-    dependsOn dockerIntegrationTest
+    dependsOn dockerAcceptanceTest
     dependsOn dockerDeploy
     finalizedBy dockerUndeploy
 }
