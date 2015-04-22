@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.docker
+package net.nemerosa.seed.jenkins.acceptance
 
 import org.junit.rules.TestRule
 import org.junit.runner.Description

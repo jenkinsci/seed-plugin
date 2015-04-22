@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.docker
+package net.nemerosa.seed.jenkins.acceptance
 
 import org.junit.Rule
 import org.junit.Test
@@ -7,7 +7,7 @@ import org.junit.runner.RunWith
 /**
  * Is the Jenkins application available?
  */
-@RunWith(DockerTestRunner)
+@RunWith(AcceptanceTestRunner)
 class JenkinsBaseTest {
 
     @Rule

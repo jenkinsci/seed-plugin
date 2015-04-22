@@ -108,7 +108,7 @@ task dockerAcceptanceTest(type: Test) {
         println "Docker tests against: ${jenkinsUrl}"
         systemProperty 'jenkinsUrl', jenkinsUrl
     }
-    include 'net/nemerosa/seed/jenkins/docker/**'
+    include 'net/nemerosa/seed/jenkins/acceptance/**'
 }
 
 // Exclude the Docker tests from the default tests

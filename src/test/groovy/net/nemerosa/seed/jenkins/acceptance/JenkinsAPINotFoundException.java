@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.docker;
+package net.nemerosa.seed.jenkins.acceptance;
 
 import net.nemerosa.seed.jenkins.model.SeedException;
 
