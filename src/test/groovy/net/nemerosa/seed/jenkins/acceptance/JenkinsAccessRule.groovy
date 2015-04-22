@@ -7,6 +7,8 @@ import org.junit.runners.model.Statement
 
 import java.util.regex.Pattern
 
+import static net.nemerosa.seed.jenkins.acceptance.Until.until
+
 class JenkinsAccessRule implements TestRule {
 
     /**
@@ -80,7 +82,7 @@ class JenkinsAccessRule implements TestRule {
                 if (!location) throw new JenkinsAPIBuildException(path, "Location header was not returned")
                 println "Queue item at: ${location}"
                 // Waits until the item is built
-                def buildUrl = Until.until(timeoutSeconds).every(5) {
+                def buildUrl = until(timeoutSeconds).every(5) {
                     println "Checking if the build is scheduled for ${location}..."
                     def json = callUrl(new URL(location + "api/json"), 10, 10)
                     if (json.executable) {
@@ -92,7 +94,7 @@ class JenkinsAccessRule implements TestRule {
                 // Build URL
                 if (buildUrl) {
                     println "Build available at ${buildUrl}"
-                    Until.until(timeoutSeconds).every(5) {
+                    until(timeoutSeconds).every(5) {
                         println "Checking if the build is finished at ${buildUrl}..."
                         def json = callUrl(new URL(buildUrl + "api/json"), 10, 10)
                         if (!json.building && json.result == 'SUCCESS') {
@@ -124,9 +126,7 @@ class JenkinsAccessRule implements TestRule {
     }
 
     public static def callUrl(URL url, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
-        boolean connectionOk = false
-        int tries = 0
-        int durationSeconds = 0
+        
         if (timeoutOnNotFound && timeoutOnNotFound != timeoutSeconds) {
             println """Waiting for ${url} to be available in ${timeoutSeconds} seconds (${
                 timeoutOnNotFound
@@ -134,10 +134,8 @@ class JenkinsAccessRule implements TestRule {
         } else {
             println """Waiting for ${url} to be available in ${timeoutSeconds} seconds..."""
         }
-        final int startTime = System.currentTimeMillis() / 1000
-        while (!connectionOk && durationSeconds < timeoutSeconds) {
-            tries++
-            print "Try #${tries}..."
+
+        until(timeoutSeconds).every(5) { int duration ->
             HttpURLConnection connection = url.openConnection() as HttpURLConnection
             try {
                 connection.connect()
@@ -148,16 +146,19 @@ class JenkinsAccessRule implements TestRule {
                     if (code == HttpURLConnection.HTTP_OK) {
                         def content = connection.inputStream.text
                         if (content) {
-                            connectionOk = true
                             return new JsonSlurper().parseText(content)
                         } else {
                             println "No content returned"
+                            return false
                         }
                     }
                     // Error codes
                     else if (code == HttpURLConnection.HTTP_NOT_FOUND) {
-                        if (durationSeconds >= timeoutOnNotFound) {
+                        if (duration >= timeoutOnNotFound) {
                             throw new JenkinsAPINotFoundException(url)
+                        } else {
+                            println "Timeout on not found not reached yet"
+                            return false
                         }
                     }
                 } finally {
@@ -166,16 +167,8 @@ class JenkinsAccessRule implements TestRule {
             } catch (SocketException ignored) {
                 // Trying again...
                 println "Cannot connect"
+                return false
             }
-            if (!connectionOk) {
-                sleep INTERVAL
-                durationSeconds = (System.currentTimeMillis() / 1000) - startTime
-                println "Elapsed time: ${durationSeconds} seconds"
-            }
-        }
-        // If connection is still not OK, that's a failure
-        if (!connectionOk) {
-            throw new JenkinsAPINotAvailableException(url)
         }
     }
 

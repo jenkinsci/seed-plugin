@@ -20,7 +20,7 @@ class Until {
             int start = System.currentTimeMillis() / 1000
             int duration = 0
             while (duration < timeout) {
-                def result = code()
+                def result = code(duration)
                 if (result) {
                     return result
                 }
