@@ -17,10 +17,6 @@ RUN apt-get update && apt-get install -y wget git curl zip && rm -rf /var/lib/ap
 
 ENV JENKINS_HOME /var/lib/jenkins
 
-# Jenkins version
-
-ENV JENKINS_VERSION 1.596.2
-
 # Jenkins is ran with user `jenkins`, uid = 1000
 # If you bind mount a volume from host/vloume from a data container,
 # ensure you use same uid or assign the host directory to the `docker` user
@@ -47,11 +43,14 @@ COPY plugins.sh /usr/share/jenkins/plugins.sh
 COPY plugins.txt /usr/share/jenkins/plugins.txt
 RUN /usr/share/jenkins/plugins.sh /usr/share/jenkins/plugins.txt
 
+# Jenkins version
+
+ENV JENKINS_VERSION 1.610
+
 # Download of the Jenkins application
 # Could use ADD but this one does not check Last-Modified header
 # see https://github.com/docker/docker/issues/8331
-# TODO Use the 1.609 version
-RUN curl -L http://mirrors.jenkins-ci.org/war-stable/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war
+RUN curl -L http://mirrors.jenkins-ci.org/war/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war
 
 # Initial generator jobs
 
