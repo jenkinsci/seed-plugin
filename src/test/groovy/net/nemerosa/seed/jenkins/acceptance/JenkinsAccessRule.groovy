@@ -45,8 +45,8 @@ class JenkinsAccessRule implements TestRule {
     }
 
     protected static String jobPath(String path) {
-        // TODO Replaces / by /job/
-        "job/${path}"
+        String jobPath = path.replace('/', '/job/')
+        "job/${jobPath}"
     }
 
     /**
@@ -126,7 +126,7 @@ class JenkinsAccessRule implements TestRule {
     }
 
     public static def callUrl(URL url, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
-        
+
         if (timeoutOnNotFound && timeoutOnNotFound != timeoutSeconds) {
             println """Waiting for ${url} to be available in ${timeoutSeconds} seconds (${
                 timeoutOnNotFound

@@ -34,15 +34,12 @@ class JenkinsBaseTest {
                 // TODO Path configuration
                 PROJECT_SCM_URL : 'path/to/repo',
         ])
-//        ]).then {
-//            // TODO Fires the project seed
-//        }.then {
-//            // TODO Fires the branch seed
-//        }.then {
-//            // TODO Fires the branch pipeline start
-//        }.then {
-//            // TODO Checks the result of the pipeline
-//        }
+        // Checks the project seed is created
+        jenkins.job('test/test-seed')
+        // TODO Fires the project seed
+        // TODO Fires the branch seed
+        // TODO Fires the branch pipeline start
+        // TODO Checks the result of the pipeline
     }
 
 }
