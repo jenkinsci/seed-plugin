@@ -163,3 +163,5 @@ task localDockerAcceptanceTest {
     dependsOn dockerDeploy
     finalizedBy dockerUndeploy
 }
+
+dockerAcceptanceTest.mustRunAfter dockerDeploy
