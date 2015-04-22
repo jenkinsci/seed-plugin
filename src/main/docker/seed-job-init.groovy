@@ -7,7 +7,7 @@ Thread.start {
     def process = new ProcessBuilder(
             'java',
             '-jar',
-            '/var/lib/jenkins/init.groovy.d/job-dsl-core.jar',
+            '/var/lib/jenkins/init.groovy.d/job-dsl-core-standalone.jar',
             '/var/lib/jenkins/dsl/seed-job-dsl.groovy'
     )
             .directory(new File('/var/lib/jenkins/dsl'))

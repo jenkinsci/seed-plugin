@@ -17,11 +17,13 @@ configurations {
 }
 
 dependencies {
-    dslCore(group: 'org.jenkins-ci.plugins', name: 'job-dsl-core', version: '1.32', classifier: 'standalone')
+    dslCore(group: 'org.jenkins-ci.plugins', name: 'job-dsl-core', version: '1.32', classifier: 'standalone') {
+        transitive = false
+    }
 }
 
 task dockerClean(type: Delete) {
-    delete "src/main/docker/job-dsl-core.jar"
+    delete "src/main/docker/job-dsl-core-standalone.jar"
     delete "src/main/docker/seed.hpi"
 }
 
@@ -30,7 +32,7 @@ clean.dependsOn dockerClean
 task prepareDslLib(type: Copy) {
     from configurations.dslCore
     into "${projectDir}/src/main/docker/"
-    rename { String fileName -> "job-dsl-core.jar" }
+    rename { String fileName -> 'job-dsl-core-standalone.jar' }
 }
 
 // Getting the Seed plug-in
@@ -167,7 +169,7 @@ task dockerUndeploy(dependsOn: dockerDeploy) << {
 }
 
 task localDockerAcceptanceTest {
-    dependsOn buildImage
+    dependsOn buildLatest
     dependsOn dockerAcceptanceTest
     dependsOn dockerDeploy
     finalizedBy dockerUndeploy

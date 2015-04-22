@@ -54,7 +54,7 @@ RUN curl -L http://mirrors.jenkins-ci.org/war-stable/$JENKINS_VERSION/jenkins.wa
 
 # Initial generator jobs
 
-COPY job-dsl-core.jar /usr/share/jenkins/ref/init.groovy.d/
+COPY job-dsl-core-standalone.jar /usr/share/jenkins/ref/init.groovy.d/
 COPY seed-job-init.groovy /usr/share/jenkins/ref/init.groovy.d/
 COPY seed-job-dsl.groovy /usr/share/jenkins/ref/dsl/
 
