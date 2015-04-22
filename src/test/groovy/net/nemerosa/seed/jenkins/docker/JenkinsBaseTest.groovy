@@ -2,10 +2,12 @@ package net.nemerosa.seed.jenkins.docker
 
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
  * Is the Jenkins application available?
  */
+@RunWith(DockerTestRunner)
 class JenkinsBaseTest {
 
     @Rule
