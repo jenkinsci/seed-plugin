@@ -83,3 +83,4 @@ A very basic seed job can be created by clicking in _Manage Jenkins > Create see
 ## Development
 
 * [How to test](doc/Testing.md)
+* [How to get the list of plugins](doc/Plugins.md)
