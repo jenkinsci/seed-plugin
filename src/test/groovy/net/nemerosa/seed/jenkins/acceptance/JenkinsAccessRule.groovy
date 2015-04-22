@@ -1,11 +1,10 @@
 package net.nemerosa.seed.jenkins.acceptance
 
+import groovy.json.JsonSlurper
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-import java.util.concurrent.Executors
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class JenkinsAccessRule implements TestRule {
@@ -65,7 +64,7 @@ class JenkinsAccessRule implements TestRule {
     }
 
     /**
-     * FIXME Fires a build
+     * Fires a build
      */
     protected def fireBuild(String path, int timeoutSeconds = 120) {
         def url = new URL(jenkinsUrl, path)
@@ -81,7 +80,21 @@ class JenkinsAccessRule implements TestRule {
                 if (!location) throw new JenkinsAPIBuildException(path, "Location header was not returned")
                 println "Queue item at: ${location}"
                 // Waits until the item is built
-                call(new URL(location + "api/json"), timeoutSeconds, 30)
+                def buildUrl = Until.until(timeoutSeconds).every(5) {
+                    println "Checking if the build is scheduled for ${location}..."
+                    def json = callUrl(new URL(location + "api/json"), 10, 10)
+                    if (json.executable) {
+                        return json.executable.url
+                    } else {
+                        return false
+                    }
+                }
+                // Build URL
+                if (buildUrl) {
+                    println "Build available at ${buildUrl}"
+                } else {
+                    throw new JenkinsAPIBuildException(path, "Build not scheduled after ${timeoutSeconds} seconds")
+                }
             } else {
                 throw new JenkinsAPIBuildException(path, "Build not fired: ${connection.responseCode}")
             }
@@ -90,7 +103,7 @@ class JenkinsAccessRule implements TestRule {
         }
     }
 
-    public void api(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
+    public def api(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
         String prefix
         if (path.endsWith('/')) {
             prefix = path
@@ -98,11 +111,10 @@ class JenkinsAccessRule implements TestRule {
             prefix = path + '/'
         }
         def apiUrl = new URL(jenkinsUrl, "${prefix}api/json")
-        call(apiUrl, timeoutSeconds, timeoutOnNotFound)
+        callUrl(apiUrl, timeoutSeconds, timeoutOnNotFound)
     }
 
-    // TODO Parses the resulting JSON
-    protected static void call(URL url, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
+    public static def callUrl(URL url, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
         boolean connectionOk = false
         int tries = 0
         int durationSeconds = 0
@@ -123,10 +135,18 @@ class JenkinsAccessRule implements TestRule {
                 try {
                     def code = connection.getResponseCode()
                     println "Code = ${code}"
-                    connectionOk = (code == HttpURLConnection.HTTP_OK)
-                    // TODO Parses the JSON
+                    // Parses the JSON
+                    if (code == HttpURLConnection.HTTP_OK) {
+                        def content = connection.inputStream.text
+                        if (content) {
+                            connectionOk = true
+                            return new JsonSlurper().parseText(content)
+                        } else {
+                            println "No content returned"
+                        }
+                    }
                     // Error codes
-                    if (code == HttpURLConnection.HTTP_NOT_FOUND) {
+                    else if (code == HttpURLConnection.HTTP_NOT_FOUND) {
                         if (durationSeconds >= timeoutOnNotFound) {
                             throw new JenkinsAPINotFoundException(url)
                         }
@@ -148,7 +168,6 @@ class JenkinsAccessRule implements TestRule {
         if (!connectionOk) {
             throw new JenkinsAPINotAvailableException(url)
         }
-        [connectionOk, tries]
     }
 
 }
