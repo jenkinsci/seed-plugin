@@ -9,8 +9,16 @@ This job is used to create a seed for a project.
     parameters {
         // Standard Seed parameters
         stringParam('PROJECT', '', 'Name of the project to generate - used as an identifier in Coastguard')
+        stringParam('PROJECT_CLASS', '', 'Class of the project to generate - optional')
         choiceParam('PROJECT_SCM_TYPE', ['SVN', 'GIT'])
         stringParam('PROJECT_SCM_URL', '', 'URL to the project SCM location, without any branch location')
     }
-    // TODO Adds the step
+    configure { node ->
+        node / 'builders' / 'net.nemerosa.seed.jenkins.step.ProjectSeedBuilder' {
+            'project' '${PROJECT}'
+            'projectClass' '${PROJECT_CLASS}'
+            'projectScmType' '${PROJECT_SCM_TYPE}'
+            'projectScmUrl' '${PROJECT_SCM_URL}'
+        }
+    }
 }
