@@ -20,7 +20,7 @@ class JenkinsBaseTest {
     @Test
     void 'Default seed job created'() {
         // TODO Checks the job
-        jenkins.job('seed')
+        jenkins.job('seed', 5 * 60, 5 * 60)
     }
 
 }

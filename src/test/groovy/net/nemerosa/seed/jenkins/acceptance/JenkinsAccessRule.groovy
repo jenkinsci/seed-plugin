@@ -6,15 +6,15 @@ import org.junit.runners.model.Statement
 
 class JenkinsAccessRule implements TestRule {
 
+    /**
+     * Retry interval in milliseconds
+     */
+    static final int INTERVAL = 5 * 1000L
+
     URL jenkinsUrl
-    int connectionTries
 
     @Override
     Statement apply(Statement base, Description description) {
-        // Connection timeout (in seconds, defaults to 2 minutes)
-        int jenkinsTimeoutMin = System.getProperty('jenkinsTimeout', '2') as int
-        int jenkinsTimeout = jenkinsTimeoutMin * 60
-        connectionTries = (jenkinsTimeout + 4) / 5
         // Jenkins end point
         jenkinsUrl = new URL(System.getProperty('jenkinsUrl', 'http://localhost:8080'))
         println """Running "${description.methodName}" against ${jenkinsUrl}"""
@@ -30,13 +30,13 @@ class JenkinsAccessRule implements TestRule {
         }
     }
 
-    public void job(String path) {
+    public void job(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
         // TODO Replaces / by /job/
-        api(path)
+        api("job/${path}", timeoutSeconds, timeoutOnNotFound)
     }
 
     // TODO Parses the resulting JSON
-    public void api(String path) {
+    public void api(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
         String prefix
         if (path.endsWith('/')) {
             prefix = path
@@ -46,21 +46,29 @@ class JenkinsAccessRule implements TestRule {
         def apiUrl = new URL(jenkinsUrl, "${prefix}api/json")
         boolean connectionOk = false
         int tries = 0
-        println """Waiting for ${apiUrl} to be available (${connectionTries} tries every 5 seconds)..."""
-        while (!connectionOk && tries < connectionTries) {
+        int durationSeconds = 0
+        if (timeoutOnNotFound && timeoutOnNotFound != timeoutSeconds) {
+            println """Waiting for ${apiUrl} to be available in ${timeoutSeconds} seconds (${timeoutOnNotFound} seconds for not found)..."""
+        } else {
+            println """Waiting for ${apiUrl} to be available in ${timeoutSeconds} seconds..."""
+        }
+        final int startTime = System.currentTimeMillis() / 1000
+        while (!connectionOk && durationSeconds < timeoutSeconds) {
             tries++
             print "Try #${tries}..."
             HttpURLConnection connection = apiUrl.openConnection() as HttpURLConnection
             try {
+                connection.connect()
                 try {
-                    connection.connect()
                     def code = connection.getResponseCode()
                     println "Code = ${code}"
                     connectionOk = (code == HttpURLConnection.HTTP_OK)
                     // TODO Parses the JSON
                     // Error codes
                     if (code == HttpURLConnection.HTTP_NOT_FOUND) {
-                        throw new JenkinsAPINotFoundException(apiUrl)
+                        if (durationSeconds >= timeoutOnNotFound) {
+                            throw new JenkinsAPINotFoundException(apiUrl)
+                        }
                     }
                 } finally {
                     connection.disconnect()
@@ -70,7 +78,9 @@ class JenkinsAccessRule implements TestRule {
                 println "Cannot connect"
             }
             if (!connectionOk) {
-                sleep 5000
+                sleep INTERVAL
+                durationSeconds = (System.currentTimeMillis() / 1000) - startTime
+                println "Elapsed time: ${durationSeconds} seconds"
             }
         }
         // If connection is still not OK, that's a failure
