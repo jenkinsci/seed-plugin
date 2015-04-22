@@ -92,6 +92,15 @@ class JenkinsAccessRule implements TestRule {
                 // Build URL
                 if (buildUrl) {
                     println "Build available at ${buildUrl}"
+                    Until.until(timeoutSeconds).every(5) {
+                        println "Checking if the build is finished at ${buildUrl}..."
+                        def json = callUrl(new URL(buildUrl + "api/json"), 10, 10)
+                        if (!json.building && json.result == 'SUCCESS') {
+                            return json
+                        } else {
+                            return false
+                        }
+                    }
                 } else {
                     throw new JenkinsAPIBuildException(path, "Build not scheduled after ${timeoutSeconds} seconds")
                 }
