@@ -4,6 +4,12 @@ import java.util.regex.Pattern
  * Docker build
  */
 
+repositories {
+    maven {
+        url 'http://repo.jenkins-ci.org/public'
+    }
+}
+
 // Getting the DSL Core library
 
 configurations {
@@ -11,16 +17,19 @@ configurations {
 }
 
 dependencies {
-    dslCore(group: 'org.jenkins-ci.plugins', name: 'job-dsl-core', version: '1.32')
+    dslCore(group: 'org.jenkins-ci.plugins', name: 'job-dsl-core', version: '1.32', classifier: 'standalone')
 }
 
-clean << {
-    delete 'src/main/docker/job-dsl-core.jar'
+task dockerClean(type: Delete) {
+    delete "src/main/docker/job-dsl-core.jar"
+    delete "src/main/docker/seed.hpi"
 }
+
+clean.dependsOn dockerClean
 
 task prepareDslLib(type: Copy) {
     from configurations.dslCore
-    into 'src/main/docker'
+    into "${projectDir}/src/main/docker/"
     rename { String fileName -> "job-dsl-core.jar" }
 }
 
