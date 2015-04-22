@@ -35,7 +35,8 @@ VOLUME $JENKINS_HOME
 
 RUN mkdir -p /usr/share/jenkins/ref
 
-# TODO Add the Seed plug-in
+# Add the Seed plug-in
+COPY seed.hpi /usr/share/jenkins/ref/plugins/
 
 # Update web site
 ENV JENKINS_UC https://updates.jenkins-ci.org
