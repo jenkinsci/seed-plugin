@@ -19,7 +19,7 @@ import java.net.URL;
 public class SeedPlugin extends GlobalConfiguration {
 
     public static SeedPlugin getSeedPlugin() {
-        return (SeedPlugin) Jenkins.getInstance().getDescriptor(SeedPlugin.class);
+        return GlobalConfiguration.all().get(SeedPlugin.class);
     }
 
     private String seedConfigurationUrl;
