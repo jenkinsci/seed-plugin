@@ -95,7 +95,7 @@ public class ProjectSeedBuilder extends Builder {
         );
 
         // Generation
-        GeneratedItems generatedItems = DslScriptLoader.runDslEngine(scriptRequests.iterator().next(), jm);
+        GeneratedItems generatedItems = DslRunner.runDslEngine(scriptRequests.iterator().next(), jm);
 
         // Logging
         for (GeneratedJob job : generatedItems.getJobs()) {

@@ -28,7 +28,9 @@ public class DslRunner {
     private static final Comparator<? super Item> ITEM_COMPARATOR = new ItemProcessingOrderComparator();
 
     public static JobParent runDslEngineForParent(ScriptRequest scriptRequest, JobManagement jobManagement) throws IOException {
-        ClassLoader parentClassLoader = DslScriptLoader.class.getClassLoader();
+        ClassLoader dslClassLoader = DslScriptLoader.class.getClassLoader();
+        ClassLoader seedClassLoader = ProjectSeedBuilder.class.getClassLoader();
+        ClassLoader parentClassLoader = new CombinedClassLoader(dslClassLoader, seedClassLoader);
         CompilerConfiguration config = createCompilerConfiguration(jobManagement);
 
         // Otherwise baseScript won't take effect
