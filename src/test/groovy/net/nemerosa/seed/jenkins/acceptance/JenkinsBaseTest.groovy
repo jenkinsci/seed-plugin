@@ -33,7 +33,7 @@ class JenkinsBaseTest {
                 PROJECT_SCM_TYPE: 'GIT',
                 // TODO Path configuration
                 PROJECT_SCM_URL : 'path/to/repo',
-        ])
+        ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job('test/test-seed')
         // TODO Fires the project seed

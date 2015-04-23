@@ -1,6 +1,7 @@
 package net.nemerosa.seed.jenkins.acceptance
 
 import groovy.json.JsonSlurper
+import org.junit.Assert
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -52,7 +53,7 @@ class JenkinsAccessRule implements TestRule {
     /**
      * Fires a job with a set of parameters
      */
-    def fireJob(String path, Map<String, String> parameters = [:], int timeoutSeconds = 120) {
+    Build fireJob(String path, Map<String, String> parameters = [:], int timeoutSeconds = 120) {
         // Build path
         String buildPath
         if (parameters && parameters.size() > 0) {
@@ -68,7 +69,7 @@ class JenkinsAccessRule implements TestRule {
     /**
      * Fires a build
      */
-    protected def fireBuild(String path, int timeoutSeconds = 120) {
+    protected Build fireBuild(String path, int timeoutSeconds = 120) {
         def url = new URL(jenkinsUrl, path)
         def connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = 'POST'
@@ -98,15 +99,11 @@ class JenkinsAccessRule implements TestRule {
                         println "Checking if the build is finished at ${buildUrl}..."
                         def json = callUrl(new URL(buildUrl + "api/json"), 10, 10)
                         if (json.result) {
-                            if (json.result == 'SUCCESS') {
-                                return json
-                            } else {
-                                throw new JenkinsAPIBuildException(path, json.result)
-                            }
+                            return new Build(json)
                         } else {
                             return false
                         }
-                    }
+                    } as Build
                 } else {
                     throw new JenkinsAPIBuildException(path, "Build not scheduled after ${timeoutSeconds} seconds")
                 }
@@ -172,6 +169,21 @@ class JenkinsAccessRule implements TestRule {
                 // Trying again...
                 println "Cannot connect"
                 return false
+            }
+        }
+    }
+
+    static class Build {
+
+        final def json
+
+        Build(json) {
+            this.json = json
+        }
+
+        void checkSuccess() {
+            if (json.result != 'SUCCESS') {
+                Assert.fail("${json.url} resulted in ${json.result}")
             }
         }
     }
