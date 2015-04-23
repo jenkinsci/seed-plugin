@@ -12,13 +12,11 @@ import hudson.tasks.Builder;
 import javaposse.jobdsl.dsl.*;
 import javaposse.jobdsl.plugin.JenkinsJobManagement;
 import javaposse.jobdsl.plugin.LookupStrategy;
-import javaposse.jobdsl.plugin.ScriptRequestGenerator;
 import jenkins.model.Jenkins;
 import net.nemerosa.seed.jenkins.support.SeedDSLHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * Build step which creates a project folder and a project seed inside.
@@ -85,17 +83,15 @@ public class ProjectSeedBuilder extends Builder {
         JenkinsJobManagement jm = new JenkinsJobManagement(listener.getLogger(), env, build, LookupStrategy.JENKINS_ROOT);
 
         // Generation request
-        ScriptRequestGenerator generator = new ScriptRequestGenerator(build, env);
-        Set<ScriptRequest> scriptRequests = generator.getScriptRequests(
+        ScriptRequest scriptRequest = new ScriptRequest(
                 null,
-                true, // using script text
                 script,
-                false, // not ignoring existing
-                "" // TODO additional classpath
+                DslClasspath.classpathFor(this.getClass()),
+                false // not ignoring existing
         );
 
         // Generation
-        GeneratedItems generatedItems = DslRunner.runDslEngine(scriptRequests.iterator().next(), jm);
+        GeneratedItems generatedItems = DslScriptLoader.runDslEngine(scriptRequest, jm);
 
         // Logging
         for (GeneratedJob job : generatedItems.getJobs()) {

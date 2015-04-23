@@ -26,14 +26,9 @@ public final class CombinedClassLoader extends ClassLoader {
             throws ClassNotFoundException {
         try {
             return super.loadClass(name, resolve);
-        } catch (Exception e) {
-            for (Throwable t = e; t != null; t = t.getCause()) {
-                if (t instanceof SecurityException) {
-                    throw t == e ? (SecurityException) t : new SecurityException(t.getMessage(), e);
-                }
-            }
+        } catch (Exception ignored) {
+            return defaultCL.loadClass(name, resolve);
         }
-        return defaultCL.loadClass(name, resolve);
     }
 
 }

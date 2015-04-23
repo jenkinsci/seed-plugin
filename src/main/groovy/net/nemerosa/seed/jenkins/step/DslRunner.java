@@ -31,6 +31,7 @@ public class DslRunner {
         ClassLoader dslClassLoader = DslScriptLoader.class.getClassLoader();
         ClassLoader seedClassLoader = ProjectSeedBuilder.class.getClassLoader();
         ClassLoader parentClassLoader = new CombinedClassLoader(dslClassLoader, seedClassLoader);
+//        ClassLoader parentClassLoader = new CombinedClassLoader(seedClassLoader, dslClassLoader);
         CompilerConfiguration config = createCompilerConfiguration(jobManagement);
 
         // Otherwise baseScript won't take effect
