@@ -1,5 +1,4 @@
 import net.nemerosa.seed.jenkins.support.SeedDSLHelper
-import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment
 
 /**
  * Script to generate a project seed.
@@ -16,7 +15,7 @@ import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment
  * - seedDSLHelper
  */
 
-SeedProjectEnvironment projectEnvironment = seedDSLHelper.getProjectEnvironment(
+def projectEnvironment = seedDSLHelper.getProjectEnvironment(
         PROJECT as String, PROJECT_CLASS as String,
         PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String)
 

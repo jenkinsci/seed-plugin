@@ -13,6 +13,7 @@ import javaposse.jobdsl.dsl.*;
 import javaposse.jobdsl.plugin.JenkinsJobManagement;
 import javaposse.jobdsl.plugin.LookupStrategy;
 import jenkins.model.Jenkins;
+import net.nemerosa.seed.jenkins.support.JoinClassLoader;
 import net.nemerosa.seed.jenkins.support.SeedDSLHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -47,14 +48,17 @@ public class ProjectSeedBuilder extends Builder {
         return project;
     }
 
+    @SuppressWarnings("unused")
     public String getProjectClass() {
         return projectClass;
     }
 
+    @SuppressWarnings("unused")
     public String getProjectScmType() {
         return projectScmType;
     }
 
+    @SuppressWarnings("unused")
     public String getProjectScmUrl() {
         return projectScmUrl;
     }
@@ -93,11 +97,18 @@ public class ProjectSeedBuilder extends Builder {
                 Collections.<String, Object>singletonMap("seedDSLHelper", new SeedDSLHelper())
         );
 
+        // Combined class loader
+        ClassLoader joinClassLoader = new JoinClassLoader(
+                DslScriptLoader.class.getClassLoader(),
+                Jenkins.getInstance().getPluginManager().uberClassLoader,
+                Thread.currentThread().getContextClassLoader()
+        );
+
         // Generation
         GeneratedItems generatedItems = DslScriptLoader.runDslEngine(
                 scriptRequest,
                 jm,
-                getClass().getClassLoader()
+                joinClassLoader
         );
 
         // Logging
