@@ -173,7 +173,7 @@ class JenkinsAccessRule implements TestRule {
         }
     }
 
-    static class Build {
+    class Build {
 
         final def json
 
@@ -183,6 +183,10 @@ class JenkinsAccessRule implements TestRule {
 
         void checkSuccess() {
             if (json.result != 'SUCCESS') {
+                // Gets the console output
+                String output = new URL(json.url + 'consoleText').text
+                System.err.println(output)
+                // Error
                 Assert.fail("${json.url} resulted in ${json.result}")
             }
         }
