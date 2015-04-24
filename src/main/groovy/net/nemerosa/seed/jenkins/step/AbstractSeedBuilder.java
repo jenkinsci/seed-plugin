@@ -13,13 +13,11 @@ import javaposse.jobdsl.dsl.*;
 import javaposse.jobdsl.plugin.JenkinsJobManagement;
 import javaposse.jobdsl.plugin.LookupStrategy;
 import jenkins.model.Jenkins;
-import net.nemerosa.seed.jenkins.support.JoinClassLoader;
 import net.nemerosa.seed.jenkins.support.SeedDSLHelper;
 import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
 
 /**
  * Build step which can generates other jobs and folders.
@@ -94,7 +92,7 @@ public abstract class AbstractSeedBuilder extends Builder {
         configureEnvironment(env, projectEnvironment);
 
         // Launching the generation
-        launchGenerationScript(build, listener, env, helper, getScriptPath());
+        launchGenerationScript(build, listener, env, getScriptPath());
 
         // Done
         return true;
@@ -104,7 +102,7 @@ public abstract class AbstractSeedBuilder extends Builder {
 
     protected abstract String getScriptPath();
 
-    protected void launchGenerationScript(AbstractBuild<?, ?> build, BuildListener listener, EnvVars env, SeedDSLHelper helper, String scriptPath) throws IOException {
+    protected void launchGenerationScript(AbstractBuild<?, ?> build, BuildListener listener, EnvVars env, String scriptPath) throws IOException {
         // Project seed generation script
         String script = SeedDSLHelper.getResourceAsText(scriptPath);
 
@@ -115,23 +113,14 @@ public abstract class AbstractSeedBuilder extends Builder {
         ScriptRequest scriptRequest = new ScriptRequest(
                 null,
                 script,
-                new URL[]{DslClasspath.classpathFor(this.getClass())},
-                false, // not ignoring existing,
-                Collections.<String, Object>singletonMap("seedDSLHelper", helper)
-        );
-
-        // Combined class loader
-        ClassLoader joinClassLoader = new JoinClassLoader(
-                DslScriptLoader.class.getClassLoader(),
-                Jenkins.getInstance().getPluginManager().uberClassLoader,
-                Thread.currentThread().getContextClassLoader()
+                new URL[0],
+                false // not ignoring existing,
         );
 
         // Generation
         GeneratedItems generatedItems = DslScriptLoader.runDslEngine(
                 scriptRequest,
-                jm,
-                joinClassLoader
+                jm
         );
 
         // Logging
