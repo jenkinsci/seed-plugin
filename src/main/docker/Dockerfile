@@ -31,9 +31,6 @@ VOLUME $JENKINS_HOME
 
 RUN mkdir -p /usr/share/jenkins/ref
 
-# Add the Seed plug-in
-COPY seed.hpi /usr/share/jenkins/ref/plugins/
-
 # FIXME Add the custom Job DSL plug-in
 COPY job-dsl.jpi /usr/share/jenkins/ref/plugins/
 
@@ -54,6 +51,9 @@ ENV JENKINS_VERSION 1.610
 # Could use ADD but this one does not check Last-Modified header
 # see https://github.com/docker/docker/issues/8331
 RUN curl -L http://mirrors.jenkins-ci.org/war/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war
+
+# Add the Seed plug-in
+COPY seed.hpi /usr/share/jenkins/ref/plugins/
 
 # Initial generator jobs
 
