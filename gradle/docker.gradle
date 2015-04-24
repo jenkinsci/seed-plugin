@@ -14,15 +14,10 @@ repositories {
 
 configurations {
     dslCore
-    // FIXME JENKINS-28048 Using a local version of the DSL plug-in
-    dslPlugin
 }
 
 dependencies {
     dslCore(group: 'org.jenkins-ci.plugins', name: 'job-dsl-core', version: jobDslVersion, classifier: 'standalone') {
-        transitive = false
-    }
-    dslPlugin(group: 'org.jenkins-ci.plugins', name: 'job-dsl', version: jobDslVersion, ext: 'jpi') {
         transitive = false
     }
 }
@@ -47,17 +42,9 @@ task prepareSeedHpi(type: Copy, dependsOn: jpi) {
     into 'src/main/docker'
 }
 
-// FIXME Getting the custom Job DSL plug-in
-
-task prepareJobDSLJpi(type: Copy) {
-    from configurations.dslPlugin
-    into "${projectDir}/src/main/docker/"
-    rename { String fileName -> 'job-dsl.jpi' }
-}
-
 // Image build
 
-task buildImage(type: Exec, dependsOn: [prepareDslLib, prepareSeedHpi, prepareJobDSLJpi]) {
+task buildImage(type: Exec, dependsOn: [prepareDslLib, prepareSeedHpi]) {
     executable 'docker'
     args = [
             'build',

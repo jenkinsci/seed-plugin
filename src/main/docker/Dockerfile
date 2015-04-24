@@ -31,9 +31,6 @@ VOLUME $JENKINS_HOME
 
 RUN mkdir -p /usr/share/jenkins/ref
 
-# FIXME Add the custom Job DSL plug-in
-COPY job-dsl.jpi /usr/share/jenkins/ref/plugins/
-
 # Update web site
 ENV JENKINS_UC https://updates.jenkins-ci.org
 
