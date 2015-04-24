@@ -10,6 +10,8 @@ class DslClasspath {
             String suffix = cls.getName().replace(".", "/") + ".class";
             String path = url.toString() - suffix
             return new URL(path)
+        } else if ("jar".equals(url.getProtocol())) {
+            return Which.jarFile(url).toURI().toURL()
         } else {
             throw new IllegalArgumentException(
                     String.format(

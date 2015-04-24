@@ -17,7 +17,7 @@ configurations {
 }
 
 dependencies {
-    dslCore(group: 'org.jenkins-ci.plugins', name: 'job-dsl-core', version: '1.32', classifier: 'standalone') {
+    dslCore(group: 'org.jenkins-ci.plugins', name: 'job-dsl-core', version: jobDslVersion, classifier: 'standalone') {
         transitive = false
     }
 }
