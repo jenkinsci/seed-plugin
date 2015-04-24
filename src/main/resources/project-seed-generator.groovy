@@ -1,5 +1,3 @@
-import net.nemerosa.seed.jenkins.support.SeedDSLHelper
-
 /**
  * Script to generate a project seed.
  *
@@ -12,19 +10,15 @@ import net.nemerosa.seed.jenkins.support.SeedDSLHelper
  *
  * Bound variables are:
  *
- * - seedDSLHelper
+ * - projectSeedFolder
+ * - projectSeedPath
  */
 
-def projectEnvironment = seedDSLHelper.getProjectEnvironment(
-        PROJECT as String, PROJECT_CLASS as String,
-        PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String)
-
-
-folder(projectEnvironment.projectSeedFolder) {
+folder(projectSeedFolder) {
     // TODO Authorisations for the project, part of the project configuration
 }
 
-freeStyleJob(projectEnvironment.projectSeed) {
+freeStyleJob(projectSeedPath) {
     description "Project seed for ${PROJECT} - generates one branch folder and seed."
     parameters {
         stringParam('BRANCH', '', 'Path to the branch')

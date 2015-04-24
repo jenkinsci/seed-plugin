@@ -13,8 +13,10 @@ import javaposse.jobdsl.dsl.*;
 import javaposse.jobdsl.plugin.JenkinsJobManagement;
 import javaposse.jobdsl.plugin.LookupStrategy;
 import jenkins.model.Jenkins;
+import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper;
 import net.nemerosa.seed.jenkins.support.JoinClassLoader;
 import net.nemerosa.seed.jenkins.support.SeedDSLHelper;
+import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -81,6 +83,24 @@ public class ProjectSeedBuilder extends Builder {
         env.put("PROJECT_CLASS", theProjectClass);
         env.put("PROJECT_SCM_TYPE", theProjectScmType);
         env.put("PROJECT_SCM_URL", theProjectScmUrl);
+
+        // Project helper
+        SeedDSLHelper helper = new SeedDSLHelper();
+        SeedProjectEnvironment projectEnvironment = helper.getProjectEnvironment(
+                theProject,
+                theProjectClass,
+                theProjectScmType,
+                theProjectScmUrl
+        );
+
+        // Configuration of the DSL script
+        env.put("projectSeedFolder", SeedNamingStrategyHelper.getProjectSeedFolder(
+                projectEnvironment.getNamingStrategy(),
+                theProject
+        ));
+        env.put("projectSeedPath", projectEnvironment.getNamingStrategy().getProjectSeed(
+                theProject
+        ));
 
         // Project seed generation script
         String script = SeedDSLHelper.getResourceAsText("/project-seed-generator.groovy");
