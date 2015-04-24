@@ -24,3 +24,4 @@ cloudbees-folder:4.7
 git:2.3.5
 token-macro:1.10
 git-client:1.16.1
+envinject:1.91.2
