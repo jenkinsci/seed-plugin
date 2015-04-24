@@ -13,8 +13,10 @@ import javaposse.jobdsl.dsl.*;
 import javaposse.jobdsl.plugin.JenkinsJobManagement;
 import javaposse.jobdsl.plugin.LookupStrategy;
 import jenkins.model.Jenkins;
+import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper;
 import net.nemerosa.seed.jenkins.support.JoinClassLoader;
 import net.nemerosa.seed.jenkins.support.SeedDSLHelper;
+import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -90,6 +92,26 @@ public class BranchSeedBuilder extends Builder {
         env.put("PROJECT_SCM_URL", theProjectScmUrl);
         env.put("BRANCH", theBranch);
 
+        // Project helper
+        SeedDSLHelper helper = new SeedDSLHelper();
+        SeedProjectEnvironment projectEnvironment = helper.getProjectEnvironment(
+                theProject,
+                theProjectClass,
+                theProjectScmType,
+                theProjectScmUrl
+        );
+
+        // Configuration of the DSL script
+        env.put("branchSeedFolder", SeedNamingStrategyHelper.getBranchSeedFolder(
+                projectEnvironment.getNamingStrategy(),
+                theProject,
+                theBranch
+        ));
+        env.put("branchSeedPath", projectEnvironment.getNamingStrategy().getBranchSeed(
+                theProject,
+                theBranch
+        ));
+
         // Project seed generation script
         String script = SeedDSLHelper.getResourceAsText("/branch-seed-generator.groovy");
 
@@ -102,7 +124,7 @@ public class BranchSeedBuilder extends Builder {
                 script,
                 new URL[]{DslClasspath.classpathFor(this.getClass())},
                 false, // not ignoring existing,
-                Collections.<String, Object>singletonMap("seedDSLHelper", new SeedDSLHelper())
+                Collections.<String, Object>singletonMap("seedDSLHelper", helper)
         );
 
         // Combined class loader

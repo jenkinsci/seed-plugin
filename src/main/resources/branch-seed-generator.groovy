@@ -1,5 +1,3 @@
-import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper
-
 /**
  * Script to generate a project seed.
  *
@@ -13,24 +11,21 @@ import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper
  *
  * Bound variables are:
  *
- * - seedDSLHelper
+ * - branchSeedFolder
+ * - branchSeedPath
  */
-
-def projectEnvironment = seedDSLHelper.getProjectEnvironment(
-        PROJECT as String, PROJECT_CLASS as String,
-        PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String)
 
 /**
  * Branch folder
  */
 
-folder(SeedNamingStrategyHelper.getBranchSeedFolder(projectEnvironment.namingStrategy, PROJECT as String, BRANCH as String)) {}
+folder(branchSeedFolder) {}
 
 /**
  * Branch seed
  */
 
-freeStyleJob(projectEnvironment.namingStrategy.getBranchSeed(PROJECT as String, BRANCH as String)) {
+freeStyleJob(branchSeedPath) {
     description "Branch seed for ${BRANCH} in ${PROJECT} - generates the pipeline for the ${BRANCH} branch."
 //    wrappers {
 //        environmentVariables {
