@@ -15,8 +15,20 @@ import java.io.IOException;
 
 public class SeedDSLHelper {
 
-    private final SeedConfigurationLoader configurationLoader = new JenkinsSeedConfigurationLoader();
-    private final BranchStrategies branchStrategies = new JenkinsBranchStrategies();
+    private final SeedConfigurationLoader configurationLoader;
+    private final BranchStrategies branchStrategies;
+
+    public SeedDSLHelper() {
+        this(
+                new JenkinsSeedConfigurationLoader(),
+                new JenkinsBranchStrategies()
+        );
+    }
+
+    public SeedDSLHelper(SeedConfigurationLoader configurationLoader, BranchStrategies branchStrategies) {
+        this.configurationLoader = configurationLoader;
+        this.branchStrategies = branchStrategies;
+    }
 
     /**
      * Gets the configuration for a project
