@@ -18,6 +18,10 @@ group = 'org.jenkins-ci.plugins'
 version = versioning.info.full
 description = "Seed Jenkins plug-in"
 
+ext {
+    jobDslVersion = '1.33-SNAPSHOT'
+}
+
 jenkinsPlugin {
     coreVersion = '1.609'                                            // Version of Jenkins core this plugin depends on.
     displayName = 'Seed Jenkins plug-in'                             // Human-readable name of plugin.
@@ -34,6 +38,12 @@ jenkinsPlugin {
     }
 }
 
+// JDK6 compatibility
+ext {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
 // Joint compilation (Java + Groovy)
 sourceSets {
     main {
@@ -46,16 +56,21 @@ sourceSets {
     }
 }
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
     compile 'org.yaml:snakeyaml:1.15'
+    compile "org.codehaus.groovy:groovy-all:1.8.9"
 
     jenkinsPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26@jar'
     jenkinsPlugins 'org.jenkins-ci.plugins:cloudbees-folder:4.7@jar'
     jenkinsPlugins 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
     // TODO Waiting for JENKINS-27994 to be fixed and a new job-dsl released
-    jenkinsPlugins 'org.jenkins-ci.plugins:job-dsl:1.32@jar'
-    jenkinsTest 'org.jenkins-ci.plugins:job-dsl:1.32@jar'
-    compile 'org.jenkins-ci.plugins:job-dsl-core:1.32@jar'
+    jenkinsPlugins "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
+    jenkinsTest "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
+    compile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}@jar"
 
     testCompile 'org.mockito:mockito-core:1.9.5'
 }

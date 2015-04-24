@@ -17,6 +17,8 @@ import net.nemerosa.seed.jenkins.support.SeedDSLHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
 
 /**
  * Build step which creates a project folder and a project seed inside.
@@ -86,12 +88,17 @@ public class ProjectSeedBuilder extends Builder {
         ScriptRequest scriptRequest = new ScriptRequest(
                 null,
                 script,
-                DslClasspath.classpathFor(this.getClass()),
-                false // not ignoring existing
+                new URL[]{DslClasspath.classpathFor(this.getClass())},
+                false, // not ignoring existing,
+                Collections.<String, Object>singletonMap("seedDSLHelper", new SeedDSLHelper())
         );
 
         // Generation
-        GeneratedItems generatedItems = DslScriptLoader.runDslEngine(scriptRequest, jm);
+        GeneratedItems generatedItems = DslScriptLoader.runDslEngine(
+                scriptRequest,
+                jm,
+                getClass().getClassLoader()
+        );
 
         // Logging
         for (GeneratedJob job : generatedItems.getJobs()) {

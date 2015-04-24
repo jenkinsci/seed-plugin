@@ -1,7 +1,6 @@
 import net.nemerosa.seed.jenkins.pipeline.PipelineHelper
 import net.nemerosa.seed.jenkins.scm.SCMHelper
 import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper
-import net.nemerosa.seed.jenkins.support.SeedDSLHelper
 
 /**
  * Script to generate a project seed.
@@ -13,9 +12,13 @@ import net.nemerosa.seed.jenkins.support.SeedDSLHelper
  * - PROJECT_SCM_TYPE
  * - PROJECT_SCM_URL
  * - BRANCH
+ *
+ * Bound variables are:
+ *
+ * - seedDSLHelper
  */
 
-def projectEnvironment = SeedDSLHelper.getProjectEnvironment(
+def projectEnvironment = seedDSLHelper.getProjectEnvironment(
         PROJECT as String, PROJECT_CLASS as String,
         PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String)
 

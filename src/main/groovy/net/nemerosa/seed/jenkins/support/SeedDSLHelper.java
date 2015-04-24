@@ -1,9 +1,11 @@
 package net.nemerosa.seed.jenkins.support;
 
+import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
 import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
 import net.nemerosa.seed.jenkins.service.JenkinsBranchStrategies;
 import net.nemerosa.seed.jenkins.service.JenkinsSeedConfigurationLoader;
+import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategyHelper;
 import net.nemerosa.seed.jenkins.strategy.SeedNamingStrategy;
@@ -11,18 +13,15 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 
-public final class SeedDSLHelper {
+public class SeedDSLHelper {
 
-    private SeedDSLHelper() {
-    }
-
-    private static final JenkinsSeedConfigurationLoader configurationLoader = new JenkinsSeedConfigurationLoader();
-    private static final JenkinsBranchStrategies branchStrategies = new JenkinsBranchStrategies();
+    private final SeedConfigurationLoader configurationLoader = new JenkinsSeedConfigurationLoader();
+    private final BranchStrategies branchStrategies = new JenkinsBranchStrategies();
 
     /**
      * Gets the configuration for a project
      */
-    public static SeedProjectEnvironment getProjectEnvironment(String project, String projectClass, String scmType, String scmUrl) {
+    public SeedProjectEnvironment getProjectEnvironment(String project, String projectClass, String scmType, String scmUrl) {
         SeedConfiguration configuration = configurationLoader.load();
         SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(project, projectClass);
         BranchStrategy branchStrategy = BranchStrategyHelper.getBranchStrategy(configuration, projectConfiguration, branchStrategies);

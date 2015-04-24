@@ -17,7 +17,7 @@ public class Configuration {
     }
 
     protected Map<String, ?> mergeData(Configuration cfg) {
-        Map<String, Object> result = new HashMap<>(data);
+        Map<String, Object> result = new HashMap<String, Object>(data);
         result.putAll(cfg.data);
         return result;
     }

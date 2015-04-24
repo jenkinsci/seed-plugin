@@ -4,6 +4,7 @@ import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
 import net.nemerosa.seed.jenkins.strategy.SeedNamingStrategy;
+import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper;
 
 public class SeedProjectEnvironment {
 
@@ -51,5 +52,13 @@ public class SeedProjectEnvironment {
 
     public SeedNamingStrategy getNamingStrategy() {
         return namingStrategy;
+    }
+
+    public String getProjectSeedFolder() {
+        return SeedNamingStrategyHelper.getProjectSeedFolder(namingStrategy, id);
+    }
+
+    public String getProjectSeed() {
+        return namingStrategy.getProjectSeed(id);
     }
 }
