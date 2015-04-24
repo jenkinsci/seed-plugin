@@ -29,22 +29,13 @@ freeStyleJob(projectEnvironment.projectSeed) {
     parameters {
         stringParam('BRANCH', '', 'Path to the branch')
     }
-    wrappers {
-        environmentVariables {
-            env('PROJECT', PROJECT)
-            env('PROJECT_CLASS', PROJECT_CLASS)
-            env('PROJECT_SCM_TYPE', PROJECT_SCM_TYPE)
-            env('PROJECT_SCM_URL', PROJECT_SCM_URL)
-        }
-    }
-    // TODO Download of the branch code? Might not be needed at this stage
-    steps {
-        // Generates the branch folder and seed job
-        dsl {
-            removeAction 'IGNORE' // Existing branches are kept of course
-            text SeedDSLHelper.getResourceAsText('/branch-seed-generator.groovy')
-            ignoreExisting false  // Always update
+    configure { node ->
+        node / 'builders' / 'net.nemerosa.seed.jenkins.step.BranchSeedBuilder' {
+            'project' PROJECT
+            'projectClass' PROJECT_CLASS
+            'projectScmType' PROJECT_SCM_TYPE
+            'projectScmUrl' PROJECT_SCM_URL
+            'branch' '${BRANCH}'
         }
     }
 }
-
