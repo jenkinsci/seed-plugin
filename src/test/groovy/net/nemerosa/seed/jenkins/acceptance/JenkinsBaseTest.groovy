@@ -27,6 +27,8 @@ class JenkinsBaseTest {
 
     @Test
     void 'Creating a complete seed tree'() {
+        // Checks the seed job exists
+        'Default seed job created'()
         // Firing the seed job
         jenkins.fireJob('seed', [
                 PROJECT         : 'test',
