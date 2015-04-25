@@ -55,4 +55,18 @@ class JenkinsBaseTest {
         // TODO Checks the result of the pipeline (ci & publish must have been fired)
     }
 
+    @Test
+    void 'Project folder authorisations'() {
+        // Checks the seed job exists
+        'Default seed job created'()
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : 'test-auth',
+                PROJECT_SCM_TYPE: 'GIT',
+                PROJECT_SCM_URL : 'path/to/repo',
+        ]).checkSuccess()
+        // TODO Checks the project folder is created
+        // TODO Checks the project folder authorisation matrix
+    }
+
 }
