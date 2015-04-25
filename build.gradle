@@ -66,7 +66,7 @@ dependencies {
     jenkinsPlugins 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
     jenkinsPlugins "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     jenkinsTest "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
-    compile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}@jar"
+    providedCompile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}@jar"
 
     testCompile 'org.mockito:mockito-core:1.9.5'
 }
