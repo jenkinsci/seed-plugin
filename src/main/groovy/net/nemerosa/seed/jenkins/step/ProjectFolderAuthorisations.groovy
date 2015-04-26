@@ -11,10 +11,19 @@ class ProjectFolderAuthorisations {
     }
 
     String generate() {
-        """\
+        def authorisations = projectEnvironment.projectConfiguration.getListString('authorisations')
+        if (authorisations && !authorisations.empty) {
+            return """\
 authorization {
-    permission('hudson.model.Item.Workspace', 'jenkins_${projectEnvironment.id}')
+    ${
+                authorisations
+                        .collect { "permission('${it.replace('*', projectEnvironment.projectConfiguration.name)}')" }
+                        .join('\n')
+            }
 }
 """
+        } else {
+            return ''
+        }
     }
 }

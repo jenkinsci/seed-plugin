@@ -77,7 +77,17 @@ public class SeedConfiguration extends Configuration {
     public SeedProjectConfiguration getProjectConfiguration(String id) {
         SeedProjectConfiguration configuration = projects.get(id);
         if (configuration != null) {
-            return configuration;
+            String projectClass = configuration.getString("project-class", false, null);
+            if (projectClass != null) {
+                SeedProjectConfiguration projectClassCfg = getProjectClassConfiguration(projectClass);
+                if (projectClassCfg != null) {
+                    return projectClassCfg.merge(configuration);
+                } else {
+                    return configuration;
+                }
+            } else {
+                return configuration;
+            }
         } else if (isAutoConfigure()) {
             return SeedProjectConfiguration.of(id);
         } else {

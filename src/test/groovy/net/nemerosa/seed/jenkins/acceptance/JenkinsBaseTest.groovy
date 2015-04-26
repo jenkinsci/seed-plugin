@@ -59,14 +59,35 @@ class JenkinsBaseTest {
     void 'Project folder authorisations'() {
         // Checks the seed job exists
         'Default seed job created'()
+        // FIXME Configuration of the Seed job
         // Firing the seed job
         jenkins.fireJob('seed', [
                 PROJECT         : 'test-auth',
+                PROJECT_CLASS   : 'custom-auth',
                 PROJECT_SCM_TYPE: 'GIT',
                 PROJECT_SCM_URL : 'path/to/repo',
         ]).checkSuccess()
-        // TODO Checks the project folder is created
-        // TODO Checks the project folder authorisation matrix
+        // Checks the project folder is created
+        jenkins.job('test')
+        // Checks the project folder authorisation matrix
+        def xml = jenkins.jobConfig('test')
+        def matrix = xml.properties['com.cloudbees.hudson.plugins.folder.properties.AuthorizationMatrixProperty']
+        assert matrix
+        assert matrix.permission.collect { it.text() as String } == [
+                //
+                'hudson.model.Item.Workspace:jenkins_test',
+                'hudson.model.Item.Read:jenkins_test',
+                'hudson.model.Item.Discover:jenkins_test',
+                //
+                'hudson.model.Item.Read:jenkins_test_QA',
+                'hudson.model.Item.Discover:jenkins_test_QA',
+                //
+                'hudson.model.Item.Workspace:jenkins_test_BUILD',
+                'hudson.model.Item.Read:jenkins_test_BUILD',
+                'hudson.model.Item.Discover:jenkins_test_BUILD',
+                'hudson.model.Item.Cancel:jenkins_test_BUILD',
+                'hudson.model.Item.Build:jenkins_test_BUILD',
+        ]
     }
 
 }

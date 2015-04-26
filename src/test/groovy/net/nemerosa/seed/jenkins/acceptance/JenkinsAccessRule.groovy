@@ -173,6 +173,17 @@ class JenkinsAccessRule implements TestRule {
         }
     }
 
+    /**
+     * Gets a job/folder configuration as XML
+     */
+    def jobConfig(String job) {
+        String path = jobPath(job)
+        URL url = new URL(jenkinsUrl, "${path}/config.xml")
+        url.openStream().withStream {
+            new XmlSlurper().parse(it)
+        }
+    }
+
     class Build {
 
         final def json
