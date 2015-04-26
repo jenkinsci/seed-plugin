@@ -41,6 +41,11 @@ public class ProjectSeedBuilder extends AbstractSeedBuilder {
         return "/project-seed-generator.groovy";
     }
 
+    @Override
+    protected String replaceExtensionPoints(String script, EnvVars env, SeedProjectEnvironment projectEnvironment) {
+        return replaceExtensionPoint(script, "authorisations", new ProjectFolderAuthorisations(projectEnvironment).generate());
+    }
+
     public static final ProjectSeedBuilderDescriptor DESCRIPTOR = new ProjectSeedBuilderDescriptor();
 
     @Extension

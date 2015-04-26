@@ -28,6 +28,12 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
         return DESCRIPTOR;
     }
 
+    @Override
+    protected String replaceExtensionPoints(String script, EnvVars env, SeedProjectEnvironment projectEnvironment) {
+        // FIXME Method net.nemerosa.seed.jenkins.step.BranchSeedBuilder.replaceExtensionPoints
+        return script;
+    }
+
     @SuppressWarnings("unused")
     public String getBranch() {
         return branch;
