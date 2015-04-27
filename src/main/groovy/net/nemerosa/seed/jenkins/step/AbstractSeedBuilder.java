@@ -90,21 +90,33 @@ public abstract class AbstractSeedBuilder extends Builder {
 
         // Configuration of the DSL script
         configureEnvironment(env, projectEnvironment);
+        // Project seed generation script
+        String script = SeedDSLHelper.getResourceAsText(getScriptPath());
+
+        // Replacements
+        script = replaceExtensionPoints(script, env, projectEnvironment);
 
         // Launching the generation
-        launchGenerationScript(build, listener, env, getScriptPath());
+        launchGenerationScript(build, listener, env, script);
 
         // Done
         return true;
     }
 
+    protected String replaceExtensionPoint(String script, String extensionPoint, String extension) {
+        return script.replace(
+                String.format("%sExtensionPoint()", extensionPoint),
+                extension
+        );
+    }
+
+    protected abstract String replaceExtensionPoints(String script, EnvVars env, SeedProjectEnvironment projectEnvironment);
+
     protected abstract void configureEnvironment(EnvVars env, SeedProjectEnvironment projectEnvironment);
 
     protected abstract String getScriptPath();
 
-    protected void launchGenerationScript(AbstractBuild<?, ?> build, BuildListener listener, EnvVars env, String scriptPath) throws IOException {
-        // Project seed generation script
-        String script = SeedDSLHelper.getResourceAsText(scriptPath);
+    protected void launchGenerationScript(AbstractBuild<?, ?> build, BuildListener listener, EnvVars env, String script) throws IOException {
 
         // Jobs are created at the Jenkins root level
         JenkinsJobManagement jm = new JenkinsJobManagement(listener.getLogger(), env, build, LookupStrategy.JENKINS_ROOT);

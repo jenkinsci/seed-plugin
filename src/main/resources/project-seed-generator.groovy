@@ -15,7 +15,7 @@
  */
 
 folder(projectSeedFolder) {
-    // TODO Authorisations for the project, part of the project configuration
+    authorisationsExtensionPoint()
 }
 
 freeStyleJob(projectSeedPath) {

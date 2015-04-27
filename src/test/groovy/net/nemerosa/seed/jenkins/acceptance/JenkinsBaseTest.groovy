@@ -55,4 +55,37 @@ class JenkinsBaseTest {
         // TODO Checks the result of the pipeline (ci & publish must have been fired)
     }
 
+    @Test
+    void 'Project folder authorisations'() {
+        // Checks the seed job exists
+        'Default seed job created'()
+        // Configuration of the Seed job
+        jenkins.configureSeed '''\
+classes:
+    - id: custom-auth
+      authorisations:
+          - hudson.model.Item.Workspace:jenkins_*
+          - hudson.model.Item.Read:jenkins_*
+          - hudson.model.Item.Discover:jenkins_*
+'''
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : 'test-auth',
+                PROJECT_CLASS   : 'custom-auth',
+                PROJECT_SCM_TYPE: 'GIT',
+                PROJECT_SCM_URL : 'path/to/repo',
+        ]).checkSuccess()
+        // Checks the project folder is created
+        jenkins.job('test-auth')
+        // Checks the project folder authorisation matrix
+        def xml = jenkins.jobConfig('test-auth')
+        def matrix = xml.properties['com.cloudbees.hudson.plugins.folder.properties.AuthorizationMatrixProperty']
+        assert matrix
+        assert matrix.permission.collect { it.text() as String } == [
+                'hudson.model.Item.Workspace:jenkins_test-auth',
+                'hudson.model.Item.Read:jenkins_test-auth',
+                'hudson.model.Item.Discover:jenkins_test-auth',
+        ]
+    }
+
 }

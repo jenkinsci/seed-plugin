@@ -2,7 +2,6 @@ package net.nemerosa.seed.jenkins;
 
 import hudson.Extension;
 import jenkins.model.GlobalConfiguration;
-import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -43,6 +42,10 @@ public class SeedPlugin extends GlobalConfiguration {
         seedConfigurationContent = json.getString("seedConfigurationContent");
         save();
         return super.configure(req, json);
+    }
+
+    public void setSeedConfigurationContent(String content) {
+        seedConfigurationContent = content;
     }
 
     public String getYaml() {

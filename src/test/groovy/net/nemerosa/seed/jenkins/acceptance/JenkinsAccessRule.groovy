@@ -173,6 +173,34 @@ class JenkinsAccessRule implements TestRule {
         }
     }
 
+    /**
+     * Gets a job/folder configuration as XML
+     */
+    def jobConfig(String job) {
+        String path = jobPath(job)
+        URL url = new URL(jenkinsUrl, "${path}/config.xml")
+        url.openStream().withStream {
+            new XmlSlurper().parse(it)
+        }
+    }
+
+    void configureSeed(String yaml) {
+        def url = new URL(jenkinsUrl, "seed-config/")
+        println "Updating Seed configuration at ${url}..."
+        def connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = 'POST'
+        connection.doOutput = true
+        connection.connect()
+        try {
+            connection.outputStream.write(yaml.getBytes('UTF-8'))
+            connection.outputStream.flush()
+            // Reads the response
+            assert (connection.responseCode == HttpURLConnection.HTTP_OK): "Seed configuration failed with code: ${connection.responseCode}"
+        } finally {
+            connection.disconnect()
+        }
+    }
+
     class Build {
 
         final def json
