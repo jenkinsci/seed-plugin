@@ -44,12 +44,12 @@ class JenkinsBaseTest {
         ]).checkSuccess()
         // Checks the branch seed is created
         jenkins.job('test/test-master/test-master-seed')
-        // TODO Fires the branch seed
-        // jenkins.fireJob('test/test-master/test-master-seed').checkSuccess()
-        // TODO Checks the branch pipeline is there
-        // jenkins.job('test/test-master/test-master-build')
-        // jenkins.job('test/test-master/test-master-ci')
-        // jenkins.job('test/test-master/test-master-publish')
+        // Fires the branch seed
+        jenkins.fireJob('test/test-master/test-master-seed').checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.job('test/test-master/test-master-build')
+        jenkins.job('test/test-master/test-master-ci')
+        jenkins.job('test/test-master/test-master-publish')
         // TODO Fires the branch pipeline start
         // jenkins.fireJob('test/test-master/test-master-build').checkSuccess()
         // TODO Checks the result of the pipeline (ci & publish must have been fired)
