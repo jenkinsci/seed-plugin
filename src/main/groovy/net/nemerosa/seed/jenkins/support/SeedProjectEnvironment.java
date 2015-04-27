@@ -1,5 +1,6 @@
 package net.nemerosa.seed.jenkins.support;
 
+import net.nemerosa.seed.jenkins.model.Configuration;
 import net.nemerosa.seed.jenkins.model.SeedConfiguration;
 import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
@@ -60,5 +61,14 @@ public class SeedProjectEnvironment {
 
     public String getProjectSeed() {
         return namingStrategy.getProjectSeed(id);
+    }
+
+    public String getConfigurationValue(String key, String defaultValue) {
+        return Configuration.getValue(
+                key,
+                projectConfiguration,
+                globalConfiguration,
+                defaultValue
+        );
     }
 }

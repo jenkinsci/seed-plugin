@@ -12,6 +12,10 @@
  *
  * - projectSeedFolder
  * - projectSeedPath
+ *
+ * Extension points are:
+ *
+ * - authorisations
  */
 
 folder(projectSeedFolder) {

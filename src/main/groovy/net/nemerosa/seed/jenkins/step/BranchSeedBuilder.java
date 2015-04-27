@@ -28,10 +28,13 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
         return DESCRIPTOR;
     }
 
+    /**
+     * No extension in `branch-seed-generator.groovy` (as of now)
+     */
     @Override
     protected String replaceExtensionPoints(String script, EnvVars env, SeedProjectEnvironment projectEnvironment) {
-        // FIXME Method net.nemerosa.seed.jenkins.step.BranchSeedBuilder.replaceExtensionPoints
-        return script;
+        String theBranch = env.expand(branch);
+        return replaceExtensionPoint(script, "pipelineGeneration", new BranchPipelineGenerator(projectEnvironment, theBranch).generate());
     }
 
     @SuppressWarnings("unused")

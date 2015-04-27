@@ -4,6 +4,6 @@ import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment
 
 interface PipelineGenerator {
 
-    void steps(def dsl, SeedProjectEnvironment env)
+    String generate(SeedProjectEnvironment environment, String branch)
 
 }
