@@ -32,7 +32,7 @@ class JenkinsBaseTest {
         // Firing the seed job
         jenkins.fireJob('seed', [
                 PROJECT         : 'test',
-                PROJECT_SCM_TYPE: 'GIT',
+                PROJECT_SCM_TYPE: 'git',
                 // TODO Path configuration
                 PROJECT_SCM_URL : 'path/to/repo',
         ]).checkSuccess()
@@ -72,7 +72,7 @@ classes:
         jenkins.fireJob('seed', [
                 PROJECT         : 'test-auth',
                 PROJECT_CLASS   : 'custom-auth',
-                PROJECT_SCM_TYPE: 'GIT',
+                PROJECT_SCM_TYPE: 'git',
                 PROJECT_SCM_URL : 'path/to/repo',
         ]).checkSuccess()
         // Checks the project folder is created

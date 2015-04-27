@@ -43,7 +43,7 @@ public class ProjectSeedBuilder extends AbstractSeedBuilder {
 
     @Override
     protected String replaceExtensionPoints(String script, EnvVars env, SeedProjectEnvironment projectEnvironment) {
-        return replaceExtensionPoint(script, "authorisations", new ProjectFolderAuthorisations(projectEnvironment).generate());
+        return replaceExtensionPoint(script, "authorisations", new ProjectFolderAuthorisationsExtension(projectEnvironment).generate());
     }
 
     public static final ProjectSeedBuilderDescriptor DESCRIPTOR = new ProjectSeedBuilderDescriptor();

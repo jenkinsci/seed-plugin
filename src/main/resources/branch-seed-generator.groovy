@@ -16,6 +16,7 @@
  *
  * Extension points are:
  *
+ * - branchSeedScm
  * - pipelineGeneration
  */
 
@@ -40,8 +41,6 @@ freeStyleJob(branchSeedPath) {
             env('BRANCH', BRANCH)
         }
     }
-//    scm {
-//        SCMHelper.downloadPartial(delegate, projectEnvironment.projectConfiguration, PROJECT_SCM_TYPE as String, PROJECT_SCM_URL as String, BRANCH as String, 'seed')
-//    }
+    branchSeedScmExtensionPoint()
     pipelineGenerationExtensionPoint()
 }

@@ -10,7 +10,7 @@ This job is used to create a seed for a project.
         // Standard Seed parameters
         stringParam('PROJECT', '', 'Name of the project to generate - used as an identifier in Coastguard')
         stringParam('PROJECT_CLASS', '', 'Class of the project to generate - optional')
-        choiceParam('PROJECT_SCM_TYPE', ['SVN', 'GIT'])
+        choiceParam('PROJECT_SCM_TYPE', ['svn', 'git'])
         stringParam('PROJECT_SCM_URL', '', 'URL to the project SCM location, without any branch location')
     }
     configure { node ->

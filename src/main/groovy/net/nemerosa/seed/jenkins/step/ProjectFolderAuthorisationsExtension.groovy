@@ -2,11 +2,11 @@ package net.nemerosa.seed.jenkins.step
 
 import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment
 
-class ProjectFolderAuthorisations {
+class ProjectFolderAuthorisationsExtension {
 
     private final SeedProjectEnvironment projectEnvironment
 
-    ProjectFolderAuthorisations(SeedProjectEnvironment projectEnvironment) {
+    ProjectFolderAuthorisationsExtension(SeedProjectEnvironment projectEnvironment) {
         this.projectEnvironment = projectEnvironment
     }
 
