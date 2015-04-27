@@ -168,11 +168,47 @@ task dockerUndeploy(dependsOn: dockerDeploy) << {
     }
 }
 
+// Git test repositories
+
+ext {
+    dockerSsh = { String command ->
+        def cid = project.tasks.dockerDeploy.cid()
+        exec {
+            executable = 'docker'
+            args = [ 'exec', cid, '/bin/bash', '-c', command ]
+        }
+    }
+    dockerScript = { String dir, String script ->
+        dockerSsh "mkdir -p ${dir}"
+        script.readLines().findAll { it.trim() } .each { String command ->
+            dockerSsh "cd ${dir} && ${command.trim()}"
+        }
+    }
+    dockerGitRepo = { String name, String script ->
+        dockerScript "/var/lib/jenkins/tests/git/${name}", script
+    }
+}
+
+task dockerGitTestRepoSeedStd {
+    doFirst {
+        dockerGitRepo 'seed-std', '''\
+git init
+        '''
+    }
+}
+
+task dockerGitTestRepos(dependsOn: [dockerGitTestRepoSeedStd])
+
+// Local Docker acceptance tests orchestration
+
 task localDockerAcceptanceTest {
     dependsOn buildLatest
     dependsOn dockerAcceptanceTest
     dependsOn dockerDeploy
+    dependsOn dockerGitTestRepos
     finalizedBy dockerUndeploy
 }
 
 dockerAcceptanceTest.mustRunAfter dockerDeploy
+dockerAcceptanceTest.mustRunAfter dockerGitTestRepos
+dockerGitTestRepos.mustRunAfter dockerDeploy

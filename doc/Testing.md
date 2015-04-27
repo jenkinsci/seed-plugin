@@ -24,7 +24,8 @@ By default, the Docker host is assumed to run locally. If using the Docker machi
    -PjenkinsHost=`docker-machine ip`
 ```
 
-You can also run the acceptance tests against an arbitrary running Jenkins instance, without relying on Docker build first. For example, if the Jenkins instance to test is located at https://test.com:8080
+You can also run the acceptance tests against an arbitrary running Jenkins instance, without relying on Docker build first.
+For example, if the Jenkins instance to test is located at https://test.com:8080
 
 ```bash
 ./gradlew clean localDockerAcceptanceTest \
@@ -35,4 +36,5 @@ You can also run the acceptance tests against an arbitrary running Jenkins insta
 
 > Note that the full URL is not supported yet but will be.
 
-All acceptance tests are located in the `net.nemerosa.seed.jenkins.docker` package and are active only if the `jenkinsUrl` system property is set.
+All acceptance tests are located in the `net.nemerosa.seed.jenkins.acceptance` package and are active only
+if the `jenkinsUrl` system property is set.

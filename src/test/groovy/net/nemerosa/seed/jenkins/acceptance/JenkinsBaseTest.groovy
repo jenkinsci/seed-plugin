@@ -33,8 +33,8 @@ class JenkinsBaseTest {
         jenkins.fireJob('seed', [
                 PROJECT         : 'test',
                 PROJECT_SCM_TYPE: 'git',
-                // TODO Path configuration
-                PROJECT_SCM_URL : 'path/to/repo',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job('test/test-seed')
