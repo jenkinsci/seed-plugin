@@ -59,7 +59,15 @@ class JenkinsBaseTest {
     void 'Project folder authorisations'() {
         // Checks the seed job exists
         'Default seed job created'()
-        // FIXME Configuration of the Seed job
+        // Configuration of the Seed job
+        jenkins.configureSeed '''\
+classes:
+    - id: custom-auth
+      authorisations:
+          - hudson.model.Item.Workspace:jenkins_*
+          - hudson.model.Item.Read:jenkins_*
+          - hudson.model.Item.Discover:jenkins_*
+'''
         // Firing the seed job
         jenkins.fireJob('seed', [
                 PROJECT         : 'test-auth',
@@ -68,25 +76,15 @@ class JenkinsBaseTest {
                 PROJECT_SCM_URL : 'path/to/repo',
         ]).checkSuccess()
         // Checks the project folder is created
-        jenkins.job('test')
+        jenkins.job('test-auth')
         // Checks the project folder authorisation matrix
-        def xml = jenkins.jobConfig('test')
+        def xml = jenkins.jobConfig('test-auth')
         def matrix = xml.properties['com.cloudbees.hudson.plugins.folder.properties.AuthorizationMatrixProperty']
         assert matrix
         assert matrix.permission.collect { it.text() as String } == [
-                //
-                'hudson.model.Item.Workspace:jenkins_test',
-                'hudson.model.Item.Read:jenkins_test',
-                'hudson.model.Item.Discover:jenkins_test',
-                //
-                'hudson.model.Item.Read:jenkins_test_QA',
-                'hudson.model.Item.Discover:jenkins_test_QA',
-                //
-                'hudson.model.Item.Workspace:jenkins_test_BUILD',
-                'hudson.model.Item.Read:jenkins_test_BUILD',
-                'hudson.model.Item.Discover:jenkins_test_BUILD',
-                'hudson.model.Item.Cancel:jenkins_test_BUILD',
-                'hudson.model.Item.Build:jenkins_test_BUILD',
+                'hudson.model.Item.Workspace:jenkins_test-auth',
+                'hudson.model.Item.Read:jenkins_test-auth',
+                'hudson.model.Item.Discover:jenkins_test-auth',
         ]
     }
 
