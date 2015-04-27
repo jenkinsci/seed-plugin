@@ -85,7 +85,7 @@ if (versioning.info.branchType == 'release') {
 buildImage.dependsOn test
 build.dependsOn([buildImage, buildLatest])
 
-// Docker Jenkins integration tests
+// Docker Jenkins acceptance tests
 
 ext {
     // Parameters
@@ -144,6 +144,9 @@ task dockerDeploy(type: Exec) {
             'run',
             '--detach',
             '--publish-all=true',
+            // List of tests file to mount
+            "--volume=${projectDir}/src/test/resources/docker:/var/test/resources",
+            // Image to deploy
             "nemerosa/seed:latest"
     ]
     standardOutput = new ByteArrayOutputStream()
@@ -193,6 +196,12 @@ task dockerGitTestRepoSeedStd {
     doFirst {
         dockerGitRepo 'seed-std', '''\
 git init
+git config user.email "acceptance-test@nemerosa.com"
+git config user.name "Acceptance Test"
+mkdir seed
+cp /var/test/resources/seed-std.groovy seed/seed.groovy
+git add seed/seed.groovy
+git commit -m "Seed file"
         '''
     }
 }
