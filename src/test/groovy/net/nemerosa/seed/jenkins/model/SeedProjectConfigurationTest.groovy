@@ -21,7 +21,7 @@ class SeedProjectConfigurationTest {
     }
 
     @Test
-    void 'Getting project authorisations through a class'() {
+    void 'Getting project configuration through a class'() {
         def configuration = SeedConfiguration.parseYaml('''\
 classes:
     - id: custom-auth
@@ -36,6 +36,7 @@ classes:
           - hudson.model.Item.Discover:jenkins_*_BUILD
           - hudson.model.Item.Cancel:jenkins_*_BUILD
           - hudson.model.Item.Build:jenkins_*_BUILD
+      pipeline-generator: custom
 projects:
     - id: test
       project-class: custom-auth
@@ -55,6 +56,7 @@ projects:
                 'hudson.model.Item.Cancel:jenkins_*_BUILD',
                 'hudson.model.Item.Build:jenkins_*_BUILD',
         ]
+        assert project.getString('pipeline-generator', false, 'seed') == 'custom'
     }
 
 }
