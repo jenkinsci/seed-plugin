@@ -201,6 +201,15 @@ class JenkinsAccessRule implements TestRule {
         }
     }
 
+    /**
+     * Gets access to a build, waiting for it to be available first.
+     */
+    Build getBuild(String path, int buildNumber, int timeoutSeconds = 120) {
+        def url = new URL(jenkinsUrl, jobPath(path) + "/${buildNumber}/api/json")
+        def json = callUrl(url, timeoutSeconds, timeoutSeconds)
+        return new Build(json)
+    }
+
     class Build {
 
         final def json
