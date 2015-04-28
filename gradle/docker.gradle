@@ -145,7 +145,7 @@ task dockerDeploy(type: Exec) {
             '--detach',
             '--publish-all=true',
             // List of tests file to mount
-            "--volume=${projectDir}/src/test/resources/docker:/var/test/resources",
+            "--volume=${projectDir}/src/test/resources/acceptance:/var/test/resources",
             // Image to deploy
             "nemerosa/seed:latest"
     ]
@@ -171,35 +171,101 @@ task dockerUndeploy(dependsOn: dockerDeploy) << {
     }
 }
 
-// Git test repositories
+// Test repositories
+
+class SvnRepo {
+
+    private final Project project
+    private final String svnUrl
+    private final String path
+    private final String wd
+
+    SvnRepo(Project project, String path) {
+        this(project, 'svn://localhost', path)
+    }
+
+    SvnRepo(Project project, String svnUrl, String path) {
+        this.project = project
+        this.svnUrl = svnUrl
+        this.path = path
+        // Working directory
+        wd = "/var/lib/jenkins/tests/svn-wd/${path}"
+        project.dockerSsh "mkdir -p ${wd}"
+        // Creation of the parent path
+        svnCommand "mkdir --parents ${svnUrl}/${path} --message 'Creation of ${path}'"
+        // Checks the URL out into the working directory
+        svnCommand "checkout ${svnUrl}/${path} ."
+    }
+
+    void svnCommand (String command) {
+        project.dockerSsh "cd ${wd} && svn --username ci --password test --no-auth-cache --non-interactive ${command}"
+    }
+
+    void svnCopy (String resource, String destination) {
+        String dir = destination.split('/')[0..-2].join('/')
+        project.dockerSsh "mkdir -p ${wd}/${dir} && cp /var/test/resources/${resource} ${wd}/${destination}"
+        svnCommand "add --parents ${destination}"
+    }
+
+    void svnCommit (String message) {
+        svnCommand "commit --message '${message}'"
+    }
+}
 
 ext {
     dockerSsh = { String command ->
         def cid = project.tasks.dockerDeploy.cid()
         exec {
             executable = 'docker'
-            args = [ 'exec', cid, '/bin/bash', '-c', command ]
+            args = ['exec', cid, '/bin/bash', '-c', command]
         }
     }
     dockerAsyncSsh = { String command ->
         def cid = project.tasks.dockerDeploy.cid()
         exec {
             executable = 'docker'
-            args = [ 'exec', '--detach', cid, '/bin/bash', '-c', command ]
+            args = ['exec', '--detach', cid, '/bin/bash', '-c', command]
         }
     }
     dockerScript = { String dir, String script ->
         dockerSsh "mkdir -p ${dir}"
-        script.readLines().findAll { it.trim() } .each { String command ->
+        script.readLines().findAll { it.trim() }.each { String command ->
             dockerSsh "cd ${dir} && ${command.trim()}"
         }
     }
     dockerGitRepo = { String name, String script ->
         dockerScript "/var/lib/jenkins/tests/git/${name}", script
     }
+
+    svnUrl = 'svn://localhost'
+
+    svnCommand = { String wd, String command ->
+        dockerSsh "cd ${wd} && svn --username ci --password test --no-auth-cache --non-interactive ${command}"
+    }
+
+    svnRepo = { String name, Closure svnCommands ->
+        // Working directory
+        String wd = "/var/lib/jenkins/tests/svn-wd/${name}"
+        dockerSsh "mkdir -p ${wd}"
+        // Creation of the parent path
+        svnCommand wd, "mkdir --parents ${svnUrl}/${name} --message 'Creation of ${name}'"
+        // Commands executor
+        def commandExecutor = [
+                svnCopy  : { String resource, String destination ->
+                    ant.copy file: "/var/test/resources/acceptance/${resource}", tofile: "${wd}/${destination}"
+                    svnCommand wd, "add ${destination}"
+                },
+                svnCommit: { String message ->
+                    svnCommand wd, "commit --message '${message}'"
+                },
+        ]
+        // Executing the commands
+        svnCommands.delegate = commandExecutor
+        svnCommands()
+    }
 }
 
-task dockerSvnTestRepo {
+task dockerSvnTestRepoSetup(dependsOn: dockerDeploy) {
     doFirst {
         def svnrepo = "/var/lib/jenkins/tests/svn"
         dockerScript svnrepo, '''\
@@ -208,6 +274,21 @@ svnadmin create .
 cp -r /var/test/resources/svn/* conf
 '''
         dockerAsyncSsh "svnserve --daemon --root ${svnrepo} --pid-file ${svnrepo}/svn.pid"
+    }
+}
+
+task dockerSvnTestRepos(dependsOn: dockerSvnTestRepoSetup) {
+    doFirst {
+        // Creation of all the needed paths and files for the acceptance tests
+        // - 'Creating a project tree based of full customisation'
+        new SvnRepo(project, 'PRJ/branches/R11.7.0').with {
+            svnCopy 'seed-custom.properties', 'seed/seed.properties'
+            svnCommit 'Seed properties'
+        }
+//        svnRepo('PRJ/branches/R11.7.0') {
+//            svnCopy 'seed-custom.properties', 'seed/seed.properties'
+//            svnCommit 'Seed properties'
+//        }
     }
 }
 
@@ -234,12 +315,12 @@ task localDockerAcceptanceTest {
     dependsOn dockerAcceptanceTest
     dependsOn dockerDeploy
     dependsOn dockerGitTestRepos
-    dependsOn dockerSvnTestRepo
+    dependsOn dockerSvnTestRepos
     finalizedBy dockerUndeploy
 }
 
 dockerAcceptanceTest.mustRunAfter dockerDeploy
 dockerAcceptanceTest.mustRunAfter dockerGitTestRepos
-dockerAcceptanceTest.mustRunAfter dockerSvnTestRepo
+dockerAcceptanceTest.mustRunAfter dockerSvnTestRepos
 dockerGitTestRepos.mustRunAfter dockerDeploy
-dockerSvnTestRepo.mustRunAfter dockerDeploy
+dockerSvnTestRepos.mustRunAfter dockerDeploy
