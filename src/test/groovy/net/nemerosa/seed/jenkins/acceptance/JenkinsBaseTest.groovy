@@ -50,8 +50,8 @@ class JenkinsBaseTest {
         jenkins.job('test/test-master/test-master-build')
         jenkins.job('test/test-master/test-master-ci')
         jenkins.job('test/test-master/test-master-publish')
-        // TODO Fires the branch pipeline start
-        // jenkins.fireJob('test/test-master/test-master-build').checkSuccess()
+        // Fires the branch pipeline start
+        jenkins.fireJob('test/test-master/test-master-build').checkSuccess()
         // TODO Checks the result of the pipeline (ci & publish must have been fired)
     }
 
