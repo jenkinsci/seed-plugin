@@ -236,33 +236,6 @@ ext {
     dockerGitRepo = { String name, String script ->
         dockerScript "/var/lib/jenkins/tests/git/${name}", script
     }
-
-    svnUrl = 'svn://localhost'
-
-    svnCommand = { String wd, String command ->
-        dockerSsh "cd ${wd} && svn --username ci --password test --no-auth-cache --non-interactive ${command}"
-    }
-
-    svnRepo = { String name, Closure svnCommands ->
-        // Working directory
-        String wd = "/var/lib/jenkins/tests/svn-wd/${name}"
-        dockerSsh "mkdir -p ${wd}"
-        // Creation of the parent path
-        svnCommand wd, "mkdir --parents ${svnUrl}/${name} --message 'Creation of ${name}'"
-        // Commands executor
-        def commandExecutor = [
-                svnCopy  : { String resource, String destination ->
-                    ant.copy file: "/var/test/resources/acceptance/${resource}", tofile: "${wd}/${destination}"
-                    svnCommand wd, "add ${destination}"
-                },
-                svnCommit: { String message ->
-                    svnCommand wd, "commit --message '${message}'"
-                },
-        ]
-        // Executing the commands
-        svnCommands.delegate = commandExecutor
-        svnCommands()
-    }
 }
 
 task dockerSvnTestRepoSetup(dependsOn: dockerDeploy) {
@@ -285,10 +258,6 @@ task dockerSvnTestRepos(dependsOn: dockerSvnTestRepoSetup) {
             svnCopy 'seed-custom.properties', 'seed/seed.properties'
             svnCommit 'Seed properties'
         }
-//        svnRepo('PRJ/branches/R11.7.0') {
-//            svnCopy 'seed-custom.properties', 'seed/seed.properties'
-//            svnCommit 'Seed properties'
-//        }
     }
 }
 
