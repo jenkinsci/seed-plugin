@@ -9,4 +9,5 @@ while read spec; do
     [[ ${plugin[0]} =~ ^\s*$ ]] && continue
     echo "Getting plug-in ${plugin[0]}-${plugin[1]}"
     curl -L ${JENKINS_UC}/download/plugins/${plugin[0]}/${plugin[1]}/${plugin[0]}.hpi -o $REF/${plugin[0]}.hpi;
+    touch $REF/${plugin[0]}.hpi.pinned
 done  < $1
