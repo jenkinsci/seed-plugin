@@ -90,4 +90,44 @@ classes:
         ]
     }
 
+    @Test
+    void 'Creating a project tree based of full customisation'() {
+        // Checks the seed job exists
+        'Default seed job created'()
+        // TODO Configuration
+        jenkins.configureSeed '''\
+strategies:
+  - id: custom
+    seed-expression: "${PROJECT}/${PROJECT}_GENERATOR"
+    branch-seed-expression: "${PROJECT}/${PROJECT}_*/${PROJECT}_*_GENERATOR"
+    branch-start-expression: "${PROJECT}/${PROJECT}_*/${PROJECT}_*_010_BUILD"
+    branch-name-expression: "${BRANCH}"
+    branch-name-prefixes:
+      - "branches/"
+    commit-parameter: "REVISION"
+classes:
+    - id: custom-pipeline
+      branch-strategy: custom
+'''
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : 'PRJ',
+                PROJECT_CLASS   : 'custom-pipeline',
+                PROJECT_SCM_TYPE: 'svn',
+                PROJECT_SCM_URL : 'svn://localhost/PRJ',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job('PRJ/PRJ_GENERATOR')
+        // Fires the project seed
+        jenkins.fireJob('PRJ/PRJ_GENERATOR', [
+                BRANCH: 'branches/R11.7.0'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR')
+        // TODO Fires the branch seed
+        // TODO Checks the branch pipeline is there
+        // TODO Fires the branch pipeline start
+        // TODO Checks the result of the pipeline (ci & publish must have been fired)
+    }
+
 }
