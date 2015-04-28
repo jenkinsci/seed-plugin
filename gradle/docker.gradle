@@ -181,6 +181,13 @@ ext {
             args = [ 'exec', cid, '/bin/bash', '-c', command ]
         }
     }
+    dockerAsyncSsh = { String command ->
+        def cid = project.tasks.dockerDeploy.cid()
+        exec {
+            executable = 'docker'
+            args = [ 'exec', '--detach', cid, '/bin/bash', '-c', command ]
+        }
+    }
     dockerScript = { String dir, String script ->
         dockerSsh "mkdir -p ${dir}"
         script.readLines().findAll { it.trim() } .each { String command ->
@@ -189,6 +196,18 @@ ext {
     }
     dockerGitRepo = { String name, String script ->
         dockerScript "/var/lib/jenkins/tests/git/${name}", script
+    }
+}
+
+task dockerSvnTestRepo {
+    doFirst {
+        def svnrepo = "/var/lib/jenkins/tests/svn"
+        dockerScript svnrepo, '''\
+rm -rf *
+svnadmin create .
+cp -r /var/test/resources/svn/* conf
+'''
+        dockerAsyncSsh "svnserve --daemon --root ${svnrepo} --pid-file ${svnrepo}/svn.pid"
     }
 }
 
@@ -215,9 +234,12 @@ task localDockerAcceptanceTest {
     dependsOn dockerAcceptanceTest
     dependsOn dockerDeploy
     dependsOn dockerGitTestRepos
+    dependsOn dockerSvnTestRepo
     finalizedBy dockerUndeploy
 }
 
 dockerAcceptanceTest.mustRunAfter dockerDeploy
 dockerAcceptanceTest.mustRunAfter dockerGitTestRepos
+dockerAcceptanceTest.mustRunAfter dockerSvnTestRepo
 dockerGitTestRepos.mustRunAfter dockerDeploy
+dockerSvnTestRepo.mustRunAfter dockerDeploy

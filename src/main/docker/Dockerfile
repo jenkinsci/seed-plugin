@@ -11,7 +11,7 @@ FROM java:openjdk-8u40-jdk
 
 # Basic tools
 
-RUN apt-get update && apt-get install -y wget git curl zip && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y wget git subversion curl zip && rm -rf /var/lib/apt/lists/*
 
 # Home folder
 
