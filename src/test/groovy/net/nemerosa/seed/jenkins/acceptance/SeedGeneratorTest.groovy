@@ -5,10 +5,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Is the Jenkins application available?
+ * Testing the generation of seeds and pipelines using the Seed plug-in.
  */
 @RunWith(AcceptanceTestRunner)
-class JenkinsBaseTest {
+class SeedGeneratorTest {
 
     public static final int JOB_TIMEOUT = 1 * 60
 
