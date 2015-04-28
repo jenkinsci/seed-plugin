@@ -124,7 +124,8 @@ classes:
         ]).checkSuccess()
         // Checks the branch seed is created
         jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR')
-        // TODO Fires the branch seed
+        // Fires the branch seed
+        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR').checkSuccess()
         // TODO Checks the branch pipeline is there
         // TODO Fires the branch pipeline start
         // TODO Checks the result of the pipeline (ci & publish must have been fired)

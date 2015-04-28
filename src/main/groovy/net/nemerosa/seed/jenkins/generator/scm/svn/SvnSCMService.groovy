@@ -16,7 +16,7 @@ class SvnSCMService implements SCMService {
         """\
 scm {
     svn {
-        location('${env.scmUrl}/${path}') {
+        location('${env.scmUrl}/${branch}/${path}') {
             directory '${path}'
             credentials '${credentialsId}'
         }
