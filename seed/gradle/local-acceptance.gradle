@@ -20,7 +20,7 @@ ext {
     }
 }
 
-task dockerDeploy(type: Exec, dependsOn: buildLatest) {
+task dockerDeploy(type: Exec, dependsOn: [buildLatest, ':seed-pipeline-demo:assemble']) {
     executable 'docker'
     args = [
             'run',
@@ -28,6 +28,8 @@ task dockerDeploy(type: Exec, dependsOn: buildLatest) {
             '--publish-all=true',
             // List of tests file to mount
             "--volume=${projectDir}/src/test/resources/acceptance:/var/test/resources",
+            // Mounting the Seed pipeline demo as a flat repository
+            "--volume=${project(':seed-pipeline-demo').buildDir}/libs:/var/test/repository",
             // Image to deploy
             "nemerosa/seed:latest"
     ]
