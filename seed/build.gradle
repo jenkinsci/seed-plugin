@@ -67,3 +67,5 @@ dependencies {
 
 // Docker build
 apply from: 'gradle/docker.gradle'
+apply from: 'gradle/acceptance.gradle'
+apply from: 'gradle/local-acceptance.gradle'
