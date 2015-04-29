@@ -94,6 +94,18 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
         }
         listener.logger.println("DSL script location: ${dslBootstrapLocation}")
 
+        // Source repository
+        String repositoryUrl = properties['seed.dsl.repository']
+        if (!repositoryUrl) {
+            repositoryUrl = projectEnvironment.getConfigurationValue('pipeline-generator-repository', '')
+        }
+        String repository
+        if (repositoryUrl) {
+            repository = "maven { url '${repositoryUrl}' }"
+        } else {
+            repository = "mavenCentral()"
+        }
+
         // Injects the environment variables
         build.addAction(new ParametersAction(
                 new StringParameterValue(SEED_DSL_LIBRARIES, dependencies.join('/n')),
@@ -112,7 +124,25 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
         wrapperDir.child('gradle-wrapper.jar').copyFrom(getClass().getResource('/gradle/gradle/wrapper/gradle-wrapper.jar'))
         wrapperDir.child('gradle-wrapper.properties').copyFrom(getClass().getResource('/gradle/gradle/wrapper/gradle-wrapper.properties'))
 
-        // FIXME Generates the build.gradle file
+        // Generates the build.gradle file
+        // TODO Extraction of the DSL script
+        listener.logger.println("Generating the Gradle file...")
+        String gradle = """\
+repositories {
+    ${repository}
+}
+configurations {
+    dslLibrary
+}
+dependencies {
+    ${dependencies.collect { "dslLibrary '${it}'" }.join('\n')}
+}
+task prepare(type: Copy) {
+    into 'seed/lib'
+    from configurations.dslLibrary
+}
+"""
+        gradleDir.child('build.gradle').write(gradle, 'UTF-8')
 
         // OK
         return true
