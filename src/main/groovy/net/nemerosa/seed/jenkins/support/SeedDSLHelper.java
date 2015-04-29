@@ -39,7 +39,7 @@ public class SeedDSLHelper {
         BranchStrategy branchStrategy = BranchStrategyHelper.getBranchStrategy(configuration, projectConfiguration, branchStrategies);
         SeedNamingStrategy namingStrategy = branchStrategy.getSeedNamingStrategy();
         return new SeedProjectEnvironment(
-                project, scmType, scmUrl,
+                project, projectClass, scmType, scmUrl,
                 configuration,
                 projectConfiguration,
                 branchStrategy,

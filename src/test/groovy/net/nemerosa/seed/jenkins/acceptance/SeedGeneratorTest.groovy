@@ -107,7 +107,7 @@ strategies:
 classes:
     - id: custom-pipeline
       branch-strategy: custom
-      pipeline-generator: custom
+      pipeline-generator: properties
 '''
         // Firing the seed job
         jenkins.fireJob('seed', [

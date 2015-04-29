@@ -2,6 +2,11 @@ package net.nemerosa.seed.jenkins.pipeline
 
 import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment
 
+// FIXME Reuse the properties based generator
+/**
+ * Most of the seed steps can reuse the properties based generator (download of dependencies, etc.). Only the last
+ * step, with a fixed script, is optional.
+ */
 class SeedPipelineGenerator extends AbstractPipelineGenerator {
 
     @Override

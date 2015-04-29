@@ -10,6 +10,7 @@ import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper;
 public class SeedProjectEnvironment {
 
     private final String id;
+    private final String projectClass;
     private final String scmType;
     private final String scmUrl;
     private final SeedConfiguration globalConfiguration;
@@ -17,8 +18,9 @@ public class SeedProjectEnvironment {
     private final BranchStrategy branchStrategy;
     private final SeedNamingStrategy namingStrategy;
 
-    public SeedProjectEnvironment(String id, String scmType, String scmUrl, SeedConfiguration globalConfiguration, SeedProjectConfiguration projectConfiguration, BranchStrategy branchStrategy, SeedNamingStrategy namingStrategy) {
+    public SeedProjectEnvironment(String id, String projectClass, String scmType, String scmUrl, SeedConfiguration globalConfiguration, SeedProjectConfiguration projectConfiguration, BranchStrategy branchStrategy, SeedNamingStrategy namingStrategy) {
         this.id = id;
+        this.projectClass = projectClass;
         this.scmType = scmType;
         this.scmUrl = scmUrl;
         this.globalConfiguration = globalConfiguration;
@@ -29,6 +31,10 @@ public class SeedProjectEnvironment {
 
     public String getId() {
         return id;
+    }
+
+    public String getProjectClass() {
+        return projectClass;
     }
 
     public String getScmType() {
