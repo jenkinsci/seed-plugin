@@ -5,6 +5,7 @@ import net.nemerosa.seed.jenkins.pipeline.PipelineGeneratorNotFoundException
 import net.nemerosa.seed.jenkins.pipeline.SeedPipelineGenerator
 import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment
 
+@Deprecated
 class BranchPipelineGeneratorExtension {
 
     // TODO Use IOC

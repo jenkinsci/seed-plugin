@@ -17,7 +17,6 @@
  * Extension points are:
  *
  * - branchSeedScm
- * - pipelineGeneration
  */
 
 /**
@@ -42,5 +41,13 @@ freeStyleJob(branchSeedPath) {
         }
     }
     branchSeedScmExtensionPoint()
-    pipelineGenerationExtensionPoint()
+    configure { node ->
+        node / 'builders' / 'net.nemerosa.seed.jenkins.step.BranchPipelineBuilder' {
+            'project' PROJECT
+            'projectClass' PROJECT_CLASS
+            'projectScmType' PROJECT_SCM_TYPE
+            'projectScmUrl' PROJECT_SCM_URL
+            'branch' BRANCH
+        }
+    }
 }

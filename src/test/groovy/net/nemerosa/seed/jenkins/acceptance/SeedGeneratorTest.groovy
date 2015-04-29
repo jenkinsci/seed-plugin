@@ -108,6 +108,7 @@ strategies:
 classes:
     - id: custom-pipeline
       branch-strategy: custom
+      pipeline-generator: custom
 '''
         // Firing the seed job
         jenkins.fireJob('seed', [
@@ -126,7 +127,8 @@ classes:
         jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR')
         // Fires the branch seed
         jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR').checkSuccess()
-        // TODO Checks the branch pipeline is there
+        // Checks the branch pipeline is there
+        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_010_BUILD')
         // TODO Fires the branch pipeline start
         // TODO Checks the result of the pipeline (ci & publish must have been fired)
     }
