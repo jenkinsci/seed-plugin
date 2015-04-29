@@ -7,6 +7,8 @@ import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
 import net.nemerosa.seed.jenkins.strategy.SeedNamingStrategy;
 import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper;
 
+import java.util.List;
+
 public class SeedProjectEnvironment {
 
     private final String id;
@@ -75,6 +77,14 @@ public class SeedProjectEnvironment {
                 projectConfiguration,
                 globalConfiguration,
                 defaultValue
+        );
+    }
+
+    public List<String> getConfigurationList(String key) {
+        return Configuration.getList(
+                key,
+                projectConfiguration,
+                globalConfiguration
         );
     }
 }

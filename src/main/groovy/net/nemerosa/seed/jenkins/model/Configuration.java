@@ -95,4 +95,13 @@ public class Configuration {
                 )
         );
     }
+
+    public static List<String> getList(String name, Configuration configuration, Configuration globalConfiguration) {
+        List<String> list = configuration.getListString(name);
+        if (list != null && !list.isEmpty()) {
+            return list;
+        } else {
+            return globalConfiguration.getListString(name);
+        }
+    }
 }
