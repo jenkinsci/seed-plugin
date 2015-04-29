@@ -21,7 +21,6 @@ class SeedGeneratorTest {
 
     @Test
     void 'Default seed job created'() {
-        // TODO Checks the job
         jenkins.job('seed', JOB_TIMEOUT, JOB_TIMEOUT)
     }
 
@@ -94,7 +93,7 @@ classes:
     void 'Creating a project tree based of full customisation'() {
         // Checks the seed job exists
         'Default seed job created'()
-        // TODO Configuration
+        // Configuration
         jenkins.configureSeed '''\
 strategies:
   - id: custom

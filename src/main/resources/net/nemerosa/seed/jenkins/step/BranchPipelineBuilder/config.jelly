@@ -1,0 +1,22 @@
+<j:jelly xmlns:j="jelly:core">
+    <p>
+        Step which generates the pipeline for the
+        <b>${instance.branch}</b>
+        branch.
+    </p>
+    <p>The generation is configured as follows:</p>
+    <ul>
+        <li>Project: <b>${instance.project}</b></li>
+        <li>Project class: <b>${instance.projectClass}</b></li>
+        <li>Project SCM type: <b>${instance.projectScmType}</b></li>
+        <li>Project SCM URL: <b>${instance.projectScmUrl}</b></li>
+        <li>Branch: <b>${instance.branch}</b></li>
+    </ul>
+    <p>
+        This configuration is generated, cannot be edited and can only be changed by:
+        <ol>
+            <li>regenerating the branch seed by running the parent project seed</li>
+            <li>and/or regenerating the project seed by running the root seed project</li>
+        </ol>
+    </p>
+</j:jelly>
