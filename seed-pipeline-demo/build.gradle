@@ -1,0 +1,32 @@
+description = '''\
+    Sample pipeline DSL project, used for the Seed plug-in acceptance tests, and suitable
+    as an example of such a project.
+'''
+
+/**
+ * This is a Groovy project
+ */
+
+apply plugin: 'groovy'
+
+/**
+ * Dependencies
+ */
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.4.3'
+}
+
+/**
+ * Putting the seed.groovy in its own folder
+ */
+
+sourceSets {
+    main {
+        groovy { srcDirs = ['src/main/groovy', 'seed'] }
+    }
+}

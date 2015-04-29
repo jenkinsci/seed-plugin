@@ -1,3 +1,4 @@
 rootProject.name = "seed"
 
 include ':seed'
+include ':seed-pipeline-demo'
