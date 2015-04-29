@@ -36,13 +36,22 @@ configure { node ->
 }
 """
 
-        // FIXME Download of DSL dependencies
-        // FIXME Download of DSL bootstrap script
         /**
          * Defines a Gradle step which:
          * - downloads the dependencies specified by the previous build (list available as ??? environment variable)
          * - extract the DSL bootstrap script from the indicated JAR (??? and ??? environment variables)
          */
+        snippets << """\
+steps {
+    gradle {
+        rootBuildScriptDir 'seed/gradle'
+        fromRootBuildScriptDir true
+        makeExecutable()
+        useWrapper()
+        tasks 'prepare'
+    }
+}
+"""
 
 
         // FIXME Runs the DSL
