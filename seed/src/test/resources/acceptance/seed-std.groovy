@@ -1,3 +1,4 @@
+package acceptance
 /**
  * Sample pipeline generation, used for acceptance tests
  */

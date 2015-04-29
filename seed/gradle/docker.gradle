@@ -64,7 +64,7 @@ task buildLatest(type: Exec, dependsOn: buildImage) {
     ]
 }
 
-task build(dependsOn: [versionDisplay, buildImage, buildLatest])
+task build(dependsOn: [rootProject.versionDisplay, buildImage, buildLatest])
 
 if (versioning.info.branchType == 'release') {
     task buildRelease(type: Exec, dependsOn: buildImage) {
