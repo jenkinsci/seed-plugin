@@ -31,7 +31,10 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
     @Override
     protected String replaceExtensionPoints(String script, EnvVars env, SeedProjectEnvironment projectEnvironment) {
         String theBranch = env.expand(branch);
-        return replaceExtensionPoint(script, "branchSeedScm", new BranchSeedScmExtension(projectEnvironment, theBranch).generate());
+        String result = script;
+        result = replaceExtensionPoint(script, "pipelineGeneration", new BranchPipelineGeneratorExtension(projectEnvironment, theBranch).generate());
+        result = replaceExtensionPoint(result, "branchSeedScm", new BranchSeedScmExtension(projectEnvironment, theBranch).generate());
+        return result;
     }
 
     @SuppressWarnings("unused")

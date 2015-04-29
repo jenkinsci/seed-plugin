@@ -5,20 +5,19 @@ import net.nemerosa.seed.jenkins.pipeline.PipelineGeneratorNotFoundException
 import net.nemerosa.seed.jenkins.pipeline.SeedPipelineGenerator
 import net.nemerosa.seed.jenkins.support.SeedProjectEnvironment
 
-@Deprecated
 class BranchPipelineGeneratorExtension {
 
     // TODO Use IOC
     private static final Map<String, PipelineGenerator> pipelineGenerators = [
-            seed: new SeedPipelineGenerator()
+            seed: new SeedPipelineGenerator(),
     ]
 
     private final SeedProjectEnvironment projectEnvironment
     private final String branch
 
     BranchPipelineGeneratorExtension(SeedProjectEnvironment projectEnvironment, String branch) {
-        this.branch = branch
         this.projectEnvironment = projectEnvironment
+        this.branch = branch
     }
 
     String generate() {
