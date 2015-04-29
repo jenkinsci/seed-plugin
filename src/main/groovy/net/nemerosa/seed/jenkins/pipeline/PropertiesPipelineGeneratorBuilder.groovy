@@ -76,7 +76,7 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
     }
 
     @Extension
-    public static class PropertiesPipelineGeneratorBuilderDescriptor extends BuildStepDescriptor<Builder> {
+    public static class PropertiesPipelineGeneratorBuilderDescription extends BuildStepDescriptor<Builder> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {

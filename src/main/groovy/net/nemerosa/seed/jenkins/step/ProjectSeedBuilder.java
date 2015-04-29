@@ -3,7 +3,6 @@ package net.nemerosa.seed.jenkins.step;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.AbstractProject;
-import hudson.model.Descriptor;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper;
@@ -18,11 +17,6 @@ public class ProjectSeedBuilder extends AbstractSeedBuilder {
     @DataBoundConstructor
     public ProjectSeedBuilder(String project, String projectClass, String projectScmType, String projectScmUrl) {
         super(project, projectClass, projectScmType, projectScmUrl);
-    }
-
-    @Override
-    public Descriptor<Builder> getDescriptor() {
-        return DESCRIPTOR;
     }
 
     @Override
@@ -46,10 +40,8 @@ public class ProjectSeedBuilder extends AbstractSeedBuilder {
         return replaceExtensionPoint(script, "authorisations", new ProjectFolderAuthorisationsExtension(projectEnvironment).generate());
     }
 
-    public static final ProjectSeedBuilderDescriptor DESCRIPTOR = new ProjectSeedBuilderDescriptor();
-
     @Extension
-    public static class ProjectSeedBuilderDescriptor extends BuildStepDescriptor<Builder> {
+    public static class ProjectSeedBuilderDescription extends BuildStepDescriptor<Builder> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {

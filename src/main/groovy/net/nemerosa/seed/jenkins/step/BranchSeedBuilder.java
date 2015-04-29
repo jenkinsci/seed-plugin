@@ -24,11 +24,6 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
     }
 
     @Override
-    public Descriptor<Builder> getDescriptor() {
-        return DESCRIPTOR;
-    }
-
-    @Override
     protected String replaceExtensionPoints(String script, EnvVars env, SeedProjectEnvironment projectEnvironment) {
         String theBranch = env.expand(branch);
         String result = script;
@@ -61,10 +56,8 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
         return "/branch-seed-generator.groovy";
     }
 
-    public static final BranchSeedBuilderDescriptor DESCRIPTOR = new BranchSeedBuilderDescriptor();
-
     @Extension
-    public static class BranchSeedBuilderDescriptor extends BuildStepDescriptor<Builder> {
+    public static class BranchSeedBuilderDescription extends BuildStepDescriptor<Builder> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {

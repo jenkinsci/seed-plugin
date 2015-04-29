@@ -1,13 +1,9 @@
 package net.nemerosa.seed.jenkins.step;
 
 import hudson.EnvVars;
-import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.Descriptor;
-import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import javaposse.jobdsl.dsl.*;
 import javaposse.jobdsl.plugin.JenkinsJobManagement;
@@ -34,11 +30,6 @@ public abstract class AbstractSeedBuilder extends Builder {
         this.projectClass = projectClass;
         this.projectScmType = projectScmType;
         this.projectScmUrl = projectScmUrl;
-    }
-
-    @Override
-    public Descriptor<Builder> getDescriptor() {
-        return DESCRIPTOR;
     }
 
     public String getProject() {
@@ -145,21 +136,5 @@ public abstract class AbstractSeedBuilder extends Builder {
 
         // Done
         Jenkins.getInstance().rebuildDependencyGraph();
-    }
-
-    public static final BranchSeedBuilderDescriptor DESCRIPTOR = new BranchSeedBuilderDescriptor();
-
-    @Extension
-    public static class BranchSeedBuilderDescriptor extends BuildStepDescriptor<Builder> {
-
-        @Override
-        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-            return true;
-        }
-
-        @Override
-        public String getDisplayName() {
-            return "Branch seed generator";
-        }
     }
 }
