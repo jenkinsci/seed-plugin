@@ -61,7 +61,7 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
         )
 
         // Reads the property file
-        listener.logger.println("Reading properties from ${propertyPath}")
+        listener.logger.println("Reading properties from ${propertyPath}...")
         Properties properties = new Properties()
         build.workspace.child(propertyPath).read().withStream { properties.load(it) }
 
@@ -100,6 +100,19 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
                 new StringParameterValue(SEED_DSL_SCRIPT_JAR, dslBootstrapDependency),
                 new StringParameterValue(SEED_DSL_SCRIPT_LOCATION, dslBootstrapLocation),
         ))
+
+        // Prepares the Gradle environment
+        listener.logger.println("Preparing the Gradle environment...")
+        def gradleDir = build.workspace.child('seed/gradle')
+        gradleDir.mkdirs()
+        gradleDir.child('gradlew').copyFrom(getClass().getResource('/gradle/gradlew'))
+        gradleDir.child('gradlew.bat').copyFrom(getClass().getResource('/gradle/gradlew.bat'))
+        def wrapperDir = gradleDir.child('gradle/wrapper')
+        wrapperDir.mkdirs()
+        wrapperDir.child('gradle-wrapper.jar').copyFrom(getClass().getResource('/gradle/gradle/wrapper/gradle-wrapper.jar'))
+        wrapperDir.child('gradle-wrapper.properties').copyFrom(getClass().getResource('/gradle/gradle/wrapper/gradle-wrapper.properties'))
+
+        // FIXME Generates the build.gradle file
 
         // OK
         return true
