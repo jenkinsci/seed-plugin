@@ -1,3 +1,7 @@
+import net.nemerosa.seed.demo.GeneralHelper
+
+import static net.nemerosa.seed.demo.GeneralHelper.generalConfiguration
+
 /**
  * Script being called to generate a pipeline
  *
@@ -19,6 +23,7 @@
  */
 
 freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_010_BUILD") {
+    generalConfiguration delegate, "Build and packaging"
     publishers {
         downstreamParameterized {
             trigger("${SEED_PROJECT}_${SEED_BRANCH}_020_CI", 'SUCCESS', true) {
@@ -28,6 +33,7 @@ freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_010_BUILD") {
 }
 
 freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
+    generalConfiguration delegate, "Continous integration"
     publishers {
         downstreamParameterized {
             trigger("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH", 'SUCCESS', true) {
@@ -37,5 +43,5 @@ freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
 }
 
 freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH") {
-
+    generalConfiguration delegate, "Publication"
 }
