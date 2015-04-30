@@ -14,7 +14,7 @@ This job is used to create a seed for a project.
         stringParam('PROJECT_SCM_URL', '', 'URL to the project SCM location, without any branch location')
     }
     configure { node ->
-        node / 'builders' / 'net.nemerosa.seed.jenkins.step.ProjectSeedBuilder' {
+        node / 'builders' / 'net.nemerosa.seed.generator.ProjectSeedBuilder' {
             'project' '${PROJECT}'
             'projectClass' '${PROJECT_CLASS}'
             'projectScmType' '${PROJECT_SCM_TYPE}'

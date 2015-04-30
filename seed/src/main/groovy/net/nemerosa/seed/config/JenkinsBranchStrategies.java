@@ -2,9 +2,6 @@ package net.nemerosa.seed.config;
 
 import hudson.ExtensionList;
 import jenkins.model.Jenkins;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategiesLoader;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;

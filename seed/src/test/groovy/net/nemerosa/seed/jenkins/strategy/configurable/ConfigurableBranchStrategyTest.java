@@ -1,7 +1,7 @@
 package net.nemerosa.seed.jenkins.strategy.configurable;
 
-import net.nemerosa.seed.jenkins.Constants;
-import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
+import net.nemerosa.seed.config.Constants;
+import net.nemerosa.seed.config.SeedConfigurationLoader;
 import net.nemerosa.seed.triggering.SeedLauncher;
 import net.nemerosa.seed.triggering.SeedService;
 import net.nemerosa.seed.triggering.SeedChannel;
@@ -10,7 +10,7 @@ import net.nemerosa.seed.triggering.SeedEvent;
 import net.nemerosa.seed.triggering.SeedEventType;
 import net.nemerosa.seed.config.ConfigurableBranchStrategiesLoader;
 import net.nemerosa.seed.triggering.SeedServiceImpl;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
+import net.nemerosa.seed.config.BranchStrategies;
 import net.nemerosa.seed.jenkins.strategy.ExplicitBranchStrategies;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;

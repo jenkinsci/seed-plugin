@@ -1,5 +1,6 @@
 package net.nemerosa.seed.jenkins.support;
 
+import net.nemerosa.seed.config.Evaluator;
 import org.junit.Assert;
 import org.junit.Test;
 

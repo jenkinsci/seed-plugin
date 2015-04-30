@@ -1,10 +1,10 @@
 package net.nemerosa.seed.jenkins.service;
 
-import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
+import net.nemerosa.seed.config.SeedConfigurationLoader;
 import net.nemerosa.seed.triggering.*;
 import net.nemerosa.seed.config.SeedConfiguration;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
-import net.nemerosa.seed.jenkins.strategy.seed.SeedBranchStrategy;
+import net.nemerosa.seed.config.BranchStrategies;
+import net.nemerosa.seed.config.SeedBranchStrategy;
 import org.junit.Test;
 
 import java.util.Collections;

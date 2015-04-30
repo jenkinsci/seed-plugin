@@ -3,18 +3,13 @@ package net.nemerosa.seed.config;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import hudson.Extension;
-import net.nemerosa.seed.config.ConfigurableBranchStrategyConfiguration;
-import net.nemerosa.seed.config.SeedConfiguration;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategiesLoader;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
-import net.nemerosa.seed.jenkins.strategy.configurable.ConfigurableBranchStrategy;
 
 import java.util.Collection;
 
 /**
  * Gets a list of configurable branch strategies.
  *
- * @see net.nemerosa.seed.jenkins.strategy.configurable.ConfigurableBranchStrategy
+ * @see ConfigurableBranchStrategy
  */
 @Extension
 public class ConfigurableBranchStrategiesLoader implements BranchStrategiesLoader {

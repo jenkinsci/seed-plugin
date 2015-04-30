@@ -3,10 +3,10 @@ package net.nemerosa.seed.triggering;
 import net.nemerosa.seed.config.Configuration;
 import net.nemerosa.seed.config.SeedConfiguration;
 import net.nemerosa.seed.config.SeedProjectConfiguration;
-import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategyHelper;
+import net.nemerosa.seed.config.SeedConfigurationLoader;
+import net.nemerosa.seed.config.BranchStrategies;
+import net.nemerosa.seed.config.BranchStrategy;
+import net.nemerosa.seed.config.BranchStrategyHelper;
 
 import javax.inject.Inject;
 import java.util.logging.Level;

@@ -1,10 +1,10 @@
 package net.nemerosa.seed.triggering;
 
 import com.google.inject.AbstractModule;
-import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
+import net.nemerosa.seed.config.SeedConfigurationLoader;
 import net.nemerosa.seed.config.JenkinsBranchStrategies;
 import net.nemerosa.seed.config.JenkinsSeedConfigurationLoader;
-import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
+import net.nemerosa.seed.config.BranchStrategies;
 
 public class SeedServiceModule extends AbstractModule {
 

@@ -5,6 +5,7 @@ import hudson.model.Cause;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import net.nemerosa.seed.generator.ProjectSeedBuilder;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;

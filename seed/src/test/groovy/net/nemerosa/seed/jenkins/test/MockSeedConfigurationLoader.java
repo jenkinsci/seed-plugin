@@ -1,6 +1,6 @@
 package net.nemerosa.seed.jenkins.test;
 
-import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
+import net.nemerosa.seed.config.SeedConfigurationLoader;
 import net.nemerosa.seed.config.SeedConfiguration;
 
 public class MockSeedConfigurationLoader implements SeedConfigurationLoader {

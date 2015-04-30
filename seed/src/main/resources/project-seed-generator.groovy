@@ -28,7 +28,7 @@ freeStyleJob(projectSeedPath) {
         stringParam('BRANCH', '', 'Path to the branch')
     }
     configure { node ->
-        node / 'builders' / 'net.nemerosa.seed.jenkins.step.BranchSeedBuilder' {
+        node / 'builders' / 'net.nemerosa.seed.generator.BranchSeedBuilder' {
             'project' PROJECT
             'projectClass' PROJECT_CLASS
             'projectScmType' PROJECT_SCM_TYPE

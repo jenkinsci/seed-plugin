@@ -1,8 +1,6 @@
 package net.nemerosa.seed.config;
 
-import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
-import net.nemerosa.seed.jenkins.SeedPlugin;
-import net.nemerosa.seed.config.SeedConfiguration;
+import net.nemerosa.seed.SeedPlugin;
 
 public class JenkinsSeedConfigurationLoader implements SeedConfigurationLoader {
     @Override

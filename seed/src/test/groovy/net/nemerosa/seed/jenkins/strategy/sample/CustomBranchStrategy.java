@@ -3,7 +3,7 @@ package net.nemerosa.seed.jenkins.strategy.sample;
 import hudson.Extension;
 import net.nemerosa.seed.config.SeedConfiguration;
 import net.nemerosa.seed.config.SeedProjectConfiguration;
-import net.nemerosa.seed.jenkins.strategy.seed.SeedBranchStrategy;
+import net.nemerosa.seed.config.SeedBranchStrategy;
 import org.apache.commons.lang.StringUtils;
 
 import static java.lang.String.format;
