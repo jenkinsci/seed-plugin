@@ -84,4 +84,4 @@ USER jenkins
 # Starting script
 
 COPY jenkins.sh /usr/local/bin/jenkins.sh
-ENTRYPOINT ["/usr/local/bin/jenkins.sh", "--logfile=/var/log/jenkins/jenkins.log"]
+ENTRYPOINT ["/usr/local/bin/jenkins.sh"]
