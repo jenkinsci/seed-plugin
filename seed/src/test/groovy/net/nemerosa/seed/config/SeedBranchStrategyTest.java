@@ -1,12 +1,10 @@
 package net.nemerosa.seed.config;
 
 import com.google.common.collect.ImmutableMap;
-import net.nemerosa.seed.config.*;
-import net.nemerosa.seed.config.Constants;
-import net.nemerosa.seed.triggering.SeedLauncher;
 import net.nemerosa.seed.triggering.SeedChannel;
 import net.nemerosa.seed.triggering.SeedEvent;
 import net.nemerosa.seed.triggering.SeedEventType;
+import net.nemerosa.seed.triggering.SeedLauncher;
 import org.junit.Test;
 import org.mockito.Matchers;
 
