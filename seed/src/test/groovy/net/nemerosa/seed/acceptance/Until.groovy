@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.acceptance
+package net.nemerosa.seed.acceptance
 
 import java.util.concurrent.TimeoutException
 

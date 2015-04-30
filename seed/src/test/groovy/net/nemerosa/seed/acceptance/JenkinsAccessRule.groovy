@@ -1,12 +1,10 @@
-package net.nemerosa.seed.jenkins.acceptance
+package net.nemerosa.seed.acceptance
 
 import groovy.json.JsonSlurper
 import org.junit.Assert
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
-
-import static net.nemerosa.seed.jenkins.acceptance.Until.until
 
 class JenkinsAccessRule implements TestRule {
 
@@ -79,7 +77,7 @@ class JenkinsAccessRule implements TestRule {
                 if (!location) throw new JenkinsAPIBuildException(path, "Location header was not returned")
                 debug "Queue item at: ${location}"
                 // Waits until the item is built
-                def buildUrl = until(timeoutSeconds).every(5) {
+                def buildUrl = Until.until(timeoutSeconds).every(5) {
                     debug "Checking if the build is scheduled for ${location}..."
                     def json = callUrl(new URL(location + "api/json"), 10, 10)
                     if (json.executable) {
@@ -91,7 +89,7 @@ class JenkinsAccessRule implements TestRule {
                 // Build URL
                 if (buildUrl) {
                     debug "Build available at ${buildUrl}"
-                    until(timeoutSeconds).every(5) {
+                    Until.until(timeoutSeconds).every(5) {
                         debug "Checking if the build is finished at ${buildUrl}..."
                         def json = callUrl(new URL(buildUrl + "api/json"), 10, 10)
                         if (json.result) {
@@ -132,7 +130,7 @@ class JenkinsAccessRule implements TestRule {
             debug """Waiting for ${url} to be available in ${timeoutSeconds} seconds"""
         }
 
-        until(timeoutSeconds).every(5) { int duration ->
+        Until.until(timeoutSeconds).every(5) { int duration ->
             HttpURLConnection connection = url.openConnection() as HttpURLConnection
             try {
                 connection.connect()

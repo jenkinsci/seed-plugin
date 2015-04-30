@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.support;
+package net.nemerosa.seed.config;
 
 import net.nemerosa.seed.config.Evaluator;
 import org.junit.Assert;

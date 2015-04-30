@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.acceptance;
+package net.nemerosa.seed.acceptance;
 
 import net.nemerosa.seed.config.SeedException;
 

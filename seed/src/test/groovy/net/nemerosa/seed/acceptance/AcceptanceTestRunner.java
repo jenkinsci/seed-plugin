@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.acceptance;
+package net.nemerosa.seed.acceptance;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.runner.notification.RunNotifier;

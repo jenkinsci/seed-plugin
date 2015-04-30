@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.strategy;
+package net.nemerosa.seed.config;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;

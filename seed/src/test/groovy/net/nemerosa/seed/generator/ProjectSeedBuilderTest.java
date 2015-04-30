@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.step;
+package net.nemerosa.seed.generator;
 
 import com.cloudbees.hudson.plugins.folder.Folder;
 import hudson.model.Cause;

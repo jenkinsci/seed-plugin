@@ -1,15 +1,11 @@
-package net.nemerosa.seed.jenkins.strategy.sample;
+package net.nemerosa.seed.config;
 
-import net.nemerosa.seed.config.Constants;
-import net.nemerosa.seed.config.SeedConfigurationLoader;
 import net.nemerosa.seed.triggering.SeedLauncher;
 import net.nemerosa.seed.triggering.SeedService;
 import net.nemerosa.seed.triggering.SeedChannel;
-import net.nemerosa.seed.config.SeedConfiguration;
 import net.nemerosa.seed.triggering.SeedEvent;
 import net.nemerosa.seed.triggering.SeedEventType;
 import net.nemerosa.seed.triggering.SeedServiceImpl;
-import net.nemerosa.seed.config.BranchStrategies;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,27 +15,28 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 
-public class CustomBranchStrategyTest {
+public class ConfigurableBranchStrategyTest {
 
     private SeedLauncher launcher;
     private SeedService seedService;
 
     @Before
     public void setUp() throws IOException {
-        SeedConfigurationLoader configurationLoader = mock(SeedConfigurationLoader.class);
-        when(configurationLoader.load()).thenReturn(
-                SeedConfiguration.parseYaml(
-                        IOUtils.toString(
-                                getClass().getResourceAsStream("/custom-strategy.yml"),
-                                "UTF-8"
-                        )
+        // Loads the configuration
+        SeedConfiguration configuration = SeedConfiguration.parseYaml(
+                IOUtils.toString(
+                        getClass().getResourceAsStream("/configurable-strategy.yml"),
+                        "UTF-8"
                 )
         );
+        // Configuration loader
+        SeedConfigurationLoader configurationLoader = mock(SeedConfigurationLoader.class);
+        when(configurationLoader.load()).thenReturn(configuration);
 
         launcher = mock(SeedLauncher.class);
 
-        BranchStrategies branchStrategies = mock(BranchStrategies.class);
-        when(branchStrategies.get(eq("custom"), any(SeedConfiguration.class))).thenReturn(new CustomBranchStrategy());
+        ConfigurableBranchStrategiesLoader configurableBranchStrategiesLoader = new ConfigurableBranchStrategiesLoader();
+        BranchStrategies branchStrategies = new ExplicitBranchStrategies(configurableBranchStrategiesLoader);
 
         seedService = new SeedServiceImpl(
                 configurationLoader,

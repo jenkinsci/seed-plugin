@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.test;
+package net.nemerosa.seed.config;
 
 import net.nemerosa.seed.config.SeedConfigurationLoader;
 import net.nemerosa.seed.config.SeedConfiguration;

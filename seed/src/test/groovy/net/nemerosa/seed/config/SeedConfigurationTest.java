@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.model;
+package net.nemerosa.seed.config;
 
 import net.nemerosa.seed.config.SeedConfiguration;
 import org.apache.commons.io.IOUtils;

@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.strategy.sample;
+package net.nemerosa.seed.config;
 
 import hudson.Extension;
 import net.nemerosa.seed.config.SeedConfiguration;

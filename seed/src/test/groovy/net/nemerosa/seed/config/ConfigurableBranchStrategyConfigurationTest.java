@@ -1,4 +1,4 @@
-package net.nemerosa.seed.jenkins.model;
+package net.nemerosa.seed.config;
 
 import com.google.common.collect.ImmutableMap;
 import net.nemerosa.seed.config.ConfigurableBranchStrategyConfiguration;
