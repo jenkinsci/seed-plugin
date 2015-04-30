@@ -15,7 +15,11 @@ class JenkinsAccessRule implements TestRule {
     }
 
     static void debug(String message) {
-        println "    ${message}"
+        // println "    ${message}"
+    }
+
+    static void trace(String message) {
+        // println "      - ${message}"
     }
 
     @Override
@@ -123,11 +127,11 @@ class JenkinsAccessRule implements TestRule {
     public static def callUrl(URL url, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
 
         if (timeoutOnNotFound && timeoutOnNotFound != timeoutSeconds) {
-            debug """Waiting for ${url} to be available in ${timeoutSeconds} seconds (${
+            trace """Waiting for ${url} to be available in ${timeoutSeconds} seconds (${
                 timeoutOnNotFound
             } seconds for not found)"""
         } else {
-            debug """Waiting for ${url} to be available in ${timeoutSeconds} seconds"""
+            trace """Waiting for ${url} to be available in ${timeoutSeconds} seconds"""
         }
 
         Until.until(timeoutSeconds).every(5) { int duration ->
@@ -136,11 +140,12 @@ class JenkinsAccessRule implements TestRule {
                 connection.connect()
                 try {
                     def code = connection.getResponseCode()
-                    debug "Code = ${code}"
+                    trace "Code = ${code}"
                     // Parses the JSON
                     if (code == HttpURLConnection.HTTP_OK) {
                         def content = connection.inputStream.text
                         if (content) {
+                            debug "Page OK"
                             return new JsonSlurper().parseText(content)
                         } else {
                             debug "No content returned"
