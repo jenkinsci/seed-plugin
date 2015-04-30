@@ -67,7 +67,7 @@ class JenkinsAccessRule implements TestRule {
      * Fires a build
      */
     protected Build fireBuild(String path, int timeoutSeconds = 120) {
-        info "[build] Firing build at ${path}"
+        info "[fire] Firing build at ${path}"
         def url = new URL(jenkinsUrl, path)
         def connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = 'POST'
@@ -201,6 +201,7 @@ class JenkinsAccessRule implements TestRule {
      * Gets access to a build, waiting for it to be available first.
      */
     Build getBuild(String path, int buildNumber, int timeoutSeconds = 120) {
+        info "[build] Getting build ${buildNumber} for ${path}"
         def url = new URL(jenkinsUrl, jobPath(path) + "/${buildNumber}/api/json")
         def json = callUrl(url, timeoutSeconds, timeoutSeconds)
         return new Build(json)
