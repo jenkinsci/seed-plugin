@@ -26,6 +26,8 @@ task dockerDeploy(type: Exec, dependsOn: [buildLatest, ':seed-pipeline-demo:asse
             'run',
             '--detach',
             '--publish-all=true',
+            // Less memory needed for the tests
+            '--env=JAVA_OPTS=-Xmx1024m',
             // List of tests file to mount
             "--volume=${projectDir}/src/test/resources/acceptance:/var/test/resources",
             // Mounting the Seed pipeline demo as a flat repository
