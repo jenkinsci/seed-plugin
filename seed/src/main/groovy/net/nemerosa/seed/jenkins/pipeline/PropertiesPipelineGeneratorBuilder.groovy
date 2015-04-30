@@ -12,25 +12,37 @@ import org.kohsuke.stapler.DataBoundConstructor
 /**
  * This step prepares the DSL environment for the {@link PropertiesPipelineGenerator}.
  *
+ * It will:
+ *
+ * - read the property file
+ * - get the configuration of the pipeline from 1) the property file 2) the project configuration
+ *
  * Reads the property file and gets:
  *
- * - the list of dependencies.
- * - the JAR containing the bootstrap script
- *
- * Those properties are read from the property file first, then from the configuration, and have a default value if
- * not defined anywhere.
- *
- * The output of this build will be a set of environment variables:
- *
- * - a comma separated list of Gradle dependency notations
- * - a new line separated list of JAR paths to use for the DSL
- * - a JAR file name and a path inside it to get the DSL bootstrap script
+ * <ul>
+ * <li>the list of dependencies.
+ * <li>the JAR containing the bootstrap script
+ * <li>inject the <code>SEED_DSL_SCRIPT_LOCATION</code> environment variable, which sets the location of the DSL
+ *     bootstrap script (defaults to <i>seed.groovy</i> if not defined)
+ * <li>inject a few precomputed names in the environment:
+ *      <ul>
+ *          <li>SEED_PROJECT - normalised project name
+ *          <li>SEED_BRANCH - normalised branch name
+ *      </ul>
+ * <li>prepare a Gradle environment in the <i>seed</i> directory
+ * <li>prepare a Gradle build file to:
+ *     <ul>
+ *         <li>download the DSL libraries
+ *         <li>extract the DSL bootstrap script from one one those libraries
+ *         <li>put them all in the <i>seed/lib</i> directory
+ *     </ul>
+ * </ul>
  */
 class PropertiesPipelineGeneratorBuilder extends Builder {
 
-    public static final String SEED_DSL_LIBRARIES = 'SEED_DSL_LIBRARIES'
-    public static final String SEED_DSL_SCRIPT_JAR = 'SEED_DSL_SCRIPT_JAR'
     public static final String SEED_DSL_SCRIPT_LOCATION = 'SEED_DSL_SCRIPT_LOCATION'
+    public static final String SEED_PROJECT = 'SEED_PROJECT'
+    public static final String SEED_BRANCH = 'SEED_BRANCH'
 
     private final String project
     private final String projectClass
@@ -110,11 +122,15 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
             repository = "mavenCentral()"
         }
 
+        // Computation of seed names
+        String seedProjectName = projectEnvironment.projectConfiguration.name
+        String seedBranchName = projectEnvironment.namingStrategy.getBranchName(branch)
+
         // Injects the environment variables
         build.addAction(new ParametersAction(
-                new StringParameterValue(SEED_DSL_LIBRARIES, dependencies.join('/n')),
-                new StringParameterValue(SEED_DSL_SCRIPT_JAR, dslBootstrapDependency),
                 new StringParameterValue(SEED_DSL_SCRIPT_LOCATION, dslBootstrapLocation),
+                new StringParameterValue(SEED_PROJECT, seedProjectName),
+                new StringParameterValue(SEED_BRANCH, seedBranchName),
         ))
 
         // Prepares the Gradle environment

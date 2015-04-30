@@ -11,13 +11,13 @@
  *   - BRANCH - basic branch name in the SCM, like branches/xxx in SVN
  *
  * - computed parameters:
- * TODO Project normalised name
- * TODO Branch normalised name
+ *   - SEED_PROJECT: project normalised name
+ *   - SEED_BRANCH: branch normalised name
  *
  * The jobs are generated directly at the level of the branch seed job, so no folder needs to be created for the
  * branch itself.
  */
 
-freeStyleJob('test') {
+freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_010_BUILD") {
 
 }
