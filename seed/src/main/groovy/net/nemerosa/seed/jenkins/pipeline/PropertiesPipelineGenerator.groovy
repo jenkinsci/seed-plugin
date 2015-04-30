@@ -62,12 +62,27 @@ steps {
          *
          * TODO Remove action to be configured?
          */
+        // TODO JENKINS-28171 Add lookupStrategy
+//        snippets << """\
+//steps {
+//    dsl {
+//        removeAction 'DELETE' // Deletes unmanaged jobs
+//        external 'seed/lib/\${${PropertiesPipelineGeneratorBuilder.SEED_DSL_SCRIPT_LOCATION}}'
+//        ignoreExisting false  // We want existing jobs to be updated
+//        additionalClasspath 'seed/lib/*.jar'
+//        lookupStrategy 'SEED_JOB'
+//    }
+//}
+//"""
         snippets << """\
-steps {
-    dsl {
-        removeAction 'DELETE' // Deletes unmanaged jobs
-        external 'seed/lib/\${${PropertiesPipelineGeneratorBuilder.SEED_DSL_SCRIPT_LOCATION}}'
-        ignoreExisting false  // We want existing jobs to be updated
+configure { node ->
+    node / 'builders' / 'javaposse.jobdsl.plugin.ExecuteDslScripts' {
+        targets 'seed/lib/\${${PropertiesPipelineGeneratorBuilder.SEED_DSL_SCRIPT_LOCATION}}'
+        usingScriptText false
+        scriptText ''
+        ignoreExisting false
+        removedJobAction 'DELETE'
+        lookupStrategy 'SEED_JOB'
         additionalClasspath 'seed/lib/*.jar'
     }
 }
