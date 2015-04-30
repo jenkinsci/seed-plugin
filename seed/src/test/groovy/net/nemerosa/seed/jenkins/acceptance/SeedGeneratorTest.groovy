@@ -1,6 +1,5 @@
 package net.nemerosa.seed.jenkins.acceptance
 
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,13 +20,11 @@ class SeedGeneratorTest {
     }
 
     @Test
-    @Ignore
     void 'Default seed job created'() {
         jenkins.job('seed', JOB_TIMEOUT, JOB_TIMEOUT)
     }
 
     @Test
-    @Ignore
     void 'Creating a complete seed tree'() {
         // Checks the seed job exists
         'Default seed job created'()
@@ -60,7 +57,6 @@ class SeedGeneratorTest {
     }
 
     @Test
-    @Ignore
     void 'Project folder authorisations'() {
         // Checks the seed job exists
         'Default seed job created'()
