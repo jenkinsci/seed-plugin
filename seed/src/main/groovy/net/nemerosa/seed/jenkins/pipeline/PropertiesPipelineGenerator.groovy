@@ -44,8 +44,8 @@ configure { node ->
         snippets << """\
 steps {
     gradle {
-        rootBuildScriptDir 'gradle'
-        fromRootBuildScriptDir true
+        buildFile 'seed/build.gradle'
+        fromRootBuildScriptDir()
         makeExecutable()
         useWrapper()
         tasks 'prepare'

@@ -119,7 +119,7 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
 
         // Prepares the Gradle environment
         listener.logger.println("Preparing the Gradle environment...")
-        def gradleDir = build.workspace.child('seed/gradle')
+        def gradleDir = build.workspace.child('seed')
         gradleDir.mkdirs()
         gradleDir.child('gradlew').copyFrom(getClass().getResource('/gradle/gradlew'))
         gradleDir.child('gradlew.bat').copyFrom(getClass().getResource('/gradle/gradlew.bat'))
@@ -142,16 +142,16 @@ dependencies {
     ${dependencies.collect { "dslLibrary (name: '${it}', version: '+')" }.join('\n')}
 }
 task clean {
-    delete 'seed/lib'
+    delete 'lib'
 }
 task copyLibraries(type: Copy, dependsOn: clean) {
-    into 'seed/lib'
+    into 'lib'
     from configurations.dslLibrary
 }
 task extractScript(dependsOn: copyLibraries) {
     doFirst {
-        ant.unzip(dest: 'seed/lib') {
-            fileset(dir: 'seed/lib') {
+        ant.unzip(dest: 'lib') {
+            fileset(dir: 'lib') {
                 include(name: '${dslBootstrapDependency}*.jar')
             }
             patternset {
