@@ -27,6 +27,7 @@ dependencies {
 
 sourceSets {
     main {
-        groovy { srcDirs = ['src/main/groovy', 'seed'] }
+        groovy { srcDirs = ['src/main/groovy'] }
+        resources { srcDirs = ['src/main/resources', 'seed'] }
     }
 }

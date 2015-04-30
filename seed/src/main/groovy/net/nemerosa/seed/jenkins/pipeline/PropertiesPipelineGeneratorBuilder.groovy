@@ -83,14 +83,14 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
         // Gets the dependency source for the bootstrap script
         String dslBootstrapDependency = properties['seed.dsl.script.jar']
         if (!dslBootstrapDependency) {
-            dslBootstrapDependency = projectEnvironment.getConfigurationValue('pipeline-generator-script-jar', 'pipeline.jar')
+            dslBootstrapDependency = projectEnvironment.getConfigurationValue('pipeline-generator-script-jar', 'pipeline')
         }
         listener.logger.println("DSL script JAR: ${dslBootstrapDependency}")
 
         // Gets the location of the bootstrap script
         String dslBootstrapLocation = properties['seed.dsl.script.location']
         if (!dslBootstrapLocation) {
-            dslBootstrapLocation = projectEnvironment.getConfigurationValue('pipeline-generator-script-location', '/seed.groovy')
+            dslBootstrapLocation = projectEnvironment.getConfigurationValue('pipeline-generator-script-location', 'seed.groovy')
         }
         listener.logger.println("DSL script location: ${dslBootstrapLocation}")
 
@@ -101,7 +101,11 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
         }
         String repository
         if (repositoryUrl) {
-            repository = "maven { url '${repositoryUrl}' }"
+            if (repositoryUrl.startsWith('flat:')) {
+                repository = "flatDir { dirs '${repositoryUrl - 'flat:'}' }"
+            } else {
+                repository = "maven { url '${repositoryUrl}' }"
+            }
         } else {
             repository = "mavenCentral()"
         }
@@ -135,12 +139,28 @@ configurations {
     dslLibrary
 }
 dependencies {
-    ${dependencies.collect { "dslLibrary '${it}'" }.join('\n')}
+    ${dependencies.collect { "dslLibrary (name: '${it}', version: '+')" }.join('\n')}
 }
-task prepare(type: Copy) {
+task clean {
+    delete 'seed/lib'
+}
+task copyLibraries(type: Copy, dependsOn: clean) {
     into 'seed/lib'
     from configurations.dslLibrary
 }
+task extractScript(dependsOn: copyLibraries) {
+    doFirst {
+        ant.unzip(dest: 'seed/lib') {
+            fileset(dir: 'seed/lib') {
+                include(name: '${dslBootstrapDependency}*.jar')
+            }
+            patternset {
+                include(name: '${dslBootstrapLocation}')
+            }
+        }
+    }
+}
+task prepare(dependsOn: extractScript)
 """
         gradleDir.child('build.gradle').write(gradle, 'UTF-8')
 
