@@ -19,5 +19,23 @@
  */
 
 freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_010_BUILD") {
+    publishers {
+        downstreamParameterized {
+            trigger("${SEED_PROJECT}_${SEED_BRANCH}_020_CI", 'SUCCESS', true) {
+            }
+        }
+    }
+}
+
+freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
+    publishers {
+        downstreamParameterized {
+            trigger("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH", 'SUCCESS', true) {
+            }
+        }
+    }
+}
+
+freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH") {
 
 }

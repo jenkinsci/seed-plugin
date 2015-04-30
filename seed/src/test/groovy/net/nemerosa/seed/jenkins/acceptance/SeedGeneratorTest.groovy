@@ -132,8 +132,13 @@ classes:
         jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR').checkSuccess()
         // Checks the branch pipeline is there
         jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_010_BUILD')
-        // TODO Fires the branch pipeline start
-        // TODO Checks the result of the pipeline (ci & publish must have been fired)
+        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_020_CI')
+        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_030_PUBLISH')
+        // Fires the branch pipeline start
+        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_010_BUILD').checkSuccess()
+        // Checks the result of the pipeline (ci & publish must have been fired)
+        jenkins.getBuild('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_020_CI', 1).checkSuccess()
+        jenkins.getBuild('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_030_PUBLISH', 1).checkSuccess()
     }
 
 }
