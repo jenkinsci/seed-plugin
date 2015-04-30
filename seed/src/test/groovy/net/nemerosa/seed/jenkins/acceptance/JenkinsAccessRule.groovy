@@ -41,7 +41,7 @@ class JenkinsAccessRule implements TestRule {
         }
     }
 
-    public void job(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
+    public void job(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 60) {
         api(jobPath(path), timeoutSeconds, timeoutOnNotFound)
     }
 
