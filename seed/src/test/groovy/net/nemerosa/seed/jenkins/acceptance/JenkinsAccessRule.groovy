@@ -51,6 +51,7 @@ class JenkinsAccessRule implements TestRule {
      * Fires a job with a set of parameters
      */
     Build fireJob(String path, Map<String, String> parameters = [:], int timeoutSeconds = 120) {
+        info "[fire] Firing job at ${path}"
         // Build path
         String buildPath
         if (parameters && parameters.size() > 0) {
@@ -67,7 +68,6 @@ class JenkinsAccessRule implements TestRule {
      * Fires a build
      */
     protected Build fireBuild(String path, int timeoutSeconds = 120) {
-        info "[fire] Firing build at ${path}"
         def url = new URL(jenkinsUrl, path)
         def connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = 'POST'
