@@ -47,7 +47,7 @@ ENV JENKINS_VERSION 1.610
 # Download of the Jenkins application
 # Could use ADD but this one does not check Last-Modified header
 # see https://github.com/docker/docker/issues/8331
-RUN curl -L http://mirrors.jenkins-ci.org/war/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war
+RUN curl -L --silent --fail http://mirrors.jenkins-ci.org/war/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war
 
 # Add the Seed plug-in
 COPY seed.hpi /usr/share/jenkins/ref/plugins/
