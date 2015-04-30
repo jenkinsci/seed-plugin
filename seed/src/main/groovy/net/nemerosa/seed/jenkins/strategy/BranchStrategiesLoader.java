@@ -1,7 +1,7 @@
 package net.nemerosa.seed.jenkins.strategy;
 
 import hudson.ExtensionPoint;
-import net.nemerosa.seed.jenkins.model.SeedConfiguration;
+import net.nemerosa.seed.config.SeedConfiguration;
 
 import java.util.Collection;
 

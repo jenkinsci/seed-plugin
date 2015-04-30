@@ -1,6 +1,6 @@
 package net.nemerosa.seed.jenkins.strategy.configurable;
 
-import net.nemerosa.seed.jenkins.model.ConfigurableBranchStrategyConfiguration;
+import net.nemerosa.seed.config.ConfigurableBranchStrategyConfiguration;
 import net.nemerosa.seed.jenkins.strategy.naming.ConfigurableSeedNamingStrategy;
 import net.nemerosa.seed.jenkins.strategy.seed.SeedBranchStrategy;
 

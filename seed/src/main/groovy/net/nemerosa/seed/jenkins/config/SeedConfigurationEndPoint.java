@@ -4,7 +4,7 @@ import hudson.Extension;
 import hudson.model.RootAction;
 import jenkins.model.GlobalConfiguration;
 import net.nemerosa.seed.jenkins.SeedPlugin;
-import net.nemerosa.seed.jenkins.model.SeedConfiguration;
+import net.nemerosa.seed.config.SeedConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;

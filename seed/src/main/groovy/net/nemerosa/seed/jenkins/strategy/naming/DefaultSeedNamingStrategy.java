@@ -1,7 +1,7 @@
 package net.nemerosa.seed.jenkins.strategy.naming;
 
 import static java.lang.String.format;
-import static net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.defaultName;
+import static net.nemerosa.seed.config.SeedProjectConfiguration.defaultName;
 
 public class DefaultSeedNamingStrategy extends AbstractSeedNamingStrategy {
 

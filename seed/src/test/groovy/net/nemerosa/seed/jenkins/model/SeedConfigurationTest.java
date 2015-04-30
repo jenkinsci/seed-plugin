@@ -1,5 +1,6 @@
 package net.nemerosa.seed.jenkins.model;
 
+import net.nemerosa.seed.config.SeedConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 

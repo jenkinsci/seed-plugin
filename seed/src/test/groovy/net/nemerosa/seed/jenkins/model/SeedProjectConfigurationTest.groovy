@@ -1,5 +1,7 @@
 package net.nemerosa.seed.jenkins.model
 
+import net.nemerosa.seed.config.SeedConfiguration
+import net.nemerosa.seed.config.SeedProjectConfiguration
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals

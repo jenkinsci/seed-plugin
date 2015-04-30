@@ -1,11 +1,8 @@
 package net.nemerosa.seed.jenkins.service;
 
 import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
-import net.nemerosa.seed.jenkins.SeedLauncher;
-import net.nemerosa.seed.jenkins.model.SeedChannel;
-import net.nemerosa.seed.jenkins.model.SeedConfiguration;
-import net.nemerosa.seed.jenkins.model.SeedEvent;
-import net.nemerosa.seed.jenkins.model.SeedEventType;
+import net.nemerosa.seed.triggering.*;
+import net.nemerosa.seed.config.SeedConfiguration;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
 import net.nemerosa.seed.jenkins.strategy.seed.SeedBranchStrategy;
 import org.junit.Test;

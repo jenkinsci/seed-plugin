@@ -1,8 +1,8 @@
 package net.nemerosa.seed.jenkins.support;
 
-import net.nemerosa.seed.jenkins.model.Configuration;
-import net.nemerosa.seed.jenkins.model.SeedConfiguration;
-import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
+import net.nemerosa.seed.config.Configuration;
+import net.nemerosa.seed.config.SeedConfiguration;
+import net.nemerosa.seed.config.SeedProjectConfiguration;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
 import net.nemerosa.seed.jenkins.strategy.SeedNamingStrategy;
 import net.nemerosa.seed.jenkins.strategy.naming.SeedNamingStrategyHelper;

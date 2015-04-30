@@ -1,9 +1,12 @@
 package net.nemerosa.seed.jenkins.strategy.seed;
 
 import com.google.common.collect.ImmutableMap;
+import net.nemerosa.seed.config.*;
 import net.nemerosa.seed.jenkins.Constants;
-import net.nemerosa.seed.jenkins.SeedLauncher;
-import net.nemerosa.seed.jenkins.model.*;
+import net.nemerosa.seed.triggering.SeedLauncher;
+import net.nemerosa.seed.triggering.SeedChannel;
+import net.nemerosa.seed.triggering.SeedEvent;
+import net.nemerosa.seed.triggering.SeedEventType;
 import org.junit.Test;
 import org.mockito.Matchers;
 

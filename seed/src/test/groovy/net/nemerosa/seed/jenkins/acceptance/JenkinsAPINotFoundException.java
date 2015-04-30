@@ -1,6 +1,6 @@
 package net.nemerosa.seed.jenkins.acceptance;
 
-import net.nemerosa.seed.jenkins.model.SeedException;
+import net.nemerosa.seed.config.SeedException;
 
 import java.net.URL;
 

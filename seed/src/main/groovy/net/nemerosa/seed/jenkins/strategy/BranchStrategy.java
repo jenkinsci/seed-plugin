@@ -1,10 +1,10 @@
 package net.nemerosa.seed.jenkins.strategy;
 
 import hudson.ExtensionPoint;
-import net.nemerosa.seed.jenkins.SeedLauncher;
-import net.nemerosa.seed.jenkins.model.SeedConfiguration;
-import net.nemerosa.seed.jenkins.model.SeedEvent;
-import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
+import net.nemerosa.seed.triggering.SeedLauncher;
+import net.nemerosa.seed.config.SeedConfiguration;
+import net.nemerosa.seed.triggering.SeedEvent;
+import net.nemerosa.seed.config.SeedProjectConfiguration;
 
 public interface BranchStrategy extends ExtensionPoint {
 

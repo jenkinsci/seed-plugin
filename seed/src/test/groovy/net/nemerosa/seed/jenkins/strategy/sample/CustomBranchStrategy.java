@@ -1,13 +1,13 @@
 package net.nemerosa.seed.jenkins.strategy.sample;
 
 import hudson.Extension;
-import net.nemerosa.seed.jenkins.model.SeedConfiguration;
-import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
+import net.nemerosa.seed.config.SeedConfiguration;
+import net.nemerosa.seed.config.SeedProjectConfiguration;
 import net.nemerosa.seed.jenkins.strategy.seed.SeedBranchStrategy;
 import org.apache.commons.lang.StringUtils;
 
 import static java.lang.String.format;
-import static net.nemerosa.seed.jenkins.model.SeedProjectConfiguration.defaultName;
+import static net.nemerosa.seed.config.SeedProjectConfiguration.defaultName;
 
 @Extension
 public class CustomBranchStrategy extends SeedBranchStrategy {

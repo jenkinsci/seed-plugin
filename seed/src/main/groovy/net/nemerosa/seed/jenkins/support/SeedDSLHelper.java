@@ -1,10 +1,10 @@
 package net.nemerosa.seed.jenkins.support;
 
 import net.nemerosa.seed.jenkins.SeedConfigurationLoader;
-import net.nemerosa.seed.jenkins.model.SeedConfiguration;
-import net.nemerosa.seed.jenkins.model.SeedProjectConfiguration;
-import net.nemerosa.seed.jenkins.service.JenkinsBranchStrategies;
-import net.nemerosa.seed.jenkins.service.JenkinsSeedConfigurationLoader;
+import net.nemerosa.seed.config.SeedConfiguration;
+import net.nemerosa.seed.config.SeedProjectConfiguration;
+import net.nemerosa.seed.config.JenkinsBranchStrategies;
+import net.nemerosa.seed.config.JenkinsSeedConfigurationLoader;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategies;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategy;
 import net.nemerosa.seed.jenkins.strategy.BranchStrategyHelper;

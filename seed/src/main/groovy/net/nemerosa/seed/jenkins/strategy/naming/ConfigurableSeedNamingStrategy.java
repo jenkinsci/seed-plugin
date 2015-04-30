@@ -1,6 +1,6 @@
 package net.nemerosa.seed.jenkins.strategy.naming;
 
-import net.nemerosa.seed.jenkins.model.ConfigurableBranchStrategyConfiguration;
+import net.nemerosa.seed.config.ConfigurableBranchStrategyConfiguration;
 import org.apache.commons.lang.StringUtils;
 
 import static net.nemerosa.seed.jenkins.support.Evaluator.evaluate;

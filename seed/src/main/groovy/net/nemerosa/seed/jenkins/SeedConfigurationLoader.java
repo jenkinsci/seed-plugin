@@ -1,6 +1,6 @@
 package net.nemerosa.seed.jenkins;
 
-import net.nemerosa.seed.jenkins.model.SeedConfiguration;
+import net.nemerosa.seed.config.SeedConfiguration;
 
 public interface SeedConfigurationLoader {
 
