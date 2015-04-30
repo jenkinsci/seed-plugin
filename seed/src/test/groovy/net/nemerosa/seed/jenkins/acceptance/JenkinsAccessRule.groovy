@@ -6,29 +6,25 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-import java.util.regex.Pattern
-
 import static net.nemerosa.seed.jenkins.acceptance.Until.until
 
 class JenkinsAccessRule implements TestRule {
 
-    /**
-     * Retry interval in milliseconds
-     */
-    static final int INTERVAL = 5 * 1000L
-
-    /**
-     * Build number pattern in the Location field when creating a build
-     */
-    static final Pattern LOCATION_BUILD_NUMBER = Pattern.compile(/(\d+)\/$/)
-
     URL jenkinsUrl
+
+    static void info(String message) {
+        println "* ${message}"
+    }
+
+    static void debug(String message) {
+        println "    ${message}"
+    }
 
     @Override
     Statement apply(Statement base, Description description) {
         // Jenkins end point
         jenkinsUrl = new URL(System.getProperty('jenkinsUrl', 'http://localhost:8080'))
-        println """Running "${description.methodName}" against ${jenkinsUrl}"""
+        info """[test] Running "${description.methodName}" against ${jenkinsUrl}"""
         // Runs the tests
         return new Statement() {
             @Override
@@ -42,6 +38,7 @@ class JenkinsAccessRule implements TestRule {
     }
 
     public void job(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 60) {
+        info """[job] Getting job at ${path}"""
         api(jobPath(path), timeoutSeconds, timeoutOnNotFound)
     }
 
@@ -70,21 +67,20 @@ class JenkinsAccessRule implements TestRule {
      * Fires a build
      */
     protected Build fireBuild(String path, int timeoutSeconds = 120) {
+        info "[build] Firing build at ${path}"
         def url = new URL(jenkinsUrl, path)
         def connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = 'POST'
-        // TODO Credentials
-        println "Firing build at ${url}"
         connection.connect()
         try {
             if (connection.responseCode == HttpURLConnection.HTTP_CREATED) {
                 // The `Location` header contains the link to the queued build
                 String location = connection.getHeaderField('Location')
                 if (!location) throw new JenkinsAPIBuildException(path, "Location header was not returned")
-                println "Queue item at: ${location}"
+                debug "Queue item at: ${location}"
                 // Waits until the item is built
                 def buildUrl = until(timeoutSeconds).every(5) {
-                    println "Checking if the build is scheduled for ${location}..."
+                    debug "Checking if the build is scheduled for ${location}..."
                     def json = callUrl(new URL(location + "api/json"), 10, 10)
                     if (json.executable) {
                         return json.executable.url
@@ -94,9 +90,9 @@ class JenkinsAccessRule implements TestRule {
                 }
                 // Build URL
                 if (buildUrl) {
-                    println "Build available at ${buildUrl}"
+                    debug "Build available at ${buildUrl}"
                     until(timeoutSeconds).every(5) {
-                        println "Checking if the build is finished at ${buildUrl}..."
+                        debug "Checking if the build is finished at ${buildUrl}..."
                         def json = callUrl(new URL(buildUrl + "api/json"), 10, 10)
                         if (json.result) {
                             return new Build(json)
@@ -129,11 +125,11 @@ class JenkinsAccessRule implements TestRule {
     public static def callUrl(URL url, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
 
         if (timeoutOnNotFound && timeoutOnNotFound != timeoutSeconds) {
-            println """Waiting for ${url} to be available in ${timeoutSeconds} seconds (${
+            debug """Waiting for ${url} to be available in ${timeoutSeconds} seconds (${
                 timeoutOnNotFound
-            } seconds for not found)..."""
+            } seconds for not found)"""
         } else {
-            println """Waiting for ${url} to be available in ${timeoutSeconds} seconds..."""
+            debug """Waiting for ${url} to be available in ${timeoutSeconds} seconds"""
         }
 
         until(timeoutSeconds).every(5) { int duration ->
@@ -142,14 +138,14 @@ class JenkinsAccessRule implements TestRule {
                 connection.connect()
                 try {
                     def code = connection.getResponseCode()
-                    println "Code = ${code}"
+                    debug "Code = ${code}"
                     // Parses the JSON
                     if (code == HttpURLConnection.HTTP_OK) {
                         def content = connection.inputStream.text
                         if (content) {
                             return new JsonSlurper().parseText(content)
                         } else {
-                            println "No content returned"
+                            debug "No content returned"
                             return false
                         }
                     }
@@ -158,7 +154,7 @@ class JenkinsAccessRule implements TestRule {
                         if (duration >= timeoutOnNotFound) {
                             throw new JenkinsAPINotFoundException(url)
                         } else {
-                            println "Timeout on not found not reached yet"
+                            debug "Timeout on not found not reached yet"
                             return false
                         }
                     }
@@ -167,7 +163,7 @@ class JenkinsAccessRule implements TestRule {
                 }
             } catch (SocketException ignored) {
                 // Trying again...
-                println "Cannot connect"
+                debug "Cannot connect"
                 return false
             }
         }
@@ -186,7 +182,7 @@ class JenkinsAccessRule implements TestRule {
 
     void configureSeed(String yaml) {
         def url = new URL(jenkinsUrl, "seed-config/")
-        println "Updating Seed configuration at ${url}..."
+        info "[config] Updating Seed configuration at ${url}..."
         def connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = 'POST'
         connection.doOutput = true
