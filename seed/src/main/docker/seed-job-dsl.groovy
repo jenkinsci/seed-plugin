@@ -13,6 +13,9 @@ This job is used to create a seed for a project.
         choiceParam('PROJECT_SCM_TYPE', ['svn', 'git'])
         stringParam('PROJECT_SCM_URL', '', 'URL to the project SCM location, without any branch location')
     }
+    steps {
+        buildDescription('', '${PROJECT}')
+    }
     configure { node ->
         node / 'builders' / 'net.nemerosa.seed.generator.ProjectSeedBuilder' {
             'project' '${PROJECT}'

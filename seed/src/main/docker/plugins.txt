@@ -27,3 +27,4 @@ job-dsl:1.32
 parameterized-trigger:2.26
 git:2.3.5
 gradle:1.24
+description-setter:1.10
