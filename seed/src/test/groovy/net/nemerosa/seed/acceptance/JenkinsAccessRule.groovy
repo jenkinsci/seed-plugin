@@ -15,11 +15,11 @@ class JenkinsAccessRule implements TestRule {
     }
 
     static void debug(String message) {
-        // println "    ${message}"
+        println "    ${message}"
     }
 
     static void trace(String message) {
-        // println "      - ${message}"
+        println "      - ${message}"
     }
 
     @Override
@@ -114,17 +114,34 @@ class JenkinsAccessRule implements TestRule {
     }
 
     public def api(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
+        callUrl(url(path, "api/json"), timeoutSeconds, timeoutOnNotFound)
+    }
+
+    protected URL url(String path, String suffix = '') {
         String prefix
-        if (path.endsWith('/')) {
-            prefix = path
+        if (suffix) {
+            if (path.endsWith('/')) {
+                prefix = path
+            } else {
+                prefix = path + '/'
+            }
         } else {
-            prefix = path + '/'
+            prefix = ''
         }
-        def apiUrl = new URL(jenkinsUrl, "${prefix}api/json")
-        callUrl(apiUrl, timeoutSeconds, timeoutOnNotFound)
+        new URL(jenkinsUrl, "${prefix}" + suffix)
+    }
+
+    public def post(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
+        info "[post] Posting to ${path}"
+        callUrl(url(path), { HttpURLConnection c -> c.requestMethod = 'POST' }, timeoutSeconds, timeoutOnNotFound)
     }
 
     public static def callUrl(URL url, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
+        callUrl(url, {}, timeoutSeconds, timeoutOnNotFound)
+    }
+
+    protected static
+    def callUrl(URL url, Closure connectionSetup, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
 
         if (timeoutOnNotFound && timeoutOnNotFound != timeoutSeconds) {
             trace """Waiting for ${url} to be available in ${timeoutSeconds} seconds (${
@@ -137,6 +154,7 @@ class JenkinsAccessRule implements TestRule {
         Until.until(timeoutSeconds).every(5) { int duration ->
             HttpURLConnection connection = url.openConnection() as HttpURLConnection
             try {
+                connectionSetup(connection)
                 connection.connect()
                 try {
                     def code = connection.getResponseCode()
@@ -145,10 +163,10 @@ class JenkinsAccessRule implements TestRule {
                     if (code == HttpURLConnection.HTTP_OK) {
                         def content = connection.inputStream.text
                         if (content) {
-                            debug "Page OK"
+                            trace "Page OK"
                             return new JsonSlurper().parseText(content)
                         } else {
-                            debug "No content returned"
+                            trace "No content returned"
                             return false
                         }
                     }
@@ -157,7 +175,7 @@ class JenkinsAccessRule implements TestRule {
                         if (duration >= timeoutOnNotFound) {
                             throw new JenkinsAPINotFoundException(url)
                         } else {
-                            debug "Timeout on not found not reached yet"
+                            trace "Timeout on not found not reached yet"
                             return false
                         }
                     }
