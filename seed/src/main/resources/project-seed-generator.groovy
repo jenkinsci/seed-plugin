@@ -27,6 +27,9 @@ freeStyleJob(projectSeedPath) {
     parameters {
         stringParam('BRANCH', '', 'Path to the branch')
     }
+    steps {
+        buildDescription('', '${BRANCH}')
+    }
     configure { node ->
         node / 'builders' / 'net.nemerosa.seed.generator.BranchSeedBuilder' {
             'project' PROJECT
