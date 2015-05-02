@@ -160,7 +160,9 @@ class JenkinsAccessRule implements TestRule {
                     def code = connection.getResponseCode()
                     trace "Code = ${code}"
                     // Parses the JSON
-                    if (code == HttpURLConnection.HTTP_OK) {
+                    if (code == HttpURLConnection.HTTP_OK ||
+                            code == HttpURLConnection.HTTP_CREATED ||
+                            code == HttpURLConnection.HTTP_ACCEPTED) {
                         def content = connection.inputStream.text
                         if (content) {
                             trace "Page OK"
