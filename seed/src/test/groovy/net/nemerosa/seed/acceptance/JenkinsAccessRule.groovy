@@ -126,7 +126,7 @@ class JenkinsAccessRule implements TestRule {
                 prefix = path + '/'
             }
         } else {
-            prefix = ''
+            prefix = path
         }
         new URL(jenkinsUrl, "${prefix}" + suffix)
     }
@@ -170,7 +170,7 @@ class JenkinsAccessRule implements TestRule {
                             return false
                         }
                     }
-                    // Error codes
+                    // Not found
                     else if (code == HttpURLConnection.HTTP_NOT_FOUND) {
                         if (duration >= timeoutOnNotFound) {
                             throw new JenkinsAPINotFoundException(url)
@@ -178,6 +178,13 @@ class JenkinsAccessRule implements TestRule {
                             trace "Timeout on not found not reached yet"
                             return false
                         }
+                    }
+                    // Internal error
+                    else if (code == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+                        throw new JenkinsAPIException(
+                                url,
+                                "[${code}] ${connection.responseMessage}"
+                        )
                     }
                 } finally {
                     connection.disconnect()

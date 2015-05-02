@@ -12,6 +12,7 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class AbstractEndPoint implements UnprotectedRootAction {
@@ -40,7 +41,7 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
 
     @RequirePOST
     public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException {
-        LOGGER.finest("Incoming POST");
+        LOGGER.info("Incoming POST");
         try {
             // Extracts the event
             SeedEvent event = extractEvent(req);
@@ -67,6 +68,7 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
         } catch (RequestNonAuthorizedException ex) {
             sendError(rsp, StaplerResponse.SC_FORBIDDEN, ex.getMessage());
         } catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
             sendError(rsp, StaplerResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
