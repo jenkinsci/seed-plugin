@@ -44,10 +44,14 @@ class SeedTriggeringTest {
         jenkins.job("${project}/${project}-seed")
         // Fires the project seed for the `master` branch
         jenkins.post("seed-http/create?project=${project}&branch=master")
+        // Checks the result of the project seed
+        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
         // Checks the branch seed is created
         jenkins.job("${project}/${project}-master/${project}-master-seed")
         // Fires the branch seed
         jenkins.post("seed-http/seed?project=${project}&branch=master")
+        // Checks the result of the branch seed
+        jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1).checkSuccess()
         // Checks the branch pipeline is there
         jenkins.job("${project}/${project}-master/${project}-master-build")
         jenkins.job("${project}/${project}-master/${project}-master-ci")

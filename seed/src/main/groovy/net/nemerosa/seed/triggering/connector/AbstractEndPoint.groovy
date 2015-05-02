@@ -1,19 +1,18 @@
-package net.nemerosa.seed.triggering.connector;
+package net.nemerosa.seed.triggering.connector
 
-import com.google.inject.Guice;
-import hudson.model.UnprotectedRootAction;
-import net.nemerosa.seed.triggering.SeedService;
-import net.nemerosa.seed.config.MissingParameterException;
-import net.nemerosa.seed.triggering.SeedEvent;
-import net.nemerosa.seed.triggering.SeedServiceModule;
-import org.apache.commons.lang.StringUtils;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.interceptor.RequirePOST;
+import com.google.inject.Guice
+import hudson.model.UnprotectedRootAction
+import net.nemerosa.seed.config.MissingParameterException
+import net.nemerosa.seed.triggering.SeedEvent
+import net.nemerosa.seed.triggering.SeedService
+import net.nemerosa.seed.triggering.SeedServiceModule
+import net.sf.json.JSONSerializer
+import org.apache.commons.lang.StringUtils
+import org.kohsuke.stapler.StaplerRequest
+import org.kohsuke.stapler.StaplerResponse
+import org.kohsuke.stapler.interceptor.RequirePOST
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.Logger
 
 public abstract class AbstractEndPoint implements UnprotectedRootAction {
 
@@ -90,28 +89,31 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
 
     protected abstract SeedEvent extractEvent(StaplerRequest req) throws IOException;
 
-    protected void sendOk(StaplerResponse rsp, SeedEvent event) throws IOException {
+    protected static void sendOk(StaplerResponse rsp, SeedEvent event) throws IOException {
         rsp.setStatus(getHttpCodeForEvent(event));
-        rsp.setContentType("text/plain");
-        rsp.getWriter().println(
-                String.format(
-                        "Event processed: project=%s, branch=%s, type=%s, parameters=%s",
-                        event.getProject(),
-                        event.getBranch(),
-                        event.getType(),
-                        event.getParameters()
-                )
-        );
+        rsp.setContentType("application/json");
+        JSONSerializer.toJSON([
+                status: 'OK',
+                event : [
+                        project   : event.project,
+                        branch    : event.branch,
+                        type      : event.type,
+                        parameters: event.parameters
+                ],
+        ]).write(rsp.writer)
     }
 
-    protected int getHttpCodeForEvent(@SuppressWarnings("UnusedParameters") SeedEvent event) {
+    protected static int getHttpCodeForEvent(@SuppressWarnings("UnusedParameters") SeedEvent event) {
         return StaplerResponse.SC_ACCEPTED;
     }
 
-    protected void sendError(StaplerResponse rsp, int httpCode, String message) throws IOException {
+    protected static void sendError(StaplerResponse rsp, int httpCode, String message) throws IOException {
         rsp.setStatus(httpCode);
-        rsp.setContentType("text/plain");
-        rsp.getWriter().println(message);
+        rsp.setContentType("application/json");
+        JSONSerializer.toJSON([
+                status : 'ERROR',
+                message: message,
+        ]).write(rsp.writer)
     }
 
     protected void post(SeedEvent event) {
