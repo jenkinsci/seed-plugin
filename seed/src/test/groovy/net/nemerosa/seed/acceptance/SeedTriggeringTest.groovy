@@ -33,6 +33,8 @@ class SeedTriggeringTest {
     void 'Default seed tree'() {
         // Project name
         def project = uid('P')
+        // Configuration
+        jenkins.configureSeed ''
         // Firing the seed job
         jenkins.fireJob('seed', [
                 PROJECT         : project,
