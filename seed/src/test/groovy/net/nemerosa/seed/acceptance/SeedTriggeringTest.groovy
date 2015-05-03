@@ -87,8 +87,55 @@ http-enabled: no
         jenkins.post("seed-http/create?project=${project}&branch=master")
     }
 
-    // TODO Test for not enabled project
-    // TODO Test for enabled project in not enabled configuration
+    @Test(expected = JenkinsAPIRefusedException)
+    void 'HTTP API not being enabled at project configuration level'() {
+        // Project name
+        def project = uid('P')
+        // Configuration
+        jenkins.configureSeed """\
+projects:
+    - id: ${project}
+      http-enabled: no
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http/create?project=${project}&branch=master")
+    }
+
+    @Test
+    void 'HTTP API being enabled at project configuration level and not at global level'() {
+        // Project name
+        def project = uid('P')
+        // Configuration
+        jenkins.configureSeed """\
+http-enabled: no
+projects:
+    - id: ${project}
+      http-enabled: yes
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http/create?project=${project}&branch=master")
+        // Checks the result of the project seed
+        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
+    }
+
     // TODO Test for HTTP authorisation
 
 }
