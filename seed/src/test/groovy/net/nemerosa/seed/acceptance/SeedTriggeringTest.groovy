@@ -8,8 +8,6 @@ import org.junit.runner.RunWith
 import java.text.SimpleDateFormat
 import java.util.concurrent.atomic.AtomicLong
 
-import static net.nemerosa.seed.acceptance.AcceptanceUtils.failOn
-
 /**
  * Testing the triggering of seeds and pipelines using the Seed plug-in.
  */
@@ -66,7 +64,7 @@ class SeedTriggeringTest {
         jenkins.getBuild("${project}/${project}-master/${project}-master-publish", 1).checkSuccess()
     }
 
-    @Test
+    @Test(expected = JenkinsAPIRefusedException)
     void 'HTTP API not being enabled at global configuration level'() {
         // Project name
         def project = uid('P')
@@ -84,11 +82,7 @@ http-enabled: no
         // Checks the project seed is created
         jenkins.job("${project}/${project}-seed")
         // Fires the project seed for the `master` branch
-        failOn {
-            jenkins.post("seed-http/create?project=${project}&branch=master")
-        } withMessage {
-            "..."
-        }
+        jenkins.post("seed-http/create?project=${project}&branch=master")
     }
 
     // TODO Test for not enabled project

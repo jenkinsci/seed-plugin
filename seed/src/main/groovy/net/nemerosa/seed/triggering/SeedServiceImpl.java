@@ -1,12 +1,7 @@
 package net.nemerosa.seed.triggering;
 
-import net.nemerosa.seed.config.Configuration;
-import net.nemerosa.seed.config.SeedConfiguration;
-import net.nemerosa.seed.config.SeedProjectConfiguration;
-import net.nemerosa.seed.config.SeedConfigurationLoader;
-import net.nemerosa.seed.config.BranchStrategies;
-import net.nemerosa.seed.config.BranchStrategy;
-import net.nemerosa.seed.config.BranchStrategyHelper;
+import net.nemerosa.seed.config.*;
+import net.nemerosa.seed.triggering.connector.RequestNonAuthorizedException;
 
 import javax.inject.Inject;
 import java.util.logging.Level;
@@ -63,7 +58,7 @@ public class SeedServiceImpl implements SeedService {
         boolean enabled = Configuration.getBoolean(channelEnabledKey, projectConfiguration, configuration, true);
         // Check
         if (!enabled) {
-            throw new SeedChannelNotEnabledException(channelEnabledKey, event.getChannel().getId(), event.getProject());
+            throw new RequestNonAuthorizedException();
         }
     }
 

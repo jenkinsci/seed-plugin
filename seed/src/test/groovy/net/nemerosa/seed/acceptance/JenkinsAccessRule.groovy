@@ -193,6 +193,10 @@ class JenkinsAccessRule implements TestRule {
                             return false
                         }
                     }
+                    // Not authorised
+                    else if (code == HttpURLConnection.HTTP_FORBIDDEN) {
+                        throw new JenkinsAPIRefusedException()
+                    }
                     // Internal error
                     else if (code == HttpURLConnection.HTTP_INTERNAL_ERROR) {
                         throw new JenkinsAPIException(
