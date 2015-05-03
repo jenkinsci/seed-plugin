@@ -64,12 +64,7 @@ public class JenkinsSeedLauncher implements SeedLauncher {
     }
 
     private Cause getCause(final SeedChannel channel) {
-        return new Cause() {
-            @Override
-            public String getShortDescription() {
-                return channel.getName();
-            }
-        };
+        return new SeedCause(channel);
     }
 
     private AbstractProject findJob(String path) {
