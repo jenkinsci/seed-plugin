@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 public class SeedBranchStrategyTest {
 
-    public static final SeedChannel TEST_CHANNEL = SeedChannel.of("Test");
+    public static final SeedChannel TEST_CHANNEL = SeedChannel.of("test", "Test");
 
     @Test
     public void post_create() {

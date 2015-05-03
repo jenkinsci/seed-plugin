@@ -31,7 +31,7 @@ public class GitHubEndPoint extends AbstractEndPoint {
     private static final String X_GIT_HUB_SIGNATURE = "X-Hub-Signature";
 
     private static final Logger LOGGER = Logger.getLogger(GitHubEndPoint.class.getName());
-    private static final SeedChannel SEED_CHANNEL = SeedChannel.of("Seed GitHub end point");
+    private static final SeedChannel SEED_CHANNEL = SeedChannel.of("github", "Seed GitHub end point");
 
     public GitHubEndPoint(SeedService seedService) {
         super(seedService);

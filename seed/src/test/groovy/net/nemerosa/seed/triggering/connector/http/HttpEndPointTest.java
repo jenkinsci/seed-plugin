@@ -20,6 +20,7 @@ import static org.mockito.Mockito.*;
 
 public class HttpEndPointTest {
 
+    public static final SeedChannel HTTP_CHANNEL = SeedChannel.of("http", "Seed HTTP end point");
     private SeedService seedService;
     private HttpEndPoint endPoint;
 
@@ -137,7 +138,7 @@ public class HttpEndPointTest {
                         "nemerosa/seed",
                         "master",
                         SeedEventType.COMMIT,
-                        SeedChannel.of("Seed HTTP end point")).withParam("commit", "abcdef")
+                        HTTP_CHANNEL).withParam("commit", "abcdef")
         );
     }
 
@@ -156,7 +157,7 @@ public class HttpEndPointTest {
                         "nemerosa/seed",
                         "master",
                         SeedEventType.COMMIT,
-                        SeedChannel.of("Seed HTTP end point"))
+                        HTTP_CHANNEL)
         );
     }
 
@@ -209,7 +210,7 @@ public class HttpEndPointTest {
                         "nemerosa/seed",
                         "master",
                         SeedEventType.COMMIT,
-                        SeedChannel.of("Seed HTTP end point"))
+                        HTTP_CHANNEL)
         );
     }
 

@@ -5,23 +5,24 @@ package net.nemerosa.seed.triggering;
  */
 public class SeedChannel {
 
+    private final String id;
     private final String name;
 
-    public SeedChannel(String name) {
+    public SeedChannel(String id, String name) {
+        this.id = id;
         this.name = name;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public static SeedChannel of(String name) {
-        return new SeedChannel(name);
-    }
-
-    @Override
-    public String toString() {
-        return "SeedChannel{" + "name='" + name + '\'' + '}';
+    public static SeedChannel of(String id, String name) {
+        return new SeedChannel(id, name);
     }
 
     @Override
@@ -31,12 +32,19 @@ public class SeedChannel {
 
         SeedChannel that = (SeedChannel) o;
 
-        return name.equals(that.name);
+        return id.equals(that.id) && name.equals(that.name);
 
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "SeedChannel{" + "id='" + id + '\'' + ", name='" + name + '\'' + '}';
     }
 }

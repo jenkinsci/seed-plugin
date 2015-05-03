@@ -1,12 +1,6 @@
 package net.nemerosa.seed.config;
 
-import net.nemerosa.seed.config.*;
-import net.nemerosa.seed.triggering.SeedLauncher;
-import net.nemerosa.seed.triggering.SeedService;
-import net.nemerosa.seed.triggering.SeedChannel;
-import net.nemerosa.seed.triggering.SeedEvent;
-import net.nemerosa.seed.triggering.SeedEventType;
-import net.nemerosa.seed.triggering.SeedServiceImpl;
+import net.nemerosa.seed.triggering.*;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +12,7 @@ import static org.mockito.Mockito.*;
 
 public class CustomBranchStrategyTest {
 
+    public static final SeedChannel TEST_CHANNEL = SeedChannel.of("test", "Test");
     private SeedLauncher launcher;
     private SeedService seedService;
 
@@ -52,9 +47,9 @@ public class CustomBranchStrategyTest {
                         "PRJ",
                         "branches/R1.8.0",
                         SeedEventType.CREATION,
-                        SeedChannel.of("Test"))
+                        TEST_CHANNEL)
         );
-        verify(launcher, times(1)).launch(SeedChannel.of("Test"), "PRJ/PRJ_GENERATOR", Collections.singletonMap(
+        verify(launcher, times(1)).launch(TEST_CHANNEL, "PRJ/PRJ_GENERATOR", Collections.singletonMap(
                 Constants.BRANCH_PARAMETER,
                 "branches/R1.8.0"
         ));
@@ -67,7 +62,7 @@ public class CustomBranchStrategyTest {
                         "PRJ",
                         "branches/FEATURE_TEST",
                         SeedEventType.DELETION,
-                        SeedChannel.of("Test"))
+                        TEST_CHANNEL)
         );
         verify(launcher, times(1)).delete("PRJ/PRJ_FEATURE_TEST");
     }
@@ -79,9 +74,9 @@ public class CustomBranchStrategyTest {
                         "PRJ",
                         "branches/R1.8.0",
                         SeedEventType.SEED,
-                        SeedChannel.of("Test"))
+                        TEST_CHANNEL)
         );
-        verify(launcher, times(1)).launch(SeedChannel.of("Test"), "PRJ/PRJ_R1.8.0/PRJ_R1.8.0_GENERATOR", null);
+        verify(launcher, times(1)).launch(TEST_CHANNEL, "PRJ/PRJ_R1.8.0/PRJ_R1.8.0_GENERATOR", null);
     }
 
     @Test
@@ -91,9 +86,9 @@ public class CustomBranchStrategyTest {
                         "PRJ",
                         "branches/R1.8.0",
                         SeedEventType.COMMIT,
-                        SeedChannel.of("Test")).withParam("commit", "123456")
+                        TEST_CHANNEL).withParam("commit", "123456")
         );
-        verify(launcher, times(1)).launch(SeedChannel.of("Test"), "PRJ/PRJ_R1.8.0/PRJ_R1.8.0_010_BUILD", Collections.singletonMap(
+        verify(launcher, times(1)).launch(TEST_CHANNEL, "PRJ/PRJ_R1.8.0/PRJ_R1.8.0_010_BUILD", Collections.singletonMap(
                 "REVISION",
                 "123456"
         ));

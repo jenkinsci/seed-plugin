@@ -65,7 +65,7 @@ public class HttpEndPoint extends AbstractEndPoint implements UnprotectedRootAct
                 project,
                 extractParameter(req, "branch"),
                 type,
-                SeedChannel.of("Seed HTTP end point")
+                SeedChannel.of("http", "Seed HTTP end point")
         );
         // Additional parameters
         for (String parameterName : type.getParameterNames()) {

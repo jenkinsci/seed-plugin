@@ -42,6 +42,8 @@ public class SeedServiceImpl implements SeedService {
         SeedConfiguration configuration = configurationLoader.load();
         // Loads the project's configuration
         SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(event.getProject());
+        // Checks the channel
+        checkChannel(event, projectConfiguration, configuration);
         // Gets the branch strategy
         BranchStrategy branchStrategy = BranchStrategyHelper.getBranchStrategy(
                 configuration,
@@ -50,6 +52,19 @@ public class SeedServiceImpl implements SeedService {
         );
         // Dispatching
         branchStrategy.post(event, seedLauncher, configuration, projectConfiguration);
+    }
+
+    protected void checkChannel(SeedEvent event, SeedProjectConfiguration projectConfiguration, SeedConfiguration configuration) {
+        // Channel ID
+        String channelId = event.getChannel().getId();
+        // Enabled key
+        String channelEnabledKey = String.format("%s-enabled", channelId);
+        // Enabled?
+        boolean enabled = Configuration.getBoolean(channelEnabledKey, projectConfiguration, configuration, true);
+        // Check
+        if (!enabled) {
+            throw new SeedChannelNotEnabledException(channelEnabledKey, event.getChannel().getId(), event.getProject());
+        }
     }
 
     @Override

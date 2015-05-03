@@ -1,10 +1,6 @@
 package net.nemerosa.seed.config;
 
-import net.nemerosa.seed.config.SeedConfigurationLoader;
 import net.nemerosa.seed.triggering.*;
-import net.nemerosa.seed.config.SeedConfiguration;
-import net.nemerosa.seed.config.BranchStrategies;
-import net.nemerosa.seed.config.SeedBranchStrategy;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -12,6 +8,8 @@ import java.util.Collections;
 import static org.mockito.Mockito.*;
 
 public class SeedServiceImplTest {
+
+    public static final SeedChannel TEST_CHANNEL = SeedChannel.of("test", "Test");
 
     @Test
     public void seed_branch_creation() {
@@ -26,9 +24,9 @@ public class SeedServiceImplTest {
         SeedLauncher launcher = mock(SeedLauncher.class);
 
         SeedServiceImpl service = new SeedServiceImpl(loader, launcher, branchStrategies);
-        service.post(new SeedEvent("nemerosa/ontrack", "master", SeedEventType.CREATION, SeedChannel.of("Test")));
+        service.post(new SeedEvent("nemerosa/ontrack", "master", SeedEventType.CREATION, TEST_CHANNEL));
 
-        verify(launcher, times(1)).launch(SeedChannel.of("Test"), "ontrack/ontrack-seed", Collections.singletonMap("BRANCH", "master"));
+        verify(launcher, times(1)).launch(TEST_CHANNEL, "ontrack/ontrack-seed", Collections.singletonMap("BRANCH", "master"));
     }
 
 }

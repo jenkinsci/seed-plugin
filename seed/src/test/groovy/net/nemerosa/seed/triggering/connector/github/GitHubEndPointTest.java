@@ -17,6 +17,8 @@ import static org.mockito.Mockito.*;
 
 public class GitHubEndPointTest {
 
+    public static final SeedChannel GITHUB_CHANNEL = SeedChannel.of("github", "Seed GitHub end point");
+
     @Test
     public void create_branch() throws IOException {
         StaplerResponse response = mockStaplerResponse();
@@ -32,7 +34,7 @@ public class GitHubEndPointTest {
                         "nemerosa/seed-demo",
                         "test-4",
                         SeedEventType.CREATION,
-                        SeedChannel.of("Seed GitHub end point"))
+                        GITHUB_CHANNEL)
         );
     }
 
@@ -51,7 +53,7 @@ public class GitHubEndPointTest {
                         "nemerosa/seed-demo",
                         "test-4",
                         SeedEventType.DELETION,
-                        SeedChannel.of("Seed GitHub end point"))
+                        GITHUB_CHANNEL)
         );
     }
 
@@ -70,7 +72,7 @@ public class GitHubEndPointTest {
                         "nemerosa/seed-demo",
                         "master",
                         SeedEventType.SEED,
-                        SeedChannel.of("Seed GitHub end point"))
+                        GITHUB_CHANNEL)
         );
     }
 
@@ -89,7 +91,7 @@ public class GitHubEndPointTest {
                         "nemerosa/seed-demo",
                         "master",
                         SeedEventType.COMMIT,
-                        SeedChannel.of("Seed GitHub end point"))
+                        GITHUB_CHANNEL)
                         .withParam("commit", "a10c3027a04ab066adc7a2a3d4735a7026fc1c59")
         );
     }
@@ -111,7 +113,7 @@ public class GitHubEndPointTest {
                         "nemerosa/seed-demo",
                         "master",
                         SeedEventType.COMMIT,
-                        SeedChannel.of("Seed GitHub end point"))
+                        GITHUB_CHANNEL)
                         .withParam("commit", "a10c3027a04ab066adc7a2a3d4735a7026fc1c59")
         );
     }
