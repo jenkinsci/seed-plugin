@@ -145,7 +145,6 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
         wrapperDir.child('gradle-wrapper.properties').copyFrom(getClass().getResource('/gradle/gradle/wrapper/gradle-wrapper.properties'))
 
         // Generates the build.gradle file
-        // TODO Extraction of the DSL script
         listener.logger.println("Generating the Gradle file...")
         String gradle = """\
 repositories {

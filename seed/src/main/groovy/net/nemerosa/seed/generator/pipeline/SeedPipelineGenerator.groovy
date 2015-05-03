@@ -22,6 +22,7 @@ steps {
     }
 }
 """
+        // FIXME Lookup strategy = SEED_JOB (reuse Properties pipeline generator builder)
     }
 
 }
