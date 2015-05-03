@@ -89,19 +89,11 @@ class JenkinsAccessRule implements TestRule {
                     } else {
                         return false
                     }
-                }
+                } as String
                 // Build URL
                 if (buildUrl) {
                     debug "Build available at ${buildUrl}"
-                    Until.until(timeoutSeconds).every(5) {
-                        debug "Checking if the build is finished at ${buildUrl}..."
-                        def json = callUrl(new URL(buildUrl + "api/json"), 10, 10)
-                        if (json.result) {
-                            return new Build(json)
-                        } else {
-                            return false
-                        }
-                    } as Build
+                    waitForBuild(buildUrl, timeoutSeconds)
                 } else {
                     throw new JenkinsAPIBuildException(path, "Build not scheduled after ${timeoutSeconds} seconds")
                 }
@@ -111,6 +103,18 @@ class JenkinsAccessRule implements TestRule {
         } finally {
             connection.disconnect()
         }
+    }
+
+    protected Build waitForBuild(String buildUrl, int timeoutSeconds) {
+        Until.until(timeoutSeconds).every(5) {
+            debug "Checking if the build is finished at ${buildUrl}..."
+            def json = callUrl(new URL(buildUrl + "/api/json"), timeoutSeconds, timeoutSeconds)
+            if (json.result) {
+                return new Build(json)
+            } else {
+                return false
+            }
+        } as Build
     }
 
     public def api(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
@@ -232,9 +236,8 @@ class JenkinsAccessRule implements TestRule {
      */
     Build getBuild(String path, int buildNumber, int timeoutSeconds = 120) {
         info "[build] Getting build ${buildNumber} for ${path}"
-        def url = new URL(jenkinsUrl, jobPath(path) + "/${buildNumber}/api/json")
-        def json = callUrl(url, timeoutSeconds, timeoutSeconds)
-        return new Build(json)
+        def url = new URL(jenkinsUrl, jobPath(path) + "/${buildNumber}")
+        return waitForBuild(url as String, timeoutSeconds)
     }
 
     class Build {
