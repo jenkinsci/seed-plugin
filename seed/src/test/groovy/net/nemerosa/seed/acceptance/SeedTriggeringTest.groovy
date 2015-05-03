@@ -136,6 +136,50 @@ projects:
         jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
     }
 
-    // TODO Test for HTTP authorisation
+    @Test(expected = JenkinsAPIRefusedException)
+    void 'Token not provided'() {
+        // Project name
+        def project = uid('P')
+        // Configuration
+        jenkins.configureSeed """\
+http-secret-key: ABCDEF
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http/create?project=${project}&branch=master")
+    }
+
+    @Test
+    void 'Token provided'() {
+        // Project name
+        def project = uid('P')
+        // Configuration
+        jenkins.configureSeed """\
+http-secret-key: ABCDEF
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http/create?project=${project}&branch=master", { HttpURLConnection c ->
+            c.setRequestProperty('X-Seed-Token', 'ABCDEF')
+        })
+        // Checks the result of the project seed
+        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
+    }
 
 }

@@ -144,8 +144,15 @@ class JenkinsAccessRule implements TestRule {
     }
 
     public def post(String path, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
+        post(path, {}, timeoutSeconds, timeoutOnNotFound)
+    }
+
+    public def post(String path, Closure connectionSetup, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
         info "[post] Posting to ${path}"
-        callUrl(url(path), { HttpURLConnection c -> c.requestMethod = 'POST' }, timeoutSeconds, timeoutOnNotFound)
+        callUrl(url(path), { HttpURLConnection c ->
+            c.requestMethod = 'POST'
+            connectionSetup(c)
+        }, timeoutSeconds, timeoutOnNotFound)
     }
 
     public static def callUrl(URL url, int timeoutSeconds = 120, int timeoutOnNotFound = 0) {
