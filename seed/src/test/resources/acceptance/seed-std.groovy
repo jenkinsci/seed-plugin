@@ -8,6 +8,14 @@ package acceptance
 // TODO Document parameters
 
 freeStyleJob("${PROJECT}/${PROJECT}-${BRANCH}/${PROJECT}-${BRANCH}-build") {
+    parameters {
+        stringParam('COMMIT', 'HEAD', 'Commit to build')
+    }
+    steps {
+        shell '''\
+echo "Commit: ${COMMIT}"
+'''
+    }
     publishers {
         downstreamParameterized {
             trigger("${PROJECT}/${PROJECT}-${BRANCH}/${PROJECT}-${BRANCH}-ci", 'SUCCESS', true) {

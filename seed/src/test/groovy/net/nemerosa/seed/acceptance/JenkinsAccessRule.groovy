@@ -55,24 +55,32 @@ class JenkinsAccessRule implements TestRule {
     Build fireJob(String path, Map<String, String> parameters = [:], int timeoutSeconds = 120) {
         info "[fire] Firing job at ${path}"
         // Build path
+        String query = null
         String buildPath
         if (parameters && parameters.size() > 0) {
-            String query = parameters.collect { entry -> "${entry.key}=${entry.value}" }.join('&')
-            buildPath = "${jobPath(path)}/buildWithParameters?${query}"
+            query = parameters.collect { entry -> "${entry.key}=${entry.value}" }.join('&')
+            buildPath = "${jobPath(path)}/buildWithParameters"
         } else {
             buildPath = "${jobPath(path)}/build"
         }
         // Fires the build
-        fireBuild buildPath, timeoutSeconds
+        fireBuild buildPath, timeoutSeconds, query
     }
 
     /**
      * Fires a build
      */
-    protected Build fireBuild(String path, int timeoutSeconds = 120) {
+    protected Build fireBuild(String path, int timeoutSeconds = 120, String query = null) {
         def url = new URL(jenkinsUrl, path)
         def connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = 'POST'
+        if (query) {
+            connection.setRequestProperty('Content-Type', 'application/x-www-form-urlencoded')
+            connection.doOutput = true
+            connection.outputStream.withStream {
+                it.write(query.bytes)
+            }
+        }
         connection.connect()
         try {
             if (connection.responseCode == HttpURLConnection.HTTP_CREATED) {
