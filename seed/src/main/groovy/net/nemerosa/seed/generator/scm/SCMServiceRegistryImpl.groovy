@@ -5,7 +5,6 @@ import net.nemerosa.seed.generator.scm.svn.SvnSCMService
 
 class SCMServiceRegistryImpl implements SCMServiceRegistry {
 
-    // TODO Injection
     private final Map<String, SCMService> scmServices = [
             git: new GitSCMService(),
             svn: new SvnSCMService(),
