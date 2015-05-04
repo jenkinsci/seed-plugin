@@ -68,6 +68,7 @@ task dockerLogs(dependsOn: dockerDeploy) {
             executable = 'docker'
             args = ['logs', cid]
             standardOutput = bytes
+            errorOutput = bytes
         }
         new File(buildDir, 'jenkins.log').bytes = bytes.toByteArray()
     }
