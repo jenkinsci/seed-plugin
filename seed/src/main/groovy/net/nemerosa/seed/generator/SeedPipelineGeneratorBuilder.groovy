@@ -1,4 +1,4 @@
-package net.nemerosa.seed.generator.pipeline
+package net.nemerosa.seed.generator
 
 import hudson.Extension
 import hudson.Launcher
@@ -7,10 +7,11 @@ import hudson.tasks.BuildStepDescriptor
 import hudson.tasks.Builder
 import net.nemerosa.seed.config.SeedDSLHelper
 import net.nemerosa.seed.config.SeedProjectEnvironment
+import org.apache.commons.lang.StringUtils
 import org.kohsuke.stapler.DataBoundConstructor
 
 /**
- * This step prepares the DSL environment for the {@link PropertiesPipelineGenerator}.
+ * This step prepares the DSL environment for the {@link BranchPipelineGeneratorExtension}.
  *
  * It will:
  *
@@ -38,8 +39,9 @@ import org.kohsuke.stapler.DataBoundConstructor
  *     </ul>
  * </ul>
  */
-class PropertiesPipelineGeneratorBuilder extends Builder {
+class SeedPipelineGeneratorBuilder extends Builder {
 
+    public static final String SEED_GRADLE = 'SEED_GRADLE'
     public static final String SEED_DSL_SCRIPT_LOCATION = 'SEED_DSL_SCRIPT_LOCATION'
     public static final String SEED_PROJECT = 'SEED_PROJECT'
     public static final String SEED_BRANCH = 'SEED_BRANCH'
@@ -52,7 +54,7 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
     private final String propertyPath
 
     @DataBoundConstructor
-    PropertiesPipelineGeneratorBuilder(String propertyPath, String project, String projectClass, String projectScmType, String projectScmUrl, String branch) {
+    SeedPipelineGeneratorBuilder(String propertyPath, String project, String projectClass, String projectScmType, String projectScmUrl, String branch) {
         this.propertyPath = propertyPath
         this.project = project
         this.projectClass = projectClass
@@ -75,7 +77,10 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
         // Reads the property file
         listener.logger.println("Reading properties from ${propertyPath}...")
         Properties properties = new Properties()
-        build.workspace.child(propertyPath).read().withStream { properties.load(it) }
+        def propertyFile = build.workspace.child(propertyPath)
+        if (propertyFile.exists()) {
+            propertyFile.read().withStream { properties.load(it) }
+        }
 
         // Gets the list of dependencies from the property file
         List<String> dependencies
@@ -95,7 +100,7 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
         // Gets the dependency source for the bootstrap script
         String dslBootstrapDependency = properties['seed.dsl.script.jar']
         if (!dslBootstrapDependency) {
-            dslBootstrapDependency = projectEnvironment.getConfigurationValue('pipeline-generator-script-jar', 'pipeline')
+            dslBootstrapDependency = projectEnvironment.getConfigurationValue('pipeline-generator-script-jar', '')
         }
         listener.logger.println("DSL script JAR: ${dslBootstrapDependency}")
 
@@ -126,11 +131,15 @@ class PropertiesPipelineGeneratorBuilder extends Builder {
         String seedProjectName = projectEnvironment.projectConfiguration.name
         String seedBranchName = projectEnvironment.namingStrategy.getBranchName(branch)
 
+        // Is the Gradle step needed?
+        boolean gradleNeeded = StringUtils.isNotBlank(dslBootstrapDependency) || !dependencies.empty
+
         // Injects the environment variables
         build.addAction(new ParametersAction(
                 new StringParameterValue(SEED_DSL_SCRIPT_LOCATION, dslBootstrapLocation),
                 new StringParameterValue(SEED_PROJECT, seedProjectName),
                 new StringParameterValue(SEED_BRANCH, seedBranchName),
+                new StringParameterValue(SEED_GRADLE, gradleNeeded ? 'yes' : 'no'),
         ))
 
         // Prepares the Gradle environment
@@ -163,9 +172,12 @@ task copyLibraries(type: Copy, dependsOn: clean) {
     into 'lib'
     from configurations.dslLibrary
 }
+"""
+        if (dslBootstrapDependency) {
+            gradle += """\
 task extractScript(dependsOn: copyLibraries) {
     doFirst {
-        ant.unzip(dest: 'lib') {
+        ant.unzip(dest: '.') {
             fileset(dir: 'lib') {
                 include(name: '${dslBootstrapDependency}*.jar')
             }
@@ -177,6 +189,12 @@ task extractScript(dependsOn: copyLibraries) {
 }
 task prepare(dependsOn: extractScript)
 """
+        } else {
+            gradle += """\
+task prepare(dependsOn: copyLibraries)
+"""
+        }
+
         gradleDir.child('build.gradle').write(gradle, 'UTF-8')
 
         // OK
