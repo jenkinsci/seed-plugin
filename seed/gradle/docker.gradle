@@ -64,10 +64,8 @@ task buildLatest(type: Exec, dependsOn: buildImage) {
     ]
 }
 
-task build(dependsOn: [rootProject.versionDisplay, buildImage, buildLatest])
-
 if (versioning.info.branchType == 'release') {
-    task buildRelease(type: Exec, dependsOn: buildImage) {
+    task buildRelease(type: Exec, dependsOn: [buildImage, buildLatest]) {
         executable 'docker'
         args = [
                 'tag',
@@ -76,12 +74,9 @@ if (versioning.info.branchType == 'release') {
                 "nemerosa/seed:${versioning.info.display}"
         ]
     }
-
-    build.dependsOn buildRelease
 }
 
 // Link with the build
 
 buildImage.dependsOn test
 buildImage.dependsOn assemble
-build.dependsOn([buildImage, buildLatest])
