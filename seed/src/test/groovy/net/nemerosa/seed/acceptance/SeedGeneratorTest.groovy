@@ -107,7 +107,6 @@ strategies:
 classes:
     - id: custom-pipeline
       branch-strategy: custom
-      pipeline-generator: properties
 '''
         // Firing the seed job
         jenkins.fireJob('seed', [
@@ -124,8 +123,8 @@ classes:
         ]).checkSuccess()
         // Checks the branch seed is created
         jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR')
-        // Fires the branch seed
-        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR').checkSuccess()
+        // Fires the branch seed (extra timeout because of Gradle runtime download)
+        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR', [:], 240).checkSuccess()
         // Checks the branch pipeline is there
         jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_010_BUILD')
         jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_020_CI')
