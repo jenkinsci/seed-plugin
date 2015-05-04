@@ -50,12 +50,18 @@ configure { node ->
          */
         snippets << """\
 steps {
-    gradle {
-        buildFile 'seed/build.gradle'
-        fromRootBuildScriptDir()
-        makeExecutable()
-        useWrapper()
-        tasks 'prepare'
+    conditionalSteps {
+        condition {
+            stringsMatch('\${SEED_GRADLE}', 'yes', true)
+        }
+        runner('Fail')
+        gradle {
+            buildFile 'seed/build.gradle'
+            fromRootBuildScriptDir()
+            makeExecutable()
+            useWrapper()
+            tasks 'prepare'
+        }
     }
 }
 """
