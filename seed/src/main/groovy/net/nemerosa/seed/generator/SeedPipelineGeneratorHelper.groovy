@@ -1,17 +1,15 @@
 package net.nemerosa.seed.generator
 
-import hudson.Extension
-import hudson.Launcher
-import hudson.model.*
-import hudson.tasks.BuildStepDescriptor
-import hudson.tasks.Builder
+import hudson.model.AbstractBuild
+import hudson.model.BuildListener
+import hudson.model.ParametersAction
+import hudson.model.StringParameterValue
 import net.nemerosa.seed.config.SeedDSLHelper
 import net.nemerosa.seed.config.SeedProjectEnvironment
 import org.apache.commons.lang.StringUtils
-import org.kohsuke.stapler.DataBoundConstructor
 
 /**
- * This step prepares the DSL environment for the {@link BranchPipelineGeneratorExtension}.
+ * This class prepares the DSL environment for the {@link BranchPipelineGeneratorExtension}.
  *
  * It will:
  *
@@ -39,7 +37,7 @@ import org.kohsuke.stapler.DataBoundConstructor
  *     </ul>
  * </ul>
  */
-class SeedPipelineGeneratorBuilder extends Builder {
+class SeedPipelineGeneratorHelper {
 
     public static final String SEED_GRADLE = 'SEED_GRADLE'
     public static final String SEED_DSL_SCRIPT_LOCATION = 'SEED_DSL_SCRIPT_LOCATION'
@@ -53,18 +51,16 @@ class SeedPipelineGeneratorBuilder extends Builder {
     private final String branch
     private final String propertyPath
 
-    @DataBoundConstructor
-    SeedPipelineGeneratorBuilder(String propertyPath, String project, String projectClass, String projectScmType, String projectScmUrl, String branch) {
-        this.propertyPath = propertyPath
+    SeedPipelineGeneratorHelper(String project, String projectClass, String projectScmType, String projectScmUrl, String branch, String propertyPath) {
         this.project = project
         this.projectClass = projectClass
         this.projectScmType = projectScmType
         this.projectScmUrl = projectScmUrl
         this.branch = branch
+        this.propertyPath = propertyPath
     }
 
-    @Override
-    boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+    boolean perform(AbstractBuild build, BuildListener listener) throws InterruptedException, IOException {
 
         // Getting the project environment
         SeedProjectEnvironment projectEnvironment = new SeedDSLHelper().getProjectEnvironment(
@@ -201,41 +197,4 @@ task prepare(dependsOn: copyLibraries)
         return true
     }
 
-    String getProject() {
-        return project
-    }
-
-    String getProjectClass() {
-        return projectClass
-    }
-
-    String getProjectScmType() {
-        return projectScmType
-    }
-
-    String getProjectScmUrl() {
-        return projectScmUrl
-    }
-
-    String getBranch() {
-        return branch
-    }
-
-    String getPropertyPath() {
-        return propertyPath
-    }
-
-    @Extension
-    public static class PropertiesPipelineGeneratorBuilderDescription extends BuildStepDescriptor<Builder> {
-
-        @Override
-        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-            return true;
-        }
-
-        @Override
-        public String getDisplayName() {
-            return "Branch pipeline generator preparation";
-        }
-    }
 }

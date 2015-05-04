@@ -72,7 +72,7 @@ steps {
         snippets << """\
 configure { node ->
     node / 'builders' / 'javaposse.jobdsl.plugin.ExecuteDslScripts' {
-        targets 'seed/\${${SeedPipelineGeneratorBuilder.SEED_DSL_SCRIPT_LOCATION}}'
+        targets 'seed/\${${SeedPipelineGeneratorHelper.SEED_DSL_SCRIPT_LOCATION}}'
         usingScriptText false
         scriptText ''
         ignoreExisting false
