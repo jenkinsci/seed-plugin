@@ -59,6 +59,20 @@ task dockerUndeploy(dependsOn: dockerDeploy) {
     }
 }
 
+task dockerLogs(dependsOn: dockerDeploy) {
+    doFirst {
+        def cid = dockerDeploy.ext.cid()
+        println "Getting logs from container ${cid}"
+        def bytes = new ByteArrayOutputStream()
+        exec {
+            executable = 'docker'
+            args = ['logs', cid]
+            standardOutput = bytes
+        }
+        new File(buildDir, 'jenkins.log').bytes = bytes.toByteArray()
+    }
+}
+
 // Test repositories
 
 class SvnRepo {
@@ -169,10 +183,11 @@ task dockerGitTestRepos(dependsOn: [dockerGitTestRepoSeedStd])
 
 task localDockerAcceptanceTest {
     dependsOn buildLatest
-    dependsOn acceptanceTest
     dependsOn dockerDeploy
     dependsOn dockerGitTestRepos
     dependsOn dockerSvnTestRepos
+    dependsOn acceptanceTest
+    finalizedBy dockerLogs
     finalizedBy dockerUndeploy
 }
 
@@ -181,3 +196,4 @@ acceptanceTest.mustRunAfter dockerGitTestRepos
 acceptanceTest.mustRunAfter dockerSvnTestRepos
 dockerGitTestRepos.mustRunAfter dockerDeploy
 dockerSvnTestRepos.mustRunAfter dockerDeploy
+dockerUndeploy.mustRunAfter dockerLogs
