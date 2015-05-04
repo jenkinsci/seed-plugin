@@ -1,2 +1,24 @@
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:entry>
+        This step generates a branch pipeline, using the parameters below. The setup of this step
+        cannot be done directly, but only through a branch seed job.
+    </f:entry>
+    <f:entry title="Project identifier" field="project">
+        <f:readOnlyTextbox/>
+    </f:entry>
+    <f:entry title="Project class (optional)" field="projectClass">
+        <f:readOnlyTextbox/>
+    </f:entry>
+    <f:entry title="Project SCM type" field="projectScmType">
+        <f:readOnlyTextbox/>
+    </f:entry>
+    <f:entry title="Project SCM URL" field="projectScmUrl">
+        <f:readOnlyTextbox/>
+    </f:entry>
+    <f:entry title="Branch path" field="branch">
+        <f:readOnlyTextbox/>
+    </f:entry>
+    <f:entry title="Property file path" field="propertyPath">
+        <f:readOnlyTextbox/>
+    </f:entry>
 </j:jelly>

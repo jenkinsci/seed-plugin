@@ -1,4 +1,8 @@
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:entry>
+        This step generates a branch seed job, using the parameters below. The setup of this step
+        cannot be done directly, but only through a root seed job.
+    </f:entry>
     <f:entry title="Project identifier" field="project">
         <f:readOnlyTextbox/>
     </f:entry>
