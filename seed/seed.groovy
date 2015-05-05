@@ -21,6 +21,9 @@
 freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
     logRotator(-1, 40)
     jdk 'JDK7'
+    parameters {
+        stringParam('COMMIT', 'HEAD', 'Commit to build')
+    }
     scm {
         git {
             remote {
