@@ -4,6 +4,6 @@ plugins {
 
 allprojects {
     group = 'org.jenkins-ci.plugins'
-    version = versioning.info.full
+    version = versioning.info.display
 }
 description = "Seed Jenkins plug-in"
