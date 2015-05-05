@@ -30,4 +30,5 @@ Documentation is available in the [Wiki](https://github.com/nemerosa/seed-plugin
 
 Quick links:
 
+* [Configuration](https://github.com/nemerosa/seed-plugin/wiki/Configuration)
 * [GitHub configuration](https://github.com/nemerosa/seed-plugin/wiki/GitHub)
