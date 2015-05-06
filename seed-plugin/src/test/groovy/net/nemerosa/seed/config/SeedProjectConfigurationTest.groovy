@@ -1,7 +1,5 @@
 package net.nemerosa.seed.config
 
-import net.nemerosa.seed.config.SeedConfiguration
-import net.nemerosa.seed.config.SeedProjectConfiguration
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
@@ -20,6 +18,78 @@ class SeedProjectConfigurationTest {
         SeedProjectConfiguration c = SeedProjectConfiguration.of("ontrack");
         assertEquals("ontrack", c.getId());
         assertEquals("ontrack", c.getName());
+    }
+
+    @Test
+    void 'Pipeline extensions at global level'() {
+        def configuration = SeedConfiguration.parseYaml('''\
+pipeline-extensions:
+    - id: extension1
+      dsl: |
+        steps {
+            shell "echo Extension 1"
+        }
+    - id: extension2
+      dsl: |
+        steps {
+            shell "echo Extension 2"
+        }
+projects:
+    - id: test
+''')
+        def project = configuration.getProjectConfiguration('test')
+        assertEquals(
+                '''\
+steps {
+    shell "echo Extension 1"
+}
+''',
+                Configuration.getFieldInList('pipeline-extensions', project, configuration, 'id', 'extension1', 'dsl')
+        )
+        assertEquals(
+                '''\
+steps {
+    shell "echo Extension 2"
+}
+''',
+                Configuration.getFieldInList('pipeline-extensions', project, configuration, 'id', 'extension2', 'dsl')
+        )
+    }
+
+    @Test
+    void 'Pipeline extensions at project level'() {
+        def configuration = SeedConfiguration.parseYaml('''\
+projects:
+    - id: test
+      pipeline-extensions:
+        - id: extension1
+          dsl: |
+            steps {
+                shell "echo Extension 1"
+            }
+        - id: extension2
+          dsl: |
+            steps {
+                shell "echo Extension 2"
+            }
+''')
+        def project = configuration.getProjectConfiguration('test')
+        assertEquals(
+                '''\
+steps {
+    shell "echo Extension 1"
+}
+''',
+                Configuration.getFieldInList('pipeline-extensions', project, configuration, 'id', 'extension1', 'dsl')
+        )
+        assertEquals(
+                '''\
+steps {
+    shell "echo Extension 2"
+}
+''',
+                Configuration.getFieldInList('pipeline-extensions', project, configuration, 'id', 'extension2', 'dsl')
+        )
     }
 
     @Test

@@ -1,5 +1,7 @@
 package net.nemerosa.seed.config;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
@@ -102,6 +104,38 @@ public class Configuration {
             return list;
         } else {
             return globalConfiguration.getListString(name);
+        }
+    }
+
+    public static String getFieldInList(String listName, Configuration configuration, Configuration globalConfiguration, String idField, String idValue, String valueField) {
+        String value = getFieldInList(listName, configuration, idField, idValue, valueField);
+        if (StringUtils.isNotBlank(value)) {
+            return value;
+        } else {
+            return getFieldInList(listName, globalConfiguration, idField, idValue, valueField);
+        }
+    }
+
+    protected static String getFieldInList(String listName, Configuration configuration, final String idField, final String idValue, String valueField) {
+        List<Map<String, ?>> items = configuration.getList(listName);
+        Map<String, ?> itemData = Iterables.find(
+                items,
+                new Predicate<Map<String, ?>>() {
+                    @Override
+                    public boolean apply(Map<String, ?> data) {
+                        String itemId = Objects.toString(data.get(idField), null);
+                        return StringUtils.equals(idValue, itemId);
+                    }
+                },
+                null
+        );
+        if (itemData != null) {
+            return Objects.toString(
+                    itemData.get(valueField),
+                    null
+            );
+        } else {
+            return null;
         }
     }
 }

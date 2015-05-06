@@ -5,8 +5,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import java.text.SimpleDateFormat
-import java.util.concurrent.atomic.AtomicLong
+import static net.nemerosa.seed.acceptance.TestUtils.uid
 
 /**
  * Testing the triggering of seeds and pipelines using the Seed plug-in.
@@ -16,12 +15,6 @@ class SeedTriggeringTest {
 
     @Rule
     public JenkinsAccessRule jenkins = new JenkinsAccessRule()
-
-    private static final AtomicLong counter = new AtomicLong()
-
-    static String uid(String prefix) {
-        prefix + new SimpleDateFormat('mmssSSS').format(new Date()) + counter.incrementAndGet()
-    }
 
     @Before
     void 'Project preparation'() {

@@ -136,4 +136,59 @@ classes:
         jenkins.getBuild('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_030_PUBLISH', 1).checkSuccess()
     }
 
+    @Test
+    void 'Pipeline extensions'() {
+        // Checks the seed job exists
+        'Default seed job created'()
+        // Project name
+        String project = TestUtils.uid('P')
+        // Configuration
+        jenkins.configureSeed """\
+pipeline-extensions:
+    - id: extension1
+      dsl: |
+        steps {
+            shell "echo Extension 1"
+        }
+    - id: extension2
+      dsl: |
+        steps {
+            shell "echo Extension 2"
+        }
+projects:
+    - id: "${project}"
+      pipeline-generator-extensions:
+        - extension1
+        - extension2
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.job("${project}/${project}-master/${project}-master-build")
+        jenkins.job("${project}/${project}-master/${project}-master-ci")
+        jenkins.job("${project}/${project}-master/${project}-master-publish")
+        // Gets the branch seed build...
+        def branchSeedBuild = jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1)
+        // ... gets its output
+        def branchSeedBuildOutput = new URL(branchSeedBuild.json.url + 'consoleText').text
+        // ... and checks it contains the customisations
+        assert branchSeedBuildOutput.contains('Extension 1')
+        assert branchSeedBuildOutput.contains('Extension 2')
+    }
+
 }

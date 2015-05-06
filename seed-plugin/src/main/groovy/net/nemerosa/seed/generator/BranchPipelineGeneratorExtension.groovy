@@ -1,10 +1,12 @@
 package net.nemerosa.seed.generator
 
+import net.nemerosa.seed.config.Configuration
 import net.nemerosa.seed.config.SeedProjectEnvironment
 
 class BranchPipelineGeneratorExtension {
 
     static final String PIPELINE_GENERATOR_PROPERTY_PATH = 'pipeline-generator-property-path'
+    static final String PIPELINE_GENERATOR_EXTENSIONS = 'pipeline-generator-extensions'
 
     private final SeedProjectEnvironment environment
     private final String branch
@@ -21,7 +23,19 @@ class BranchPipelineGeneratorExtension {
         // Gets the property file name
         String propertyPath = environment.getConfigurationValue(PIPELINE_GENERATOR_PROPERTY_PATH, 'seed/seed.properties')
 
-        // TODO Extensions (injection of DSL steps)
+        /**
+         * Extensions (injection of DSL steps)
+         *
+         * Gets the list of extension IDs from the project configuration.
+         *
+         * Gets the extension snippets from the configuration and applies them.
+         */
+        def extensionIds = environment.getConfigurationList(PIPELINE_GENERATOR_EXTENSIONS)
+        extensionIds.each { String extensionId ->
+            String extensionDsl = getExtension(extensionId)
+            // Adds the extension DSL
+            snippets << extensionDsl
+        }
 
         /**
          * Reads information from the property file and generates a Gradle build file
@@ -86,4 +100,14 @@ configure { node ->
         // OK
         return snippets.join('\n')
     }
+
+    protected String getExtension(String id) {
+        return Configuration.getFieldInList(
+                'pipeline-extensions',
+                environment.projectConfiguration,
+                environment.globalConfiguration,
+                'id', id,
+                'dsl')
+    }
+
 }
