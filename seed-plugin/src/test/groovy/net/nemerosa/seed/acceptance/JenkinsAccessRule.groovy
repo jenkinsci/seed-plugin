@@ -216,7 +216,7 @@ class JenkinsAccessRule implements TestRule {
                 }
             } catch (SocketException ignored) {
                 // Trying again...
-                debug "Cannot connect"
+                trace "Cannot connect"
                 return false
             }
         }
