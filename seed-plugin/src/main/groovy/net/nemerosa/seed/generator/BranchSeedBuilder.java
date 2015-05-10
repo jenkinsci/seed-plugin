@@ -47,6 +47,9 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
                 projectEnvironment.getId(),
                 theBranch
         ));
+        // Computation of seed names
+        env.put("SEED_PROJECT", projectEnvironment.getProjectConfiguration().getName());
+        env.put("SEED_BRANCH", projectEnvironment.getNamingStrategy().getBranchName(theBranch));
     }
 
     @Override
