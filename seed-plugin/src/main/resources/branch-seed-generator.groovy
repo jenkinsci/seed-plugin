@@ -8,6 +8,8 @@
  * - PROJECT_SCM_TYPE
  * - PROJECT_SCM_URL
  * - BRANCH
+ * - SEED_PROJECT
+ * - SEED_BRANCH
  *
  * Bound variables are:
  *
@@ -39,6 +41,8 @@ freeStyleJob(branchSeedPath) {
             env('PROJECT_SCM_TYPE', PROJECT_SCM_TYPE)
             env('PROJECT_SCM_URL', PROJECT_SCM_URL)
             env('BRANCH', BRANCH)
+            env('SEED_PROJECT', SEED_PROJECT)
+            env('SEED_BRANCH', SEED_BRANCH)
         }
     }
     branchSeedScmExtensionPoint()
