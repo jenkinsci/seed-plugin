@@ -3,8 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        // TODO Waiting for JENKINS-27994 to be fixed and a new gradle-jpi-plugin released
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.10.2'
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.11.1'
     }
 }
 
