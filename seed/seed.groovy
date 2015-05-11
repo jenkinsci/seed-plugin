@@ -41,7 +41,7 @@ freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
         archiveJunit("**/build/test-results/*.xml")
         tasks(
                 '**/*.java,**/*.groovy,**/*.xml,**/*.html,**/*.js',
-                '**/build/**',
+                '**/build/**,seed/**',
                 'FIXME', 'TODO', '@Deprecated', true
         )
     }
