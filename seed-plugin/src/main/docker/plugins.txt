@@ -23,7 +23,7 @@ scm-api:0.2
 mapdb-api:1.0.6.0
 envinject:1.91.2
 token-macro:1.10
-job-dsl:1.32
+job-dsl:1.34
 parameterized-trigger:2.26
 git:2.3.5
 gradle:1.24

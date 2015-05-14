@@ -12,8 +12,7 @@ apply plugin: 'org.jenkins-ci.jpi'
 description = "Seed Jenkins plug-in"
 
 ext {
-    // TODO Waiting for JENKINS-27994 to be fixed and a new job-dsl released
-    jobDslVersion = '1.32'
+    jobDslVersion = '1.34'
 }
 
 jenkinsPlugin {
