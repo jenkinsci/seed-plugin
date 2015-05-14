@@ -47,7 +47,11 @@ public class JenkinsSeedLauncher implements SeedLauncher {
                 throw new JobNotParameterizedException(job.getName());
             }
         } else {
-            job.scheduleBuild(getCause(channel));
+            Jenkins.getInstance().getQueue().schedule2(
+                    job,
+                    0,
+                    new CauseAction(getCause(channel))
+            );
         }
     }
 
