@@ -20,6 +20,20 @@ public class GitHubEndPointTest {
     public static final SeedChannel GITHUB_CHANNEL = SeedChannel.of("github", "Seed GitHub end point");
 
     @Test
+    public void ping() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockGitHubRequest("ping", "/github-payload-ping.json");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        // Call
+        new GitHubEndPoint(seedService).doDynamic(request, response);
+        // Verifying
+        verify(seedService, never()).post(any(SeedEvent.class));
+        verify(response, times(1)).setStatus(202);
+    }
+
+    @Test
     public void create_branch() throws IOException {
         StaplerResponse response = mockStaplerResponse();
         // Request

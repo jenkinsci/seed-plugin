@@ -1,14 +1,14 @@
 package net.nemerosa.seed.triggering.connector.github;
 
 import hudson.Extension;
+import net.nemerosa.seed.triggering.SeedChannel;
+import net.nemerosa.seed.triggering.SeedEvent;
+import net.nemerosa.seed.triggering.SeedEventType;
 import net.nemerosa.seed.triggering.SeedService;
 import net.nemerosa.seed.triggering.connector.AbstractEndPoint;
 import net.nemerosa.seed.triggering.connector.CannotHandleRequestException;
 import net.nemerosa.seed.triggering.connector.RequestNonAuthorizedException;
 import net.nemerosa.seed.triggering.connector.UnknownRequestException;
-import net.nemerosa.seed.triggering.SeedChannel;
-import net.nemerosa.seed.triggering.SeedEvent;
-import net.nemerosa.seed.triggering.SeedEventType;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Hex;
@@ -60,7 +60,9 @@ public class GitHubEndPoint extends AbstractEndPoint {
         // Checks the signature
         checkSignature(req, payload, project);
         // Event type
-        if ("create".equals(ghEvent)) {
+        if ("ping".equals(ghEvent)) {
+            return testEvent(json);
+        } else if ("create".equals(ghEvent)) {
             return createEvent(json);
         } else if ("delete".equals(ghEvent)) {
             return deleteEvent(json);
@@ -156,6 +158,15 @@ public class GitHubEndPoint extends AbstractEndPoint {
                 commitContext.feed(seedPath);
             }
         }
+    }
+
+    private SeedEvent testEvent(JSONObject json) {
+        return new SeedEvent(
+                getProject(json),
+                "",
+                SeedEventType.TEST,
+                SEED_CHANNEL
+        );
     }
 
     private SeedEvent createEvent(JSONObject json) {

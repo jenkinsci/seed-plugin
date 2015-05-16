@@ -4,6 +4,7 @@ import com.google.inject.Guice
 import hudson.model.UnprotectedRootAction
 import net.nemerosa.seed.config.MissingParameterException
 import net.nemerosa.seed.triggering.SeedEvent
+import net.nemerosa.seed.triggering.SeedEventType
 import net.nemerosa.seed.triggering.SeedService
 import net.nemerosa.seed.triggering.SeedServiceModule
 import net.sf.json.JSONSerializer
@@ -57,10 +58,17 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
                                 event.getParameters()
                         )
                 );
-                // Posts the event
-                post(event);
-                // OK
-                sendOk(rsp, event);
+                // Test?
+                if (event.type == SeedEventType.TEST) {
+                    sendError(rsp, StaplerResponse.SC_ACCEPTED, "Test OK")
+                }
+                // Actual event
+                else {
+                    // Posts the event
+                    post(event);
+                    // OK
+                    sendOk(rsp, event);
+                }
             }
         } catch (IOException ex) {
             throw ex;

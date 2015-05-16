@@ -6,6 +6,8 @@ import java.util.List;
 
 public enum SeedEventType {
 
+    TEST(),
+
     CREATION(),
 
     DELETION(),
