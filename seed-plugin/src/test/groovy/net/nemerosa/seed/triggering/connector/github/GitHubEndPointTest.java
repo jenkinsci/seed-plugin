@@ -1,9 +1,9 @@
 package net.nemerosa.seed.triggering.connector.github;
 
-import net.nemerosa.seed.triggering.SeedService;
 import net.nemerosa.seed.triggering.SeedChannel;
 import net.nemerosa.seed.triggering.SeedEvent;
 import net.nemerosa.seed.triggering.SeedEventType;
+import net.nemerosa.seed.triggering.SeedService;
 import org.junit.Test;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -38,6 +38,22 @@ public class GitHubEndPointTest {
         );
     }
 
+    /**
+     * When a branch is created, the `create` event is preceded by the `push` which must be ignored.
+     */
+    @Test
+    public void create_branch_push_event() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockGitHubRequest("push", "/github-payload-create-push.json");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        // Call
+        new GitHubEndPoint(seedService).doDynamic(request, response);
+        // Verifying
+        verify(seedService, never()).post(any(SeedEvent.class));
+    }
+
     @Test
     public void delete_branch() throws IOException {
         StaplerResponse response = mockStaplerResponse();
@@ -55,6 +71,22 @@ public class GitHubEndPointTest {
                         SeedEventType.DELETION,
                         GITHUB_CHANNEL)
         );
+    }
+
+    /**
+     * When a branch is delete, the `delete` event is followed by the `push` which must be ignored.
+     */
+    @Test
+    public void delete_branch_push_event() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockGitHubRequest("push", "/github-payload-delete-push.json");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        // Call
+        new GitHubEndPoint(seedService).doDynamic(request, response);
+        // Verifying
+        verify(seedService, never()).post(any(SeedEvent.class));
     }
 
     @Test

@@ -108,6 +108,10 @@ public class GitHubEndPoint extends AbstractEndPoint {
     }
 
     private SeedEvent pushEvent(JSONObject json) {
+        // Create or delete?
+        if (json.getBoolean("created") || json.getBoolean("deleted")) {
+            return null;
+        }
         // Gets the branch reference
         String ref = json.getString("ref");
         // Parses the branch name
