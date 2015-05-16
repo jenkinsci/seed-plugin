@@ -48,3 +48,9 @@ freeStyleJob(branchSeedPath) {
     branchSeedScmExtensionPoint()
     pipelineGenerationExtensionPoint()
 }
+
+/**
+ * Firing the branch seed
+ */
+
+queue(branchSeedPath)
