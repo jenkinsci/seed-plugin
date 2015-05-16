@@ -1,6 +1,7 @@
 package net.nemerosa.seed.generator
 
 import net.nemerosa.seed.config.Configuration
+import net.nemerosa.seed.config.SeedNamingStrategyHelper
 import net.nemerosa.seed.config.SeedProjectEnvironment
 
 class BranchPipelineGeneratorExtension {
@@ -93,6 +94,21 @@ configure { node ->
         removedJobAction 'DELETE'
         lookupStrategy 'SEED_JOB'
         additionalClasspath 'seed/lib/*.jar'
+    }
+}
+"""
+
+        /**
+         * Fires the branch pipeline
+         */
+        String branchPipeline = SeedNamingStrategyHelper.getBranchPath(
+                environment.namingStrategy.getBranchStart(environment.id),
+                environment.namingStrategy.getBranchName(branch)
+        )
+        snippets << """\
+steps {
+    dsl {
+        text "queue('${branchPipeline}')"
     }
 }
 """
