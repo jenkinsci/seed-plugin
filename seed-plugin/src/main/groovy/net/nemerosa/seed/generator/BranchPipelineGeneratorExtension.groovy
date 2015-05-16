@@ -81,18 +81,14 @@ steps {
 
         /**
          * Runs the script DSL
-         *
-         * TODO JENKINS-28171 Add lookupStrategy
          */
         snippets << """\
-configure { node ->
-    node / 'builders' / 'javaposse.jobdsl.plugin.ExecuteDslScripts' {
-        targets 'seed/\${${SeedPipelineGeneratorHelper.SEED_DSL_SCRIPT_LOCATION}}'
-        usingScriptText false
-        scriptText ''
-        ignoreExisting false
-        removedJobAction 'DELETE'
+steps {
+    dsl {
+        external 'seed/\${${SeedPipelineGeneratorHelper.SEED_DSL_SCRIPT_LOCATION}}'
+        removeAction 'DELETE'
         lookupStrategy 'SEED_JOB'
+        ignoreExisting false
         additionalClasspath 'seed/lib/*.jar'
     }
 }
