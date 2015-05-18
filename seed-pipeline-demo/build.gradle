@@ -20,14 +20,3 @@ repositories {
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.3'
 }
-
-/**
- * Putting the seed.groovy in its own folder
- */
-
-sourceSets {
-    main {
-        groovy { srcDirs = ['src/main/groovy'] }
-        resources { srcDirs = ['src/main/resources', 'seed'] }
-    }
-}

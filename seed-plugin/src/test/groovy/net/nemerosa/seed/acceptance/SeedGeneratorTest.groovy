@@ -124,7 +124,7 @@ classes:
         // Checks the branch seed is created
         jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR')
         // Fires the branch seed (extra timeout because of Gradle runtime download)
-        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR', [:], 240).checkSuccess()
+        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR', [:], 300).checkSuccess()
         // Checks the branch pipeline is there
         jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_010_BUILD')
         jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_020_CI')
