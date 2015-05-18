@@ -46,8 +46,8 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
             // Extracts the event
             SeedEvent event = extractEvent(req);
             if (event == null) {
-                LOGGER.finer("Event not accepted");
-                sendError(rsp, StaplerResponse.SC_NOT_MODIFIED, "Event not accepted");
+                LOGGER.finer("Event not managed");
+                sendError(rsp, StaplerResponse.SC_ACCEPTED, "Event not managed");
             } else {
                 LOGGER.finer(
                         String.format(
