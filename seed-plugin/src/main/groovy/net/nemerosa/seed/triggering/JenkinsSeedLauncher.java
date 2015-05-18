@@ -1,10 +1,13 @@
 package net.nemerosa.seed.triggering;
 
 import hudson.model.*;
+import hudson.security.ACL;
 import jenkins.model.Jenkins;
 import net.nemerosa.seed.config.CannotDeleteItemException;
 import net.nemerosa.seed.config.CannotFindJobException;
 import net.nemerosa.seed.config.JobNotParameterizedException;
+import org.acegisecurity.context.SecurityContext;
+import org.acegisecurity.context.SecurityContextHolder;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
@@ -59,7 +62,12 @@ public class JenkinsSeedLauncher implements SeedLauncher {
     public void delete(String path) {
         Item item = findItem(path);
         try {
-            item.delete();
+            SecurityContext orig = ACL.impersonate(ACL.SYSTEM);
+            try {
+                item.delete();
+            } finally {
+                SecurityContextHolder.setContext(orig);
+            }
         } catch (IOException e) {
             throw new CannotDeleteItemException(path, e);
         } catch (InterruptedException e) {
