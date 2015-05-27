@@ -50,6 +50,7 @@ configure { node ->
         'projectClass' '${environment.projectClass}'
         'projectScmType' '${environment.scmType}'
         'projectScmUrl' '${environment.scmUrl}'
+        'projectScmCredentials' '${environment.scmCredentials}'
         'branch' '${branch}'
         'propertyPath' '${propertyPath}'
     }
