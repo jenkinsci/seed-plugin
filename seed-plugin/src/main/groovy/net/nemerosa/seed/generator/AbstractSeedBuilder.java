@@ -24,12 +24,14 @@ public abstract class AbstractSeedBuilder extends Builder {
     private final String projectClass;
     private final String projectScmType;
     private final String projectScmUrl;
+    private final String projectScmCredentials;
 
-    protected AbstractSeedBuilder(String project, String projectClass, String projectScmType, String projectScmUrl) {
+    protected AbstractSeedBuilder(String project, String projectClass, String projectScmType, String projectScmUrl, String projectScmCredentials) {
         this.project = project;
         this.projectClass = projectClass;
         this.projectScmType = projectScmType;
         this.projectScmUrl = projectScmUrl;
+        this.projectScmCredentials = projectScmCredentials;
     }
 
     public String getProject() {
@@ -51,6 +53,11 @@ public abstract class AbstractSeedBuilder extends Builder {
         return projectScmUrl;
     }
 
+    @SuppressWarnings("unused")
+    public String getProjectScmCredentials() {
+        return projectScmCredentials;
+    }
+
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
 
@@ -63,12 +70,14 @@ public abstract class AbstractSeedBuilder extends Builder {
         String theProjectClass = env.expand(projectClass);
         String theProjectScmType = env.expand(projectScmType);
         String theProjectScmUrl = env.expand(projectScmUrl);
+        String theProjectScmCredentials = env.expand(projectScmCredentials);
 
         // Adds to the environment
         env.put("PROJECT", theProject);
         env.put("PROJECT_CLASS", theProjectClass);
         env.put("PROJECT_SCM_TYPE", theProjectScmType);
         env.put("PROJECT_SCM_URL", theProjectScmUrl);
+        env.put("PROJECT_SCM_CREDENTIALS", theProjectScmCredentials);
 
         // Project helper
         SeedDSLHelper helper = new SeedDSLHelper();
@@ -76,7 +85,8 @@ public abstract class AbstractSeedBuilder extends Builder {
                 theProject,
                 theProjectClass,
                 theProjectScmType,
-                theProjectScmUrl
+                theProjectScmUrl,
+                theProjectScmCredentials
         );
 
         // Configuration of the DSL script

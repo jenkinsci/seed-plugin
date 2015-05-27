@@ -12,6 +12,7 @@ This job is used to create a seed for a project.
         stringParam('PROJECT_CLASS', '', 'Class of the project to generate - optional')
         choiceParam('PROJECT_SCM_TYPE', ['svn', 'git'])
         stringParam('PROJECT_SCM_URL', '', 'URL to the project SCM location, without any branch location')
+        stringParam('PROJECT_SCM_CREDENTIALS', '', 'UUID of the SCM credentials')
     }
     steps {
         buildDescription('', '${PROJECT}')
@@ -22,6 +23,7 @@ This job is used to create a seed for a project.
             'projectClass' '${PROJECT_CLASS}'
             'projectScmType' '${PROJECT_SCM_TYPE}'
             'projectScmUrl' '${PROJECT_SCM_URL}'
+            'projectScmCredentials' '${PROJECT_SCM_CREDENTIALS}'
         }
     }
 }

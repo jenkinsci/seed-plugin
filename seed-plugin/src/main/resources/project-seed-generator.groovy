@@ -36,6 +36,7 @@ freeStyleJob(projectSeedPath) {
             'projectClass' PROJECT_CLASS
             'projectScmType' PROJECT_SCM_TYPE
             'projectScmUrl' PROJECT_SCM_URL
+            'projectScmCredentials' PROJECT_SCM_CREDENTIALS
             'branch' '${BRANCH}'
         }
     }

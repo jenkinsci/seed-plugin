@@ -15,8 +15,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class ProjectSeedBuilder extends AbstractSeedBuilder {
 
     @DataBoundConstructor
-    public ProjectSeedBuilder(String project, String projectClass, String projectScmType, String projectScmUrl) {
-        super(project, projectClass, projectScmType, projectScmUrl);
+    public ProjectSeedBuilder(String project, String projectClass, String projectScmType, String projectScmUrl, String projectScmCredentials) {
+        super(project, projectClass, projectScmType, projectScmUrl, projectScmCredentials);
     }
 
     @Override

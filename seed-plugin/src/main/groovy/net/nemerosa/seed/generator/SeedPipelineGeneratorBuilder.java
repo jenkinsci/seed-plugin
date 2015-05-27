@@ -24,16 +24,18 @@ public class SeedPipelineGeneratorBuilder extends Builder {
     private final String projectClass;
     private final String projectScmType;
     private final String projectScmUrl;
+    private final String projectScmCredentials;
     private final String branch;
     private final String propertyPath;
 
     @DataBoundConstructor
-    public SeedPipelineGeneratorBuilder(String propertyPath, String project, String projectClass, String projectScmType, String projectScmUrl, String branch) {
+    public SeedPipelineGeneratorBuilder(String propertyPath, String project, String projectClass, String projectScmType, String projectScmUrl, String projectScmCredentials, String branch) {
         this.propertyPath = propertyPath;
         this.project = project;
         this.projectClass = projectClass;
         this.projectScmType = projectScmType;
         this.projectScmUrl = projectScmUrl;
+        this.projectScmCredentials = projectScmCredentials;
         this.branch = branch;
     }
 
@@ -44,6 +46,7 @@ public class SeedPipelineGeneratorBuilder extends Builder {
                 projectClass,
                 projectScmType,
                 projectScmUrl,
+                projectScmCredentials,
                 branch,
                 propertyPath
         ).perform(build, listener);
@@ -63,6 +66,10 @@ public class SeedPipelineGeneratorBuilder extends Builder {
 
     public String getProjectScmUrl() {
         return projectScmUrl;
+    }
+
+    public String getProjectScmCredentials() {
+        return projectScmCredentials;
     }
 
     public String getBranch() {

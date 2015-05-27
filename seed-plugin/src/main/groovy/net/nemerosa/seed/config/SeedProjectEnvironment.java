@@ -8,16 +8,18 @@ public class SeedProjectEnvironment {
     private final String projectClass;
     private final String scmType;
     private final String scmUrl;
+    private final String scmCredentials;
     private final SeedConfiguration globalConfiguration;
     private final SeedProjectConfiguration projectConfiguration;
     private final BranchStrategy branchStrategy;
     private final SeedNamingStrategy namingStrategy;
 
-    public SeedProjectEnvironment(String id, String projectClass, String scmType, String scmUrl, SeedConfiguration globalConfiguration, SeedProjectConfiguration projectConfiguration, BranchStrategy branchStrategy, SeedNamingStrategy namingStrategy) {
+    public SeedProjectEnvironment(String id, String projectClass, String scmType, String scmUrl, String scmCredentials, SeedConfiguration globalConfiguration, SeedProjectConfiguration projectConfiguration, BranchStrategy branchStrategy, SeedNamingStrategy namingStrategy) {
         this.id = id;
         this.projectClass = projectClass;
         this.scmType = scmType;
         this.scmUrl = scmUrl;
+        this.scmCredentials = scmCredentials;
         this.globalConfiguration = globalConfiguration;
         this.projectConfiguration = projectConfiguration;
         this.branchStrategy = branchStrategy;
@@ -38,6 +40,10 @@ public class SeedProjectEnvironment {
 
     public String getScmUrl() {
         return scmUrl;
+    }
+
+    public String getScmCredentials() {
+        return scmCredentials;
     }
 
     public SeedConfiguration getGlobalConfiguration() {

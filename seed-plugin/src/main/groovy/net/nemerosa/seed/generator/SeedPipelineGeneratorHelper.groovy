@@ -48,14 +48,16 @@ class SeedPipelineGeneratorHelper {
     private final String projectClass
     private final String projectScmType
     private final String projectScmUrl
+    private final String projectScmCredentials
     private final String branch
     private final String propertyPath
 
-    SeedPipelineGeneratorHelper(String project, String projectClass, String projectScmType, String projectScmUrl, String branch, String propertyPath) {
+    SeedPipelineGeneratorHelper(String project, String projectClass, String projectScmType, String projectScmUrl, String projectScmCredentials, String branch, String propertyPath) {
         this.project = project
         this.projectClass = projectClass
         this.projectScmType = projectScmType
         this.projectScmUrl = projectScmUrl
+        this.projectScmCredentials = projectScmCredentials
         this.branch = branch
         this.propertyPath = propertyPath
     }
@@ -67,7 +69,8 @@ class SeedPipelineGeneratorHelper {
                 project,
                 projectClass,
                 projectScmType,
-                projectScmUrl
+                projectScmUrl,
+                projectScmCredentials
         )
 
         // Reads the property file

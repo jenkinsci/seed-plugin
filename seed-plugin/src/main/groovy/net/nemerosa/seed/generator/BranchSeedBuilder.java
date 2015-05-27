@@ -17,8 +17,8 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
     private final String branch;
 
     @DataBoundConstructor
-    public BranchSeedBuilder(String project, String projectClass, String projectScmType, String projectScmUrl, String branch) {
-        super(project, projectClass, projectScmType, projectScmUrl);
+    public BranchSeedBuilder(String project, String projectClass, String projectScmType, String projectScmUrl, String projectScmCredentials, String branch) {
+        super(project, projectClass, projectScmType, projectScmUrl, projectScmCredentials);
         this.branch = branch;
     }
 

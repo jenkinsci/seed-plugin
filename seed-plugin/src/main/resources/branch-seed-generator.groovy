@@ -40,6 +40,7 @@ freeStyleJob(branchSeedPath) {
             env('PROJECT_CLASS', PROJECT_CLASS)
             env('PROJECT_SCM_TYPE', PROJECT_SCM_TYPE)
             env('PROJECT_SCM_URL', PROJECT_SCM_URL)
+            env('PROJECT_SCM_CREDENTIALS', PROJECT_SCM_CREDENTIALS)
             env('BRANCH', BRANCH)
             env('SEED_PROJECT', SEED_PROJECT)
             env('SEED_BRANCH', SEED_BRANCH)
