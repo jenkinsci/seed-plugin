@@ -15,6 +15,9 @@
     <f:entry title="Project SCM URL" field="projectScmUrl">
         <f:readOnlyTextbox/>
     </f:entry>
+    <f:entry title="Project SCM credentials" field="projectScmCredentials">
+        <f:readOnlyTextbox/>
+    </f:entry>
     <f:entry title="Branch path" field="branch">
         <f:readOnlyTextbox/>
     </f:entry>
