@@ -12,13 +12,12 @@ class SvnSCMService implements SCMService {
 
     @Override
     String generatePartial(SeedProjectEnvironment env, String branch, String path) {
-        String credentialsId = env.getConfigurationValue(SCM_CREDENTIALS_ID, '')
         """\
 scm {
     svn {
         location('${env.scmUrl}/${branch}/${path}') {
             directory '${path}'
-            credentials '${credentialsId}'
+            credentials '${env.scmCredentials}'
         }
     }
 }

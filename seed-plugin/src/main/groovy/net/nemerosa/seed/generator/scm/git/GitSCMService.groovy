@@ -12,13 +12,12 @@ class GitSCMService implements SCMService {
 
     @Override
     String generatePartial(SeedProjectEnvironment env, String branch, String path) {
-        String credentialsId = env.getConfigurationValue(SCM_CREDENTIALS_ID, '')
         """\
 scm {
     git {
         remote {
             url '${env.scmUrl}'
-            credentials '${credentialsId}'
+            credentials '${env.scmCredentials}'
         }
         branch '${branch}'
         configure { node ->
