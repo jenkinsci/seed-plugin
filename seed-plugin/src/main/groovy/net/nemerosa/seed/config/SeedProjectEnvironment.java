@@ -86,4 +86,13 @@ public class SeedProjectEnvironment {
                 globalConfiguration
         );
     }
+
+    public boolean getConfigurationBoolean(String key, boolean defaultValue) {
+        return Configuration.getBoolean(
+                key,
+                projectConfiguration,
+                globalConfiguration,
+                defaultValue
+        );
+    }
 }

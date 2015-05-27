@@ -4,6 +4,7 @@ import hudson.model.AbstractBuild
 import hudson.model.BuildListener
 import hudson.model.ParametersAction
 import hudson.model.StringParameterValue
+import net.nemerosa.seed.config.Configuration
 import net.nemerosa.seed.config.SeedDSLHelper
 import net.nemerosa.seed.config.SeedProjectEnvironment
 import org.apache.commons.lang.StringUtils
@@ -130,15 +131,20 @@ class SeedPipelineGeneratorHelper {
         String seedProjectName = projectEnvironment.projectConfiguration.name
         String seedBranchName = projectEnvironment.namingStrategy.getBranchName(branch)
 
-        // Is the Gradle step needed?
-        boolean gradleNeeded = StringUtils.isNotBlank(dslBootstrapDependency) || !dependencies.empty
+        // Is the script extraction step needed?
+        boolean scriptExtraction = StringUtils.isNotBlank(dslBootstrapDependency) || !dependencies.empty
+
+        // Is a direct script execution allowed?
+        if (!scriptExtraction && !projectEnvironment.getConfigurationBoolean('pipeline-generator-script-allowed', true)) {
+            throw new PipelineGeneratorScriptNotAllowedException()
+        }
 
         // Injects the environment variables
         build.addAction(new ParametersAction(
                 new StringParameterValue(SEED_DSL_SCRIPT_LOCATION, dslBootstrapLocation),
                 new StringParameterValue(SEED_PROJECT, seedProjectName),
                 new StringParameterValue(SEED_BRANCH, seedBranchName),
-                new StringParameterValue(SEED_GRADLE, gradleNeeded ? 'yes' : 'no'),
+                new StringParameterValue(SEED_GRADLE, scriptExtraction ? 'yes' : 'no'),
         ))
 
         // Prepares the Gradle environment
