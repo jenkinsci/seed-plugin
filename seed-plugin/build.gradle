@@ -18,7 +18,7 @@ ext {
 jenkinsPlugin {
     coreVersion = '1.609'                                            // Version of Jenkins core this plugin depends on.
     displayName = 'Seed Jenkins plug-in'                             // Human-readable name of plugin.
-    url = 'http://wiki.jenkins-ci.org/display/JENKINS/Seed-Plugin'   // URL for plugin on Jenkins wiki or elsewhere.
+    url = 'http://wiki.jenkins-ci.org/display/JENKINS/Seed+Plugin'   // URL for plugin on Jenkins wiki or elsewhere.
     gitHubUrl = 'https://github.com/jenkinsci/seed-plugin'           // Plugin URL on GitHub. Optional.
 
     // The developers section is optional, and corresponds to the POM developers section.
