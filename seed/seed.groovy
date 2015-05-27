@@ -27,7 +27,7 @@ freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
     scm {
         git {
             remote {
-                url "git@github.com:nemerosa/seed-plugin.git"
+                url "git@github.com:jenkinsci/seed-plugin.git"
                 branch "origin/${BRANCH}"
             }
             wipeOutWorkspace()
