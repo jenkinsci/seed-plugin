@@ -57,6 +57,100 @@ class SeedGeneratorTest {
     }
 
     @Test
+    void 'Direct script execution - not allowed'() {
+        // Checks the seed job exists
+        'Default seed job created'()
+        // Project name
+        String project = TestUtils.uid('P')
+        // Configuration of the Seed job
+        jenkins.configureSeed '''\
+pipeline-generator-script-allowed: no
+'''
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
+    }
+
+    @Test
+    void 'Direct script execution - not allowed at project level'() {
+        // Checks the seed job exists
+        'Default seed job created'()
+        // Project name
+        String project = TestUtils.uid('P')
+        // Configuration of the Seed job
+        jenkins.configureSeed '''\
+classes:
+    - id: my-class
+      pipeline-generator-script-allowed: no
+'''
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_CLASS   : 'my-class',
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
+    }
+
+    @Test
+    void 'Direct script execution - allowed at project level'() {
+        // Checks the seed job exists
+        'Default seed job created'()
+        // Project name
+        String project = TestUtils.uid('P')
+        // Configuration of the Seed job
+        jenkins.configureSeed '''\
+pipeline-generator-script-allowed: no
+classes:
+    - id: my-class
+      pipeline-generator-script-allowed: yes
+'''
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_CLASS   : 'my-class',
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
+    }
+
+    @Test
     void 'Project folder authorisations'() {
         // Checks the seed job exists
         'Default seed job created'()
