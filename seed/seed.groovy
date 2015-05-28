@@ -46,3 +46,39 @@ freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
         )
     }
 }
+
+/**
+ * Release job
+ */
+
+if (BRANCH.startsWith('release/')) {
+
+    freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-publish") {
+        logRotator(-1, 40)
+        jdk 'JDK7'
+        parameters {
+            stringParam('COMMIT', 'HEAD', 'Commit to build')
+        }
+        scm {
+            git {
+                remote {
+                    url "git@github.com:jenkinsci/seed-plugin.git"
+                    branch "origin/${BRANCH}"
+                }
+                wipeOutWorkspace()
+                localBranch "${BRANCH}"
+            }
+        }
+        steps {
+            gradle 'clean versionFile publish --info --profile'
+            environmentVariables {
+                propertiesFile 'build/version.properties'
+            }
+            shell '''\
+git tag ${VERSION_DISPLAY}
+git push origin ${VERSION_DISPLAY}
+'''
+        }
+    }
+
+}
