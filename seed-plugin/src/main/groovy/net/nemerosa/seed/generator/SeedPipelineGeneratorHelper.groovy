@@ -168,7 +168,7 @@ configurations {
     dslLibrary
 }
 dependencies {
-    ${dependencies.collect { "dslLibrary (name: '${it}', version: '+')" }.join('\n')}
+    ${dependencies.collect { "dslLibrary '${it}'" }.join('\n')}
 }
 task clean {
     delete 'lib'
