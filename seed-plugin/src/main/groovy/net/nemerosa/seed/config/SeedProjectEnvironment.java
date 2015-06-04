@@ -1,6 +1,7 @@
 package net.nemerosa.seed.config;
 
 import java.util.List;
+import java.util.Map;
 
 public class SeedProjectEnvironment {
 
@@ -95,4 +96,13 @@ public class SeedProjectEnvironment {
                 defaultValue
         );
     }
+
+    public Map<String, String> getParameters(String key) {
+        return Configuration.getParameters(
+                key,
+                projectConfiguration,
+                globalConfiguration
+        );
+    }
+
 }

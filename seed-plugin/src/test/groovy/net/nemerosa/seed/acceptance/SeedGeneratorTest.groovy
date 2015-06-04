@@ -1,8 +1,11 @@
 package net.nemerosa.seed.acceptance
 
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+
+import static net.nemerosa.seed.acceptance.TestUtils.uid
 
 /**
  * Testing the generation of seeds and pipelines using the Seed plug-in.
@@ -15,19 +18,15 @@ class SeedGeneratorTest {
     @Rule
     public JenkinsAccessRule jenkins = new JenkinsAccessRule()
 
-    @Test
-    void 'Jenkins started'() {
-    }
-
-    @Test
+    @Before
     void 'Default seed job created'() {
         jenkins.job('seed', JOB_TIMEOUT, JOB_TIMEOUT)
+        // Makes sure the configuration is empty
+        jenkins.configureSeed ''
     }
 
     @Test
     void 'Creating a complete seed tree'() {
-        // Checks the seed job exists
-        'Default seed job created'()
         // Firing the seed job
         jenkins.fireJob('seed', [
                 PROJECT         : 'test',
@@ -57,11 +56,45 @@ class SeedGeneratorTest {
     }
 
     @Test
-    void 'Direct script execution - not allowed'() {
-        // Checks the seed job exists
-        'Default seed job created'()
+    void 'Custom environment variable'() {
         // Project name
-        String project = TestUtils.uid('P')
+        def projectName = uid('P')
+        // Configuration of environment variables
+        jenkins.configureSeed '''\
+classes:
+    - id: branch-path
+      branch-parameters:
+        BRANCH_PARAM: Additional parameter
+'''
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : projectName,
+                PROJECT_CLASS   : 'branch-path',
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-env',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${projectName}/${projectName}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${projectName}/${projectName}-seed", [
+                BRANCH     : 'master',
+                BRANCH_PARAM: 'test',
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-build")
+        // Fires the branch pipeline start
+        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-build", [COMMIT: 'HEAD']).checkSuccess()
+    }
+
+    @Test
+    void 'Direct script execution - not allowed'() {
+        // Project name
+        String project = uid('P')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 pipeline-generator-script-allowed: no
@@ -87,10 +120,8 @@ pipeline-generator-script-allowed: no
 
     @Test
     void 'Direct script execution - not allowed at project level'() {
-        // Checks the seed job exists
-        'Default seed job created'()
         // Project name
-        String project = TestUtils.uid('P')
+        String project = uid('P')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 classes:
@@ -119,10 +150,8 @@ classes:
 
     @Test
     void 'Direct script execution - allowed at project level'() {
-        // Checks the seed job exists
-        'Default seed job created'()
         // Project name
-        String project = TestUtils.uid('P')
+        String project = uid('P')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 pipeline-generator-script-allowed: no
@@ -152,8 +181,6 @@ classes:
 
     @Test
     void 'Project folder authorisations'() {
-        // Checks the seed job exists
-        'Default seed job created'()
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 classes:
@@ -185,8 +212,6 @@ classes:
 
     @Test
     void 'Creating a project tree based of full customisation'() {
-        // Checks the seed job exists
-        'Default seed job created'()
         // Configuration
         jenkins.configureSeed '''\
 strategies:
@@ -232,10 +257,8 @@ classes:
 
     @Test
     void 'Pipeline extensions'() {
-        // Checks the seed job exists
-        'Default seed job created'()
         // Project name
-        String project = TestUtils.uid('P')
+        String project = uid('P')
         // Configuration
         jenkins.configureSeed """\
 pipeline-extensions:

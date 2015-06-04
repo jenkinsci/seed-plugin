@@ -27,6 +27,7 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
         String theBranch = env.expand(branch);
         String result = replaceExtensionPoint(script, "pipelineGeneration", new BranchPipelineGeneratorExtension(projectEnvironment, theBranch).generate());
         result = replaceExtensionPoint(result, "branchSeedScm", new BranchSeedScmExtension(projectEnvironment, theBranch).generate());
+        result = replaceExtensionPoint(result, "branchSeedBranchParameters", new BranchSeedBranchParametersExtension(projectEnvironment).generate());
         return result;
     }
 

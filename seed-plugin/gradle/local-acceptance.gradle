@@ -178,7 +178,21 @@ git commit -m "Seed file"
     }
 }
 
-task dockerGitTestRepos(dependsOn: [dockerGitTestRepoSeedStd])
+task dockerGitTestRepoSeedEnv {
+    doFirst {
+        dockerGitRepo 'seed-env', '''\
+git init
+git config user.email "acceptance-test@nemerosa.com"
+git config user.name "Acceptance Test"
+mkdir seed
+cp /var/test/resources/seed-env.groovy seed/seed.groovy
+git add seed/seed.groovy
+git commit -m "Seed file"
+        '''
+    }
+}
+
+task dockerGitTestRepos(dependsOn: [dockerGitTestRepoSeedStd, dockerGitTestRepoSeedEnv])
 
 // Local Docker acceptance tests orchestration
 

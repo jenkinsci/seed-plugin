@@ -16,6 +16,7 @@
  * Extension points are:
  *
  * - authorisations
+ * - environment variables
  */
 
 folder(projectSeedFolder) {
@@ -25,7 +26,10 @@ folder(projectSeedFolder) {
 freeStyleJob(projectSeedPath) {
     description "Project seed for ${PROJECT} - generates one branch folder and seed."
     parameters {
-        stringParam('BRANCH', '', 'Path to the branch')
+        // Additional parameters for the branch
+        projectSeedBranchParametersExtensionPoint()
+        // Default seed parameters
+        stringParam('BRANCH', '', 'Path or name of the branch')
     }
     steps {
         buildDescription('', '${BRANCH}')

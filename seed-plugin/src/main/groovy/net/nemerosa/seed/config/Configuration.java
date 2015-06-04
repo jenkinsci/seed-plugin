@@ -19,8 +19,31 @@ public class Configuration {
     }
 
     protected Map<String, ?> mergeData(Configuration cfg) {
-        Map<String, Object> result = new HashMap<String, Object>(data);
-        result.putAll(cfg.data);
+        return mergeMap(cfg.data, this.data);
+    }
+
+    private static Map<String, ?> mergeMap(Map<String, ?> data, Map<String, ?> defaultData) {
+        Map<String, Object> result = new LinkedHashMap<String, Object>(data);
+        for (Map.Entry<String, ?> defaultEntry : defaultData.entrySet()) {
+            String name = defaultEntry.getKey();
+            Object defaultValue = defaultEntry.getValue();
+            Object dataValue = data.get(name);
+            if (dataValue != null) {
+                if (dataValue instanceof Map && defaultValue instanceof Map) {
+                    // Recursive merge
+                    //noinspection unchecked
+                    result.put(
+                            name,
+                            mergeMap(
+                                    (Map<String, ?>) dataValue,
+                                    (Map<String, ?>) defaultValue
+                            )
+                    );
+                }
+            } else {
+                result.put(name, defaultValue);
+            }
+        }
         return result;
     }
 
@@ -68,6 +91,16 @@ public class Configuration {
             return list;
         } else {
             return Collections.emptyList();
+        }
+    }
+
+    public Map<String, String> getParameters(String key) {
+        Object map = data.get(key);
+        if (map instanceof Map) {
+            //noinspection unchecked
+            return (Map<String, String>) map;
+        } else {
+            return Collections.emptyMap();
         }
     }
 
@@ -137,5 +170,13 @@ public class Configuration {
         } else {
             return null;
         }
+    }
+
+    public static Map<String, String> getParameters(String key, Configuration configuration, Configuration globalConfiguration) {
+        Map<String, String> parameters = configuration.getParameters(key);
+        Map<String, String> globalParameters = globalConfiguration.getParameters(key);
+        Map<String, String> result = new TreeMap<String, String>(globalParameters);
+        result.putAll(parameters); // Global overridden by configuration
+        return result;
     }
 }
