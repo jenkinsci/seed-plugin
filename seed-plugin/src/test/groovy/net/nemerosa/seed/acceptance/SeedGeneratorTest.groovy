@@ -78,7 +78,7 @@ classes:
         jenkins.job("${projectName}/${projectName}-seed")
         // Fires the project seed
         jenkins.fireJob("${projectName}/${projectName}-seed", [
-                BRANCH     : 'master',
+                BRANCH      : 'master',
                 BRANCH_PARAM: 'test',
         ]).checkSuccess()
         // Checks the branch seed is created
@@ -89,6 +89,41 @@ classes:
         jenkins.job("${projectName}/${projectName}-master/${projectName}-master-build")
         // Fires the branch pipeline start
         jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-build", [COMMIT: 'HEAD']).checkSuccess()
+    }
+
+    @Test
+    void 'Branch SCM parameter'() {
+        // Project name
+        def projectName = uid('P')
+        // Configuration of environment variables
+        jenkins.configureSeed '''\
+classes:
+    - id: branch-scm
+      branch-scm: yes
+'''
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : projectName,
+                PROJECT_CLASS   : 'branch-scm',
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${projectName}/${projectName}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${projectName}/${projectName}-seed", [
+                BRANCH    : '1.0',
+                BRANCH_SCM: 'master',
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job("${projectName}/${projectName}-1.0/${projectName}-1.0-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${projectName}/${projectName}-1.0/${projectName}-1.0-seed").checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.job("${projectName}/${projectName}-1.0/${projectName}-1.0-build")
+        // Fires the branch pipeline start
+        jenkins.fireJob("${projectName}/${projectName}-1.0/${projectName}-1.0-build", [COMMIT: 'HEAD']).checkSuccess()
     }
 
     @Test
@@ -302,7 +337,7 @@ projects:
         // Gets the branch seed build...
         def branchSeedBuild = jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1)
         // ... gets its output
-        def branchSeedBuildOutput = new URL(branchSeedBuild.json.url + 'consoleText').text
+        def branchSeedBuildOutput = new URL((branchSeedBuild.json.url as String) + 'consoleText').text
         // ... and checks it contains the customisations
         assert branchSeedBuildOutput.contains('Extension 1')
         assert branchSeedBuildOutput.contains('Extension 2')
