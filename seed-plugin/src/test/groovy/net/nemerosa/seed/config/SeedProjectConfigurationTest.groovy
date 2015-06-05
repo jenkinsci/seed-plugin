@@ -23,7 +23,7 @@ class SeedProjectConfigurationTest {
     @Test
     void 'Pipeline extensions at global level'() {
         def configuration = SeedConfiguration.parseYaml('''\
-pipeline-extensions:
+extensions:
     - id: extension1
       dsl: |
         steps {
@@ -44,7 +44,7 @@ steps {
     shell "echo Extension 1"
 }
 ''',
-                Configuration.getFieldInList('pipeline-extensions', project, configuration, 'id', 'extension1', 'dsl')
+                Configuration.getFieldInList('extensions', project, configuration, 'id', 'extension1', 'dsl')
         )
         assertEquals(
                 '''\
@@ -52,7 +52,7 @@ steps {
     shell "echo Extension 2"
 }
 ''',
-                Configuration.getFieldInList('pipeline-extensions', project, configuration, 'id', 'extension2', 'dsl')
+                Configuration.getFieldInList('extensions', project, configuration, 'id', 'extension2', 'dsl')
         )
     }
 
@@ -61,7 +61,7 @@ steps {
         def configuration = SeedConfiguration.parseYaml('''\
 projects:
     - id: test
-      pipeline-extensions:
+      extensions:
         - id: extension1
           dsl: |
             steps {
@@ -80,7 +80,7 @@ steps {
     shell "echo Extension 1"
 }
 ''',
-                Configuration.getFieldInList('pipeline-extensions', project, configuration, 'id', 'extension1', 'dsl')
+                Configuration.getFieldInList('extensions', project, configuration, 'id', 'extension1', 'dsl')
         )
         assertEquals(
                 '''\
@@ -88,7 +88,7 @@ steps {
     shell "echo Extension 2"
 }
 ''',
-                Configuration.getFieldInList('pipeline-extensions', project, configuration, 'id', 'extension2', 'dsl')
+                Configuration.getFieldInList('extensions', project, configuration, 'id', 'extension2', 'dsl')
         )
     }
 

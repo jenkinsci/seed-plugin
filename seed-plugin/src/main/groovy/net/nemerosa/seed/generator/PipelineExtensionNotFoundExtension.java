@@ -7,7 +7,7 @@ public class PipelineExtensionNotFoundExtension extends SeedException {
         super(
                 String.format(
                         "No extension with ID '%s' has been found. This extension should be declared " +
-                                "in the 'pipeline-extensions' collection of the project or the configuration.",
+                                "in the 'extensions' collection of the project or the configuration.",
                         id
                 )
         );

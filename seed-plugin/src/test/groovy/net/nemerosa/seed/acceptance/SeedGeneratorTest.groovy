@@ -296,7 +296,7 @@ classes:
         String project = uid('P')
         // Configuration
         jenkins.configureSeed """\
-pipeline-extensions:
+extensions:
     - id: extension1
       dsl: |
         steps {
