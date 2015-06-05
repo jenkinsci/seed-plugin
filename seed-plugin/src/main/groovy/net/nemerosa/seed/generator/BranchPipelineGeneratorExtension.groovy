@@ -25,6 +25,18 @@ class BranchPipelineGeneratorExtension {
         String propertyPath = environment.getConfigurationValue(PIPELINE_GENERATOR_PROPERTY_PATH, 'seed/seed.properties')
 
         /**
+         * Parameters
+         */
+        Map<String, String> parameters = environment.getParameters('branch-parameters')
+        if (!parameters.empty) {
+            snippets << """\
+environmentVariables {
+    ${parameters.collect { name, description -> "env('${name}', ${name})" }.join('\n')}
+}
+"""
+        }
+
+        /**
          * Extensions (injection of DSL steps)
          *
          * Gets the list of extension IDs from the project configuration.

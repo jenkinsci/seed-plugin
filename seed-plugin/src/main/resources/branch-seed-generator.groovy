@@ -44,8 +44,6 @@ freeStyleJob(branchSeedPath) {
             env('BRANCH', BRANCH)
             env('SEED_PROJECT', SEED_PROJECT)
             env('SEED_BRANCH', SEED_BRANCH)
-            // Additional parameters for the branch
-            branchSeedBranchParametersExtensionPoint()
         }
     }
     branchSeedScmExtensionPoint()
