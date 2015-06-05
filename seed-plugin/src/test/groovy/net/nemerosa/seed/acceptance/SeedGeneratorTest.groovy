@@ -291,7 +291,7 @@ classes:
     }
 
     @Test
-    void 'Pipeline extensions'() {
+    void 'Branch pipeline extensions'() {
         // Project name
         String project = uid('P')
         // Configuration
@@ -337,10 +337,55 @@ projects:
         // Gets the branch seed build...
         def branchSeedBuild = jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1)
         // ... gets its output
-        def branchSeedBuildOutput = new URL((branchSeedBuild.json.url as String) + 'consoleText').text
+        def branchSeedBuildOutput = branchSeedBuild.output
         // ... and checks it contains the customisations
         assert branchSeedBuildOutput.contains('Extension 1')
         assert branchSeedBuildOutput.contains('Extension 2')
+    }
+
+    @Test
+    void 'Project pipeline extensions'() {
+        // Project name
+        String project = uid('P')
+        // Configuration
+        jenkins.configureSeed """\
+extensions:
+    - id: extension1
+      dsl: |
+        steps {
+            shell "echo Extension 1"
+        }
+    - id: extension2
+      dsl: |
+        steps {
+            shell "echo Extension 2"
+        }
+projects:
+    - id: "${project}"
+      project-seed-extensions:
+        - extension1
+        - extension2
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Gets the project seed build...
+        def projectSeedBuild = jenkins.getBuild("${project}/${project}-seed", 1)
+        // ... gets its output
+        def projectSeedBuildOutput = projectSeedBuild.output
+        // ... and checks it contains the customisations
+        assert projectSeedBuildOutput.contains('Extension 1')
+        assert projectSeedBuildOutput.contains('Extension 2')
     }
 
 }
