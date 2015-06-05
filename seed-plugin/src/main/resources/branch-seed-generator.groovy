@@ -34,7 +34,6 @@ folder(branchSeedFolder) {}
 
 freeStyleJob(branchSeedPath) {
     description "Branch seed for ${BRANCH} in ${PROJECT} - generates the pipeline for the ${BRANCH} branch."
-    // TODO branchSeedScmEnvExtensionPoint()
     wrappers {
         environmentVariables {
             env('PROJECT', PROJECT)
