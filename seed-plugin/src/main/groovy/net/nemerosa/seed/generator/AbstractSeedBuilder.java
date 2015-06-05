@@ -92,10 +92,6 @@ public abstract class AbstractSeedBuilder extends Builder {
 
         // Configuration of the DSL script
         configureEnvironment(env, projectEnvironment);
-        // Logs the environment
-        for (Map.Entry<String, String> entry : env.entrySet()) {
-            listener.getLogger().format("* %s = %s%n", entry.getKey(), entry.getValue());
-        }
         // Project seed generation script
         String script = SeedDSLHelper.getResourceAsText(getScriptPath());
 
