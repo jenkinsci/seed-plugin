@@ -14,6 +14,7 @@ import net.nemerosa.seed.config.SeedProjectEnvironment;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * Build step which can generates other jobs and folders.
@@ -91,6 +92,10 @@ public abstract class AbstractSeedBuilder extends Builder {
 
         // Configuration of the DSL script
         configureEnvironment(env, projectEnvironment);
+        // Logs the environment
+        for (Map.Entry<String, String> entry : env.entrySet()) {
+            listener.getLogger().format("* %s = %s%n", entry.getKey(), entry.getValue());
+        }
         // Project seed generation script
         String script = SeedDSLHelper.getResourceAsText(getScriptPath());
 

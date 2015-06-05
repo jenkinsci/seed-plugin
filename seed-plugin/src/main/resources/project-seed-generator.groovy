@@ -26,10 +26,10 @@ folder(projectSeedFolder) {
 freeStyleJob(projectSeedPath) {
     description "Project seed for ${PROJECT} - generates one branch folder and seed."
     parameters {
-        // Additional parameters for the branch
-        projectSeedBranchParametersExtensionPoint()
         // Default seed parameters
         stringParam('BRANCH', '', 'Path or name of the branch')
+        // Additional parameters for the branch
+        projectSeedBranchParametersExtensionPoint()
     }
     steps {
         buildDescription('', '${BRANCH}')

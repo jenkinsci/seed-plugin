@@ -11,7 +11,13 @@ class ProjectSeedBranchParametersExtension {
     }
 
     String generate() {
+        // Additional parameters
         Map<String, String> parameters = projectEnvironment.getParameters('branch-parameters')
+        // Branch SCM?
+        if (projectEnvironment.getConfigurationBoolean('branch-scm', false)) {
+            parameters.put('BRANCH_SCM', 'Path to the SCM branch')
+        }
+        // Generating parameter requests
         if (!parameters.empty) {
             return """\
 parameters {

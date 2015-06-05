@@ -7,6 +7,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import net.nemerosa.seed.config.SeedNamingStrategyHelper;
 import net.nemerosa.seed.config.SeedProjectEnvironment;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -25,8 +26,16 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
     @Override
     protected String replaceExtensionPoints(String script, EnvVars env, SeedProjectEnvironment projectEnvironment) {
         String theBranch = env.expand(branch);
+        // SCM branch?
+        String scmBranch = theBranch;
+        if (projectEnvironment.getConfigurationBoolean("branch-scm", false)) {
+            scmBranch = env.get("BRANCH_SCM", "");
+            if (StringUtils.isBlank(scmBranch)) {
+                throw new IllegalStateException("Branch SCM parameter option is active but no BRANCH_SCM environment variable was found.");
+            }
+        }
         String result = replaceExtensionPoint(script, "pipelineGeneration", new BranchPipelineGeneratorExtension(projectEnvironment, theBranch).generate());
-        result = replaceExtensionPoint(result, "branchSeedScm", new BranchSeedScmExtension(projectEnvironment, theBranch).generate());
+        result = replaceExtensionPoint(result, "branchSeedScm", new BranchSeedScmExtension(projectEnvironment, scmBranch).generate());
         result = replaceExtensionPoint(result, "branchSeedBranchParameters", new BranchSeedBranchParametersExtension(projectEnvironment).generate());
         return result;
     }
