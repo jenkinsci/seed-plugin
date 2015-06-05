@@ -194,13 +194,13 @@ git commit -m "Seed file"
 
 task dockerGitTestRepos(dependsOn: [dockerGitTestRepoSeedStd, dockerGitTestRepoSeedEnv])
 
+task dockerPrepareTestEnv(dependsOn: [dockerDeploy, dockerGitTestRepos, dockerSvnTestRepos])
+
 // Local Docker acceptance tests orchestration
 
 task localDockerAcceptanceTest {
     dependsOn buildLatest
-    dependsOn dockerDeploy
-    dependsOn dockerGitTestRepos
-    dependsOn dockerSvnTestRepos
+    dependsOn dockerPrepareTestEnv
     dependsOn acceptanceTest
     finalizedBy dockerLogs
     finalizedBy dockerUndeploy
