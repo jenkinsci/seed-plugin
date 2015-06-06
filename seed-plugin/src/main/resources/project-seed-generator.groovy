@@ -28,8 +28,6 @@ freeStyleJob(projectSeedPath) {
     parameters {
         // Default seed parameters
         stringParam('BRANCH', '', 'Path or name of the branch')
-        // Additional parameters for the branch
-        projectSeedBranchParametersExtensionPoint()
     }
     steps {
         buildDescription('', '${BRANCH}')
@@ -44,4 +42,5 @@ freeStyleJob(projectSeedPath) {
             'branch' '${BRANCH}'
         }
     }
+    projectSeedExtensionPoint()
 }

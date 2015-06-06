@@ -282,6 +282,10 @@ class JenkinsAccessRule implements TestRule {
                 Assert.fail("${json.url} resulted in ${json.result} while FAILURE was expected")
             }
         }
+
+        String getOutput() {
+            new URL((json.url as String) + 'consoleText').text
+        }
     }
 
 }

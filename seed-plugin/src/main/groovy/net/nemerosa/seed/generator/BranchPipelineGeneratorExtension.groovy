@@ -128,7 +128,7 @@ steps {
 
     protected String getExtension(String id) {
         return Configuration.getFieldInList(
-                'pipeline-extensions',
+                'extensions',
                 environment.projectConfiguration,
                 environment.globalConfiguration,
                 'id', id,
