@@ -107,7 +107,7 @@ classes:
                 PROJECT_CLASS   : 'branch-scm',
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-scm',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job("${projectName}/${projectName}-seed")
@@ -123,7 +123,9 @@ classes:
         // Checks the branch pipeline is there
         jenkins.job("${projectName}/${projectName}-1.0/${projectName}-1.0-build")
         // Fires the branch pipeline start
-        jenkins.fireJob("${projectName}/${projectName}-1.0/${projectName}-1.0-build", [COMMIT: 'HEAD']).checkSuccess()
+        def build = jenkins.fireJob("${projectName}/${projectName}-1.0/${projectName}-1.0-build", [COMMIT: 'HEAD'])
+        build.checkSuccess()
+        assert build.output.contains('Branch SCM: master')
     }
 
     @Test

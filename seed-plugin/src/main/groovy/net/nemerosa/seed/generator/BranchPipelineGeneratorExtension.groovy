@@ -37,6 +37,19 @@ environmentVariables {
         }
 
         /**
+         * SCM parameters
+         *
+         * The BRANCH_SCM variable is available.
+         */
+        if (environment.getConfigurationBoolean('branch-scm', false)) {
+            snippets << '''\
+environmentVariables {
+    env('BRANCH_SCM', BRANCH_SCM)
+}
+'''
+        }
+
+        /**
          * Extensions (injection of DSL steps)
          *
          * Gets the list of extension IDs from the project configuration.
