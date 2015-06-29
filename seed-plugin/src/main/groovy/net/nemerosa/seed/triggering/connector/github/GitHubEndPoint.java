@@ -120,7 +120,7 @@ public class GitHubEndPoint extends AbstractEndPoint {
         String branch = StringUtils.removeStart(ref, "refs/heads/");
         // List of commits
         JSONArray commits = json.optJSONArray("commits");
-        Commits commitContext = new Commits();
+        CommitContext commitContext = new CommitContext();
         if (commits != null) {
             for (Object o : commits) {
                 JSONObject commit = (JSONObject) o;
@@ -129,8 +129,8 @@ public class GitHubEndPoint extends AbstractEndPoint {
                 scanCommits(commitContext, commit, "modified");
             }
         }
-        // Event according to the context
-        if (commitContext.isOnlySeed()) {
+        // If there is a seed change, we fire the Seed event - the pipeline will be triggered eventually
+        if (commitContext.isSeed()) {
             // Seed update only
             return new SeedEvent(
                     getProject(json),
@@ -138,8 +138,9 @@ public class GitHubEndPoint extends AbstractEndPoint {
                     SeedEventType.SEED,
                     SEED_CHANNEL
             );
-        } else {
-            // Normal push
+        }
+        // No seed change - that's a normal build
+        else {
             return new SeedEvent(
                     getProject(json),
                     branch,
@@ -149,7 +150,7 @@ public class GitHubEndPoint extends AbstractEndPoint {
         }
     }
 
-    private void scanCommits(Commits commitContext, JSONObject commit, String mode) {
+    private void scanCommits(CommitContext commitContext, JSONObject commit, String mode) {
         JSONArray paths = commit.optJSONArray(mode);
         if (paths != null) {
             for (Object o : paths) {

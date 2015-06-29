@@ -123,6 +123,25 @@ public class GitHubEndPointTest {
     }
 
     @Test
+    public void seed_mixed_event() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockGitHubRequest("push", "/github-payload-seed-mixed.json");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        // Call
+        new GitHubEndPoint(seedService).doDynamic(request, response);
+        // Verifying
+        verify(seedService, times(1)).post(
+                new SeedEvent(
+                        "nemerosa/seed-demo",
+                        "master",
+                        SeedEventType.SEED,
+                        GITHUB_CHANNEL)
+        );
+    }
+
+    @Test
     public void commit_event_without_signature() throws IOException {
         StaplerResponse response = mockStaplerResponse();
         // Request
