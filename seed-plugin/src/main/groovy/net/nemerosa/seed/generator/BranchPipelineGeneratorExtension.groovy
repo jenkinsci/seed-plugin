@@ -94,12 +94,14 @@ steps {
             stringsMatch('\${SEED_GRADLE}', 'yes', true)
         }
         runner('Fail')
-        gradle {
-            buildFile 'seed/build.gradle'
-            fromRootBuildScriptDir()
-            makeExecutable()
-            useWrapper()
-            tasks 'prepare'
+        steps {
+            gradle {
+                buildFile 'seed/build.gradle'
+                fromRootBuildScriptDir()
+                makeExecutable()
+                useWrapper()
+                tasks 'prepare'
+            }
         }
     }
 }
