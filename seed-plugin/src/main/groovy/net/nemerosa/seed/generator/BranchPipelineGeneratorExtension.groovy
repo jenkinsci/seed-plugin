@@ -100,7 +100,7 @@ steps {
                 fromRootBuildScriptDir()
                 makeExecutable()
                 useWrapper()
-                tasks 'prepare'
+                tasks 'prepare --refresh-dependencies'
             }
         }
     }
