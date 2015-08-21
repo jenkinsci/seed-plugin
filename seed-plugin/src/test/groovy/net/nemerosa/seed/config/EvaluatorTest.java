@@ -1,6 +1,5 @@
 package net.nemerosa.seed.config;
 
-import net.nemerosa.seed.config.Evaluator;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,6 +13,21 @@ public class EvaluatorTest {
     @Test
     public void upper() {
         Assert.assertEquals("TEST", Evaluator.evaluate("${PROJECT}", "project", "test"));
+    }
+
+    @Test
+    public void upper_with_dash() {
+        Assert.assertEquals("RELEASE-1.0", Evaluator.evaluate("${BRANCH}", "branch", "release-1.0"));
+    }
+
+    @Test
+    public void upper_underscore_with_dash() {
+        Assert.assertEquals("RELEASE_1.0", Evaluator.evaluate("${BRANCH_}", "branch", "release-1.0"));
+    }
+
+    @Test
+    public void upper_underscore_with_several_dashes() {
+        Assert.assertEquals("RELEASE_1.0_RC", Evaluator.evaluate("${BRANCH_}", "branch", "release-1.0-rc"));
     }
 
     @Test

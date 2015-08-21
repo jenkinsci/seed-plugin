@@ -33,6 +33,9 @@ public class ConfigurableSeedNamingStrategy extends AbstractSeedNamingStrategy {
         for (String prefix : configuration.getBranchNamePrefixes()) {
             value = StringUtils.removeStart(value, prefix);
         }
+        // Normalisation
+        value = Configuration.normalise(value);
+        // Evaluation
         return evaluate(configuration.getBranchNameExpression(), "branch", value);
     }
 }

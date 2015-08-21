@@ -8,6 +8,7 @@ public class Evaluator {
         return expression
                 .replace(lower(name), value.toLowerCase())
                 .replace(upper(name), value.toUpperCase())
+                .replace(upper_underscore(name), value.toUpperCase().replace("-", "_"))
                 .replace(capitalize(name), StringUtils.capitalize(value))
                 ;
     }
@@ -18,6 +19,10 @@ public class Evaluator {
 
     private static String upper(String name) {
         return "${" + name.toUpperCase() + "}";
+    }
+
+    private static String upper_underscore(String name) {
+        return "${" + name.toUpperCase() + "_}";
     }
 
     private static String capitalize(String name) {
