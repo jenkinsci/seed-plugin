@@ -96,7 +96,7 @@ steps {
         runner('Fail')
         steps {
             gradle {
-                buildFile 'seed/build.gradle'
+                rootBuildScriptDir 'seed/'
                 fromRootBuildScriptDir()
                 makeExecutable()
                 useWrapper()
