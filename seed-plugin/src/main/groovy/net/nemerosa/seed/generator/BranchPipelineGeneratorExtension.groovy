@@ -95,11 +95,11 @@ steps {
         }
         runner('Fail')
         steps {
-            shell '''\\
+            shell('''\\
 cd seed
 chmod u+x gradlew
 ./gradlew prepare --refresh-dependencies
-'''
+''')
         }
     }
 }
