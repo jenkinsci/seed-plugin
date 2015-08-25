@@ -89,19 +89,14 @@ configure { node ->
          */
         snippets << """\
 steps {
-    conditionalSteps {
-        condition {
-            stringsMatch('\${SEED_GRADLE}', 'yes', true)
-        }
-        runner('Fail')
-        steps {
-            shell('''\\
-cd seed
-chmod u+x gradlew
-./gradlew prepare --refresh-dependencies
-''')
-        }
-    }
+    shell '''\\
+if [ "\${SEED_GRADLE}" == "yes" ]
+then
+    cd seed
+    chmod u+x gradlew
+    ./gradlew prepare --refresh-dependencies
+fi
+'''
 }
 """
 
