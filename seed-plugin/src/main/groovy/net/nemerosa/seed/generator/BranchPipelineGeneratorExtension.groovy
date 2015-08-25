@@ -95,13 +95,11 @@ steps {
         }
         runner('Fail')
         steps {
-            gradle {
-                rootBuildScriptDir 'seed/'
-                fromRootBuildScriptDir()
-                makeExecutable()
-                useWrapper()
-                tasks 'prepare --refresh-dependencies'
-            }
+            shell '''\\
+cd seed
+chmod u+x gradlew
+./gradlew prepare --refresh-dependencies
+'''
         }
     }
 }
