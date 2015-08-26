@@ -90,6 +90,7 @@ configure { node ->
         snippets << """\
 steps {
     shell '''\\
+#!/bin/bash
 if [ "\${SEED_GRADLE}" == "yes" ]
 then
     cd seed
