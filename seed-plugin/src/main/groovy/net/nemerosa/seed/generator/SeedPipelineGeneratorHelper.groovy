@@ -8,10 +8,7 @@ import net.nemerosa.seed.config.SeedDSLHelper
 import net.nemerosa.seed.config.SeedProjectEnvironment
 import org.apache.commons.lang.StringUtils
 
-import static net.nemerosa.seed.generator.SeedProperties.SEED_DSL_LIBRARIES
-import static net.nemerosa.seed.generator.SeedProperties.SEED_DSL_REPOSITORY
-import static net.nemerosa.seed.generator.SeedProperties.SEED_DSL_SCRIPT_JAR
-import static net.nemerosa.seed.generator.SeedProperties.SEED_DSL_SCRIPT_LOCATION
+import static net.nemerosa.seed.generator.SeedProperties.*
 
 /**
  * This class prepares the DSL environment for the {@link BranchPipelineGeneratorExtension}.
@@ -125,7 +122,23 @@ class SeedPipelineGeneratorHelper {
             if (repositoryUrl.startsWith('flat:')) {
                 repository = "flatDir { dirs '${repositoryUrl - 'flat:'}' }"
             } else {
-                repository = "maven { url '${repositoryUrl}' }"
+                String repositoryUser = properties[SEED_DSL_REPOSITORY_USER]
+                String repositoryPassword = properties[SEED_DSL_REPOSITORY_PASSWORD]
+                if (repositoryUser && repositoryPassword) {
+                    // Repository with credentials
+                    repository = """\
+maven {
+    url '${repositoryUrl}
+    credentials {
+        username '${repositoryUser}'
+        password '${repositoryPassword}'
+    }
+}
+"""
+                } else {
+                    // Repository without credentials
+                    repository = "maven { url '${repositoryUrl}' }"
+                }
             }
         } else {
             repository = "mavenCentral()"
