@@ -13,6 +13,7 @@ import org.kohsuke.stapler.StaplerRequest
 import org.kohsuke.stapler.StaplerResponse
 import org.kohsuke.stapler.interceptor.RequirePOST
 
+import java.util.logging.Level
 import java.util.logging.Logger
 
 public abstract class AbstractEndPoint implements UnprotectedRootAction {
@@ -75,7 +76,7 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
         } catch (RequestNonAuthorizedException ex) {
             sendError(rsp, StaplerResponse.SC_FORBIDDEN, ex.getMessage());
         } catch (Exception ex) {
-            LOGGER.severe(ex.getMessage());
+            LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
             sendError(rsp, StaplerResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
@@ -111,7 +112,8 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
         ]).write(rsp.writer)
     }
 
-    protected static int getHttpCodeForEvent(@SuppressWarnings("UnusedParameters") SeedEvent event) {
+    @SuppressWarnings("GroovyUnusedDeclaration")
+    protected static int getHttpCodeForEvent(SeedEvent event) {
         return StaplerResponse.SC_ACCEPTED;
     }
 
