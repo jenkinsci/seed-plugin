@@ -88,6 +88,9 @@ configure { node ->
          * - extract the DSL bootstrap script from the indicated JAR
          */
         snippets << """\
+wrappers {
+    injectPasswords()
+}
 steps {
     shell '''\\
 #!/bin/bash
