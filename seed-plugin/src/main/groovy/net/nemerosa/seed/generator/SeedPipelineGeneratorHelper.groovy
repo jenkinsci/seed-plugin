@@ -125,13 +125,14 @@ class SeedPipelineGeneratorHelper {
                 String repositoryUser = properties[SEED_DSL_REPOSITORY_USER]
                 String repositoryPassword = properties[SEED_DSL_REPOSITORY_PASSWORD]
                 if (repositoryUser && repositoryPassword) {
-                    // Repository with credentials
+                    repositoryUser = extractCredential(repositoryUser);
+                    repositoryPassword = extractCredential(repositoryPassword);
                     repository = """\
 maven {
     url '${repositoryUrl}
     credentials {
-        username '${repositoryUser}'
-        password '${repositoryPassword}'
+        username ${repositoryUser}
+        password ${repositoryPassword}
     }
 }
 """
@@ -221,6 +222,15 @@ task prepare(dependsOn: copyLibraries)
 
         // OK
         return true
+    }
+
+    static String extractCredential(String expression) {
+        if (expression.startsWith('${') && expression.endsWith('}')) {
+            String variable = expression[2..-2]
+            return "System.getenv('${variable}')";
+        } else {
+            return "'${expression}'";
+        }
     }
 
 }
