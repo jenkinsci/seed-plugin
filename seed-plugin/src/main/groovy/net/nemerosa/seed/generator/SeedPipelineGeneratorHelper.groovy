@@ -129,7 +129,7 @@ class SeedPipelineGeneratorHelper {
                     repositoryPassword = extractCredential(repositoryPassword);
                     repository = """\
 maven {
-    url '${repositoryUrl}
+    url '${repositoryUrl}'
     credentials {
         username ${repositoryUser}
         password ${repositoryPassword}
@@ -186,7 +186,7 @@ configurations {
     dslLibrary
 }
 dependencies {
-    ${dependencies.collect { "dslLibrary '${it}'" }.join('\n')}
+${dependencies.collect { "dslLibrary '${it}'" }.join('\n')}
 }
 task clean {
     delete 'lib'

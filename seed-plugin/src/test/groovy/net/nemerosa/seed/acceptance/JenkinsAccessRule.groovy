@@ -226,11 +226,22 @@ class JenkinsAccessRule implements TestRule {
      * Gets a job/folder configuration as XML
      */
     def jobConfig(String job) {
+        info "[job] Getting job config for ${job}"
         String path = jobPath(job)
         URL url = new URL(jenkinsUrl, "${path}/config.xml")
         url.openStream().withStream {
             new XmlSlurper().parse(it)
         }
+    }
+
+    /**
+     * Gets the content of a file in a job's workspace
+     */
+    String getWorkspaceFile(String job, String filePath) {
+        info "[job] Getting ${filePath} file for ${job}"
+        String path = jobPath(job)
+        URL url = new URL(jenkinsUrl, "${path}/ws/${filePath}/*view*/")
+        return url.text
     }
 
     void configureSeed(String yaml) {

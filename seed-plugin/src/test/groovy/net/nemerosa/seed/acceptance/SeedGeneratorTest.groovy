@@ -1,5 +1,6 @@
 package net.nemerosa.seed.acceptance
 
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -317,6 +318,39 @@ classes:
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
         // Checks the branch pipeline is there
         jenkins.job("${project}/${project}-master/${project}-master-build")
+        // Checks some parameters of the master seed
+        def xml = jenkins.jobConfig("${project}/${project}-master/${project}-master-seed")
+        // Injection of passwords is enabled?
+        assert xml?.buildWrappers?.EnvInjectPasswordWrapper?.injectGlobalPasswords?.text() == 'true'
+        // Gets the build.gradle file from the workspace
+        def buildGradle = jenkins.getWorkspaceFile("${project}/${project}-master/${project}-master-seed", "seed/build.gradle")
+        // Careful: there are four spaces in the dependencies section
+        Assert.assertEquals """\
+repositories {
+    maven {
+    url 'https://artifactory.nemerosa.net'
+    credentials {
+        username System.getenv('ARTIFACTORY_USER')
+        password System.getenv('ARTIFACTORY_PASSWORD')
+    }
+}
+
+}
+configurations {
+    dslLibrary
+}
+dependencies {
+
+}
+task clean {
+    delete 'lib'
+}
+task copyLibraries(type: Copy, dependsOn: clean) {
+    into 'lib'
+    from configurations.dslLibrary
+}
+task prepare(dependsOn: copyLibraries)
+""", buildGradle
     }
 
     @Test
