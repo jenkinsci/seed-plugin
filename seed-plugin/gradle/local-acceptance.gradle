@@ -174,16 +174,26 @@ git init
 git config user.email "acceptance-test@nemerosa.com"
 git config user.name "Acceptance Test"
 mkdir seed
-cp /var/test/resources/seed-${id}.groovy seed/seed.groovy
-git add seed/seed.groovy
-git commit -m "Seed file"
+echo "Is there any /var/test/resources/seed-${id}.groovy file?"
+if [ -f /var/test/resources/seed-${id}.groovy ]; then echo "Copying /var/test/resources/seed-${id}.groovy"; cp /var/test/resources/seed-${id}.groovy seed/seed.groovy; fi
+echo "Is there any /var/test/resources/seed-${id}.properties file?"
+if [ -f /var/test/resources/seed-${id}.properties ]; then echo "Copying /var/test/resources/seed-${id}.properties"; cp /var/test/resources/seed-${id}.properties seed/seed.properties; fi
+echo "Scheduling files for commit"
+git add -A
+echo "Committing the files"
+git commit -m "Seed file(s)"
         """
             }
         }
     }
 }
 
-task dockerGitTestRepos(dependsOn: [dockerGitTestRepoSeedStd, dockerGitTestRepoSeedEnv, dockerGitTestRepoSeedScm])
+task dockerGitTestRepos(dependsOn: [
+        dockerGitTestRepoSeedStd,
+        dockerGitTestRepoSeedEnv,
+        dockerGitTestRepoSeedScm,
+        dockerGitTestRepoSeedCred,
+])
 
 task dockerPrepareTestEnv(dependsOn: [dockerDeploy, dockerGitTestRepos, dockerSvnTestRepos])
 

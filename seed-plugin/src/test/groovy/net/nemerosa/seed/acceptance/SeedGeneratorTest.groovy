@@ -293,6 +293,33 @@ classes:
     }
 
     @Test
+    void 'Repository credentials'() {
+        // Project name
+        String project = uid('P')
+        // Configuration (default)
+        jenkins.configureSeed ""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in local-acceptance.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-cred',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.job("${project}/${project}-master/${project}-master-build")
+    }
+
+    @Test
     void 'Branch pipeline extensions'() {
         // Project name
         String project = uid('P')
