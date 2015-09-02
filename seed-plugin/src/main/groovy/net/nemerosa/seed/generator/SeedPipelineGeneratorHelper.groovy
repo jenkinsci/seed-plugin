@@ -4,10 +4,14 @@ import hudson.model.AbstractBuild
 import hudson.model.BuildListener
 import hudson.model.ParametersAction
 import hudson.model.StringParameterValue
-import net.nemerosa.seed.config.Configuration
 import net.nemerosa.seed.config.SeedDSLHelper
 import net.nemerosa.seed.config.SeedProjectEnvironment
 import org.apache.commons.lang.StringUtils
+
+import static net.nemerosa.seed.generator.SeedProperties.SEED_DSL_LIBRARIES
+import static net.nemerosa.seed.generator.SeedProperties.SEED_DSL_REPOSITORY
+import static net.nemerosa.seed.generator.SeedProperties.SEED_DSL_SCRIPT_JAR
+import static net.nemerosa.seed.generator.SeedProperties.SEED_DSL_SCRIPT_LOCATION
 
 /**
  * This class prepares the DSL environment for the {@link BranchPipelineGeneratorExtension}.
@@ -40,10 +44,10 @@ import org.apache.commons.lang.StringUtils
  */
 class SeedPipelineGeneratorHelper {
 
-    public static final String SEED_GRADLE = 'SEED_GRADLE'
-    public static final String SEED_DSL_SCRIPT_LOCATION = 'SEED_DSL_SCRIPT_LOCATION'
-    public static final String SEED_PROJECT = 'SEED_PROJECT'
-    public static final String SEED_BRANCH = 'SEED_BRANCH'
+    public static final String ENV_SEED_GRADLE = 'SEED_GRADLE'
+    public static final String ENV_SEED_DSL_SCRIPT_LOCATION = 'SEED_DSL_SCRIPT_LOCATION'
+    public static final String ENV_SEED_PROJECT = 'SEED_PROJECT'
+    public static final String ENV_SEED_BRANCH = 'SEED_BRANCH'
 
     private final String project
     private final String projectClass
@@ -84,7 +88,7 @@ class SeedPipelineGeneratorHelper {
 
         // Gets the list of dependencies from the property file
         List<String> dependencies
-        String dependenciesValue = properties['seed.dsl.libraries']
+        String dependenciesValue = properties[SEED_DSL_LIBRARIES]
         if (dependenciesValue) {
             dependencies = dependenciesValue.split(',')
         }
@@ -98,21 +102,21 @@ class SeedPipelineGeneratorHelper {
         }
 
         // Gets the dependency source for the bootstrap script
-        String dslBootstrapDependency = properties['seed.dsl.script.jar']
+        String dslBootstrapDependency = properties[SEED_DSL_SCRIPT_JAR]
         if (!dslBootstrapDependency) {
             dslBootstrapDependency = projectEnvironment.getConfigurationValue('pipeline-generator-script-jar', '')
         }
         listener.logger.println("DSL script JAR: ${dslBootstrapDependency}")
 
         // Gets the location of the bootstrap script
-        String dslBootstrapLocation = properties['seed.dsl.script.location']
+        String dslBootstrapLocation = properties[SEED_DSL_SCRIPT_LOCATION]
         if (!dslBootstrapLocation) {
             dslBootstrapLocation = projectEnvironment.getConfigurationValue('pipeline-generator-script-location', 'seed.groovy')
         }
         listener.logger.println("DSL script location: ${dslBootstrapLocation}")
 
         // Source repository
-        String repositoryUrl = properties['seed.dsl.repository']
+        String repositoryUrl = properties[SEED_DSL_REPOSITORY]
         if (!repositoryUrl) {
             repositoryUrl = projectEnvironment.getConfigurationValue('pipeline-generator-repository', '')
         }
@@ -141,10 +145,10 @@ class SeedPipelineGeneratorHelper {
 
         // Injects the environment variables
         build.addAction(new ParametersAction(
-                new StringParameterValue(SEED_DSL_SCRIPT_LOCATION, dslBootstrapLocation),
-                new StringParameterValue(SEED_PROJECT, seedProjectName),
-                new StringParameterValue(SEED_BRANCH, seedBranchName),
-                new StringParameterValue(SEED_GRADLE, scriptExtraction ? 'yes' : 'no'),
+                new StringParameterValue(ENV_SEED_DSL_SCRIPT_LOCATION, dslBootstrapLocation),
+                new StringParameterValue(ENV_SEED_PROJECT, seedProjectName),
+                new StringParameterValue(ENV_SEED_BRANCH, seedBranchName),
+                new StringParameterValue(ENV_SEED_GRADLE, scriptExtraction ? 'yes' : 'no'),
         ))
 
         // Prepares the Gradle environment

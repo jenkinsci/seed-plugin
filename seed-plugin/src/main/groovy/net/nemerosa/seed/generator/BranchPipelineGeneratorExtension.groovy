@@ -107,7 +107,7 @@ fi
         snippets << """\
 steps {
     dsl {
-        external 'seed/\${${SeedPipelineGeneratorHelper.SEED_DSL_SCRIPT_LOCATION}}'
+        external 'seed/\${${SeedPipelineGeneratorHelper.ENV_SEED_DSL_SCRIPT_LOCATION}}'
         removeAction 'DELETE'
         lookupStrategy 'SEED_JOB'
         ignoreExisting false
