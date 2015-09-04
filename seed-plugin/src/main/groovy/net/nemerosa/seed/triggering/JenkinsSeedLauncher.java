@@ -68,11 +68,11 @@ public class JenkinsSeedLauncher implements SeedLauncher {
 
     @Override
     public void delete(String path) {
+        LOGGER.info(String.format("Deleting item at %s", path));
         try {
-            Item item = findItem(path);
             SecurityContext orig = ACL.impersonate(ACL.SYSTEM);
             try {
-                item.delete();
+                findItem(path).delete();
             } finally {
                 SecurityContextHolder.setContext(orig);
             }
