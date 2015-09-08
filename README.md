@@ -32,3 +32,7 @@ Quick links:
 
 * [Configuration](https://github.com/jenkinsci/seed-plugin/wiki/Configuration)
 * [GitHub configuration](https://github.com/jenkinsci/seed-plugin/wiki/GitHub)
+
+## Roadmap
+
+* better management of the Seed global configuration: SCM, editor?
