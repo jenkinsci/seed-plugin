@@ -22,7 +22,7 @@ The branch pipeline generation is configured using some files on the branch. Dif
 
 The plugin implementation is illustrated by the diagram below:
 
-![Implementation overview](https://raw.githubusercontent.com/wiki/jenkinsci/seed-plugin/Implementation_Overview.png)
+![Implementation overview](https://raw.githubusercontent.com/wiki/jenkinsci/seed-plugin/ImplementationOverview.png)
 
 ## Documentation
 

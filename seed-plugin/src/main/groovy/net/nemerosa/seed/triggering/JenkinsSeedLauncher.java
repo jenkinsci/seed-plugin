@@ -5,7 +5,6 @@ import hudson.security.ACL;
 import jenkins.model.Jenkins;
 import net.nemerosa.seed.config.CannotDeleteItemException;
 import net.nemerosa.seed.config.CannotFindJobException;
-import net.nemerosa.seed.config.JobNotParameterizedException;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.apache.commons.lang.StringUtils;
@@ -23,29 +22,38 @@ public class JenkinsSeedLauncher implements SeedLauncher {
     @Override
     public void launch(SeedChannel channel, String path, Map<String, String> parameters) {
         LOGGER.info(String.format("Launching job at %s with parameters %s", path, parameters));
-        // Gets the job using its path
-        final AbstractProject job = findJob(path);
-        // Launches the job
-        if (parameters != null && !parameters.isEmpty()) {
-            if (job.isParameterized()) {
-                // List of parameters
-                List<ParameterValue> parameterValues = new ArrayList<ParameterValue>();
-                for (Map.Entry<String, String> entry : parameters.entrySet()) {
-                    parameterValues.add(
-                            new StringParameterValue(
-                                    entry.getKey(),
-                                    entry.getValue()
-                            )
+        SecurityContext orig = ACL.impersonate(ACL.SYSTEM);
+        try {
+            // Gets the job using its path
+            final AbstractProject job = findJob(path);
+            // Launches the job
+            if (parameters != null && !parameters.isEmpty()) {
+                if (job.isParameterized()) {
+                    // List of parameters
+                    List<ParameterValue> parameterValues = new ArrayList<ParameterValue>();
+                    for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                        parameterValues.add(
+                                new StringParameterValue(
+                                        entry.getKey(),
+                                        entry.getValue()
+                                )
+                        );
+                    }
+                    // Scheduling
+                    Jenkins.getInstance().getQueue()
+                            .schedule2(
+                                    job,
+                                    0,
+                                    new ParametersAction(parameterValues),
+                                    new CauseAction(getCause(channel))
+                            );
+                } else {
+                    Jenkins.getInstance().getQueue().schedule2(
+                            job,
+                            0,
+                            new CauseAction(getCause(channel))
                     );
                 }
-                // Scheduling
-                Jenkins.getInstance().getQueue()
-                        .schedule2(
-                                job,
-                                0,
-                                new ParametersAction(parameterValues),
-                                new CauseAction(getCause(channel))
-                        );
             } else {
                 Jenkins.getInstance().getQueue().schedule2(
                         job,
@@ -53,22 +61,18 @@ public class JenkinsSeedLauncher implements SeedLauncher {
                         new CauseAction(getCause(channel))
                 );
             }
-        } else {
-            Jenkins.getInstance().getQueue().schedule2(
-                    job,
-                    0,
-                    new CauseAction(getCause(channel))
-            );
+        } finally {
+            SecurityContextHolder.setContext(orig);
         }
     }
 
     @Override
     public void delete(String path) {
-        Item item = findItem(path);
+        LOGGER.info(String.format("Deleting item at %s", path));
         try {
             SecurityContext orig = ACL.impersonate(ACL.SYSTEM);
             try {
-                item.delete();
+                findItem(path).delete();
             } finally {
                 SecurityContextHolder.setContext(orig);
             }
