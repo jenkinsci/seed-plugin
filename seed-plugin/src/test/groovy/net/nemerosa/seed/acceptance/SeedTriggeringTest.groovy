@@ -5,7 +5,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import java.util.concurrent.TimeoutException
+
 import static net.nemerosa.seed.acceptance.TestUtils.uid
+import static org.junit.Assert.fail
 
 /**
  * Testing the triggering of seeds and pipelines using the Seed plug-in.
@@ -173,6 +176,51 @@ http-secret-key: ABCDEF
         })
         // Checks the result of the project seed
         jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
+    }
+
+    @Test
+    void 'No pipeline generation when pipeline-auto is set to false in a class'() {
+        // Project name
+        def project = uid('P')
+        // Configuration
+        jenkins.configureSeed """\
+classes:
+    - id: my-class
+      pipeline-auto: false
+projects:
+    - id: ${project}
+      project-class: my-class
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http/create?project=${project}&branch=master")
+        // Checks the result of the project seed
+        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
+        // Checks the branch seed is created - it's fired automatically
+        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        // Checks the result of the branch seed
+        jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1).checkSuccess()
+        // Checks the branch pipeline is there - it's fired automatically
+        jenkins.job("${project}/${project}-master/${project}-master-build")
+        jenkins.job("${project}/${project}-master/${project}-master-ci")
+        jenkins.job("${project}/${project}-master/${project}-master-publish")
+        // Triggers again the branch generator
+        jenkins.post("seed-http/seed?project=${project}&branch=master")
+        // Checks that the master seed was NOT fired
+        try {
+            jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 2, 30).checkSuccess()
+            fail "The master branch automatic generation is not enabled"
+        } catch (TimeoutException ignored) {
+            // OK
+        }
     }
 
 }
