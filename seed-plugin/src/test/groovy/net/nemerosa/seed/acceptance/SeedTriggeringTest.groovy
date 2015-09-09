@@ -223,4 +223,51 @@ projects:
         }
     }
 
+    @Test
+    void 'No pipeline started when pipeline-trigger is set to false in a class'() {
+        // Project name
+        def project = uid('P')
+        // Configuration
+        jenkins.configureSeed """\
+classes:
+    - id: my-class
+      pipeline-trigger: no
+projects:
+    - id: ${project}
+      project-class: my-class
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http/create?project=${project}&branch=master")
+        // Checks the result of the project seed
+        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
+        // Checks the branch seed is created - it's fired automatically
+        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        // Checks the result of the branch seed
+        jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1).checkSuccess()
+        // Checks the branch pipeline is there - it's fired automatically
+        jenkins.job("${project}/${project}-master/${project}-master-build")
+        jenkins.job("${project}/${project}-master/${project}-master-ci")
+        jenkins.job("${project}/${project}-master/${project}-master-publish")
+        // Checks the first build - it's fired automatically on Seed generation
+        jenkins.getBuild("${project}/${project}-master/${project}-master-build", 1).checkSuccess()
+        // Triggers again the branch pipeline
+        jenkins.post("seed-http/commit?project=${project}&branch=master")
+        // Checks that the master pipeline was NOT fired
+        try {
+            jenkins.getBuild("${project}/${project}-master/${project}-master-build", 2, 30).checkSuccess()
+            fail "The master branch automatic startup is not enabled"
+        } catch (TimeoutException ignored) {
+            // OK
+        }
+    }
+
 }
