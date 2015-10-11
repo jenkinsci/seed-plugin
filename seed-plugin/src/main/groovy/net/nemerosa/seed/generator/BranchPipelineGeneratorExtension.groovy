@@ -1,13 +1,11 @@
 package net.nemerosa.seed.generator
 
 import net.nemerosa.seed.config.Configuration
+import net.nemerosa.seed.config.ProjectProperties
 import net.nemerosa.seed.config.SeedNamingStrategyHelper
 import net.nemerosa.seed.config.SeedProjectEnvironment
 
 class BranchPipelineGeneratorExtension {
-
-    static final String PIPELINE_GENERATOR_PROPERTY_PATH = 'pipeline-generator-property-path'
-    static final String PIPELINE_GENERATOR_EXTENSIONS = 'pipeline-generator-extensions'
 
     private final SeedProjectEnvironment environment
     private final String branch
@@ -22,7 +20,7 @@ class BranchPipelineGeneratorExtension {
         List<String> snippets = []
 
         // Gets the property file name
-        String propertyPath = environment.getConfigurationValue(PIPELINE_GENERATOR_PROPERTY_PATH, 'seed/seed.properties')
+        String propertyPath = environment.getConfigurationValue(ProjectProperties.PIPELINE_GENERATOR_PROPERTY_PATH, 'seed/seed.properties')
 
         /**
          * Parameters
@@ -56,7 +54,7 @@ environmentVariables {
          *
          * Gets the extension snippets from the configuration and applies them.
          */
-        def extensionIds = environment.getConfigurationList(PIPELINE_GENERATOR_EXTENSIONS)
+        def extensionIds = environment.getConfigurationList(ProjectProperties.PIPELINE_GENERATOR_EXTENSIONS)
         extensionIds.each { String extensionId ->
             String extensionDsl = getExtension(extensionId)
             // Adds the extension DSL
@@ -120,19 +118,27 @@ steps {
 """
 
         /**
-         * Fires the branch pipeline
+         * Fires the branch pipeline after it has been generated.
+         *
+         * Only if the {@value ProjectProperties#PIPELINE_START_AUTO} is set to yes.
          */
-        String branchPipeline = SeedNamingStrategyHelper.getBranchPath(
-                environment.namingStrategy.getBranchStart(environment.id),
-                environment.namingStrategy.getBranchName(branch)
-        )
-        snippets << """\
+        if (environment.getConfigurationBoolean(
+                ProjectProperties.PIPELINE_START_AUTO,
+                true
+        )) {
+            // Getting the path to the pipeline start
+            String branchPipeline = SeedNamingStrategyHelper.getBranchPath(
+                    environment.namingStrategy.getBranchStart(environment.id),
+                    environment.namingStrategy.getBranchName(branch)
+            )
+            snippets << """\
 steps {
     dsl {
         text "queue('${branchPipeline}')"
     }
 }
 """
+        }
 
         // OK
         return snippets.join('\n')

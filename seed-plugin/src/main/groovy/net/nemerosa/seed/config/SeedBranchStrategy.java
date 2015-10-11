@@ -17,14 +17,6 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     private static final Logger LOGGER = Logger.getLogger(SeedBranchStrategy.class.getName());
 
-    public static final String SEED = "seed";
-    public static final String PIPELINE_SEED = "pipeline-seed";
-    public static final String PIPELINE_START = "pipeline-start";
-    public static final String PIPELINE_DELETE = "pipeline-delete";
-    public static final String PIPELINE_AUTO = "pipeline-auto";
-    public static final String PIPELINE_TRIGGER = "pipeline-trigger";
-    public static final String PIPELINE_COMMIT = "pipeline-commit";
-
     private final SeedNamingStrategy seedNamingStrategy;
 
     public SeedBranchStrategy() {
@@ -66,7 +58,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     }
 
     protected void seed(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
-        if (Configuration.getBoolean(PIPELINE_AUTO, projectConfiguration, configuration, true)) {
+        if (Configuration.getBoolean(ProjectProperties.PIPELINE_AUTO, projectConfiguration, configuration, true)) {
             LOGGER.finer(format("Seed files changed for branch %s of project %s - regenerating the pipeline", event.getBranch(), event.getProject()));
             // Gets the path to the branch seed job
             String path = getBranchSeedPath(projectConfiguration, event.getBranch());
@@ -78,7 +70,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     }
 
     protected void commit(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
-        if (Configuration.getBoolean(PIPELINE_TRIGGER, projectConfiguration, configuration, true)) {
+        if (Configuration.getBoolean(ProjectProperties.PIPELINE_TRIGGER, projectConfiguration, configuration, true)) {
             // Gets the path to the branch start job
             String path = getBranchStartPath(projectConfiguration, event.getBranch());
             // Uses the commit (must be specified in the event)
@@ -96,7 +88,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     protected String getCommitParameter(SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
         return Configuration.getValue(
-                PIPELINE_COMMIT,
+                ProjectProperties.PIPELINE_COMMIT,
                 projectConfiguration,
                 configuration,
                 defaultCommitParameter()
@@ -111,7 +103,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
         LOGGER.finer(format("New branch %s for project %s - creating a new pipeline", event.getBranch(), event.getProject()));
         // Gets the path to the branch seed job
         String path = projectConfiguration.getString(
-                SEED,
+                ProjectProperties.SEED,
                 false,
                 defaultSeed(projectConfiguration.getId())
         );
@@ -126,7 +118,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
         // Gets the path to the branch seed job
         String path = getBranchSeedPath(projectConfiguration, event.getBranch());
         // Deletes the whole branch folder
-        if (Configuration.getBoolean(PIPELINE_DELETE, projectConfiguration, configuration, true)) {
+        if (Configuration.getBoolean(ProjectProperties.PIPELINE_DELETE, projectConfiguration, configuration, true)) {
             LOGGER.finer(format("Deletion of the branch means deletion of the pipeline for project %s", event.getProject()));
             // Gets the folder
             path = StringUtils.substringBeforeLast(path, "/");
@@ -144,7 +136,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     protected String getBranchSeedPath(SeedProjectConfiguration projectConfiguration, String branch) {
         return SeedNamingStrategyHelper.getBranchPath(
                 projectConfiguration.getString(
-                        PIPELINE_SEED,
+                        ProjectProperties.PIPELINE_SEED,
                         false,
                         defaultBranchSeed(projectConfiguration.getId())
                 ),
@@ -155,7 +147,7 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
     protected String getBranchStartPath(SeedProjectConfiguration projectConfiguration, String branch) {
         return SeedNamingStrategyHelper.getBranchPath(
                 projectConfiguration.getString(
-                        PIPELINE_START,
+                        ProjectProperties.PIPELINE_START,
                         false,
                         defaultBranchStart(projectConfiguration.getId())
                 ),
