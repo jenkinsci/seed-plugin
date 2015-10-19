@@ -84,6 +84,9 @@ public class SeedServiceImpl implements SeedService {
         }
     }
 
+    /**
+     * The secret key might change outside of any project configuration, so the cache cannot be used to fetch it.
+     */
     @Override
     public String getSecretKey(String project, String context) {
         // Property name
