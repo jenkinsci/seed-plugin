@@ -7,34 +7,57 @@ import java.io.IOException;
 public class SeedDSLHelper {
 
     private final SeedConfigurationLoader configurationLoader;
+    private final SeedProjectConfigurationCache projectConfigurationCache;
     private final BranchStrategies branchStrategies;
 
     public SeedDSLHelper() {
         this(
                 new JenkinsSeedConfigurationLoader(),
+                new JenkinsSeedProjectConfigurationCache(),
                 new JenkinsBranchStrategies()
         );
     }
 
-    public SeedDSLHelper(SeedConfigurationLoader configurationLoader, BranchStrategies branchStrategies) {
+    public SeedDSLHelper(SeedConfigurationLoader configurationLoader, SeedProjectConfigurationCache projectConfigurationCache, BranchStrategies branchStrategies) {
         this.configurationLoader = configurationLoader;
+        this.projectConfigurationCache = projectConfigurationCache;
         this.branchStrategies = branchStrategies;
     }
 
     /**
      * Gets the configuration for a project
-     *
-     * @deprecated Must be used only by the {@link net.nemerosa.seed.generator.ProjectSeedBuilder}
      */
-    @Deprecated
-    public SeedProjectEnvironment getProjectEnvironment(String project, String projectClass, String scmType, String scmUrl, String scmCredentials) {
-        SeedConfiguration configuration = configurationLoader.load();
-        SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(project, projectClass);
-        BranchStrategy branchStrategy = BranchStrategyHelper.getBranchStrategy(configuration, projectConfiguration, branchStrategies);
+    public SeedProjectEnvironment getProjectEnvironment(
+            String project, String projectClass, String scmType, String scmUrl, String scmCredentials,
+            boolean useCache) {
+        if (useCache) {
+            SeedProjectSavedConfiguration cache = projectConfigurationCache.load(project);
+            if (cache != null && cache.sameAs(projectClass, scmType, scmUrl, scmCredentials)) {
+                SeedConfiguration globalConfiguration = new SeedConfiguration(cache.getGlobalConfiguration());
+                SeedProjectConfiguration projectConfiguration = new SeedProjectConfiguration(cache.getProjectConfiguration());
+                return getProjectEnvironment(
+                        project, projectClass, scmType, scmUrl, scmCredentials,
+                        globalConfiguration,
+                        projectConfiguration
+                );
+            }
+        }
+        // No cache
+        SeedConfiguration globalConfiguration = configurationLoader.load();
+        SeedProjectConfiguration projectConfiguration = globalConfiguration.getProjectConfiguration(project, projectClass);
+        return getProjectEnvironment(
+                project, projectClass, scmType, scmUrl, scmCredentials,
+                globalConfiguration,
+                projectConfiguration
+        );
+    }
+
+    private SeedProjectEnvironment getProjectEnvironment(String project, String projectClass, String scmType, String scmUrl, String scmCredentials, SeedConfiguration globalConfiguration, SeedProjectConfiguration projectConfiguration) {
+        BranchStrategy branchStrategy = BranchStrategyHelper.getBranchStrategy(globalConfiguration, projectConfiguration, branchStrategies);
         SeedNamingStrategy namingStrategy = branchStrategy.getSeedNamingStrategy();
         return new SeedProjectEnvironment(
                 project, projectClass, scmType, scmUrl, scmCredentials,
-                configuration,
+                globalConfiguration,
                 projectConfiguration,
                 branchStrategy,
                 namingStrategy

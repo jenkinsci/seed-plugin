@@ -45,6 +45,11 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
     }
 
     @Override
+    protected boolean useConfigurationCache() {
+        return true;
+    }
+
+    @Override
     protected void configureEnvironment(EnvVars env, SeedProjectEnvironment projectEnvironment) {
         String theBranch = env.expand(branch);
         env.put("branchSeedFolder", SeedNamingStrategyHelper.getBranchSeedFolder(

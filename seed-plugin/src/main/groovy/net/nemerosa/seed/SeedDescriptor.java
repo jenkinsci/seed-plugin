@@ -52,6 +52,10 @@ public class SeedDescriptor extends Descriptor<SeedDescriptor> implements Descri
         }
     }
 
+    public SeedProjectSavedConfiguration getProjectSavedConfiguration(String projectName) {
+        return projectConfigurations.get(projectName);
+    }
+
     @Extension
     public static class GeneratedJobMapItemListener extends ItemListener {
 

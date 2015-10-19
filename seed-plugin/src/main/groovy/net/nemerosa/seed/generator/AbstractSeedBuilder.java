@@ -14,7 +14,6 @@ import net.nemerosa.seed.config.SeedProjectEnvironment;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
 
 /**
  * Build step which can generates other jobs and folders.
@@ -87,7 +86,8 @@ public abstract class AbstractSeedBuilder extends Builder {
                 theProjectClass,
                 theProjectScmType,
                 theProjectScmUrl,
-                theProjectScmCredentials
+                theProjectScmCredentials,
+                useConfigurationCache()
         );
 
         // Configuration of the DSL script
@@ -107,6 +107,8 @@ public abstract class AbstractSeedBuilder extends Builder {
         // Done
         return true;
     }
+
+    protected abstract boolean useConfigurationCache();
 
     protected void afterGeneration(SeedProjectEnvironment projectEnvironment) {
     }

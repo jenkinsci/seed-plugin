@@ -28,6 +28,11 @@ public class ProjectSeedBuilder extends AbstractSeedBuilder {
     }
 
     @Override
+    protected boolean useConfigurationCache() {
+        return false;
+    }
+
+    @Override
     protected void configureEnvironment(EnvVars env, SeedProjectEnvironment projectEnvironment) {
         env.put("projectSeedFolder", SeedNamingStrategyHelper.getProjectSeedFolder(
                 projectEnvironment.getNamingStrategy(),

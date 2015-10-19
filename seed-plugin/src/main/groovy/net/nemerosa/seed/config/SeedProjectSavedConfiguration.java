@@ -1,5 +1,6 @@
 package net.nemerosa.seed.config;
 
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.Map;
@@ -65,4 +66,11 @@ public class SeedProjectSavedConfiguration {
         return projectConfiguration;
     }
 
+    public boolean sameAs(String projectClass, String scmType, String scmUrl, String scmCredentials) {
+        return StringUtils.equals(this.projectClass, projectClass) &&
+                StringUtils.equals(this.scmType, scmType) &&
+                StringUtils.equals(this.scmUrl, scmUrl) &&
+                StringUtils.equals(this.scmCredentials, scmCredentials)
+                ;
+    }
 }
