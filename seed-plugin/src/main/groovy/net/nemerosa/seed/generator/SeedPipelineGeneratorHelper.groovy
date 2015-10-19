@@ -72,7 +72,8 @@ class SeedPipelineGeneratorHelper {
                 projectClass,
                 projectScmType,
                 projectScmUrl,
-                projectScmCredentials
+                projectScmCredentials,
+                true
         )
 
         // Reads the property file
