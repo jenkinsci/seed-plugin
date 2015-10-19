@@ -270,4 +270,47 @@ projects:
         }
     }
 
+    @Test
+    void 'Commit event with a custom naming strategy'() {
+        // Project name
+        def project = uid('p')
+        // Configuration
+        jenkins.configureSeed """\
+strategies:
+  - id: ci
+    branch-start-expression: "\${project}/\${project}-*/\${project}-*-ci"
+classes:
+    - id: my-class
+      branch-strategy: ci
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_CLASS   : 'my-class',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-ci',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http/create?project=${project}&branch=master")
+        // Checks the result of the project seed
+        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
+        // Checks the branch seed is created - it's fired automatically
+        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        // Checks the result of the branch seed
+        jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1).checkSuccess()
+        // Checks the branch pipeline is there - it's fired automatically
+        jenkins.job("${project}/${project}-master/${project}-master-ci")
+        // Checks the first build - it's fired automatically on Seed generation
+        jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1).checkSuccess()
+        // Triggers again the branch pipeline
+        jenkins.post("seed-http/commit?project=${project}&branch=master&commit=100")
+        // Checks that the master pipeline is fired
+        def build = jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 2)
+        build.checkSuccess()
+        assert build.output.contains('Commit: 100')
+    }
+
 }

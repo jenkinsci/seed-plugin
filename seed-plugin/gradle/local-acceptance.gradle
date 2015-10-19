@@ -192,6 +192,7 @@ task dockerGitTestRepos(dependsOn: [
         dockerGitTestRepoSeedStd,
         dockerGitTestRepoSeedEnv,
         dockerGitTestRepoSeedScm,
+        dockerGitTestRepoSeedCi,
         dockerGitTestRepoSeedCred,
 ])
 
