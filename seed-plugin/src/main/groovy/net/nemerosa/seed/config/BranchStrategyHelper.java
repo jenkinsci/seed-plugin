@@ -11,7 +11,7 @@ public final class BranchStrategyHelper {
             BranchStrategies branchStrategies) {
         return branchStrategies.get(
                 Configuration.getValue(
-                        "branch-strategy",
+                        ProjectProperties.BRANCH_STRATEGY,
                         projectConfiguration,
                         configuration,
                         "seed"

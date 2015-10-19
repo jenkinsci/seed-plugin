@@ -45,6 +45,14 @@ public class SeedServiceImpl implements SeedService {
                 projectConfiguration,
                 branchStrategies
         );
+        // Logging
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info(String.format(
+                    "BranchStrategy: project=%s, strategy=%s",
+                    event.getProject(),
+                    branchStrategy.getId()
+            ));
+        }
         // Dispatching
         branchStrategy.post(event, seedLauncher, configuration, projectConfiguration);
     }

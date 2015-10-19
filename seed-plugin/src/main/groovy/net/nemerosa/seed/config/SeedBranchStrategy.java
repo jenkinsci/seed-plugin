@@ -2,8 +2,8 @@ package net.nemerosa.seed.config;
 
 import com.google.common.collect.ImmutableMap;
 import hudson.Extension;
-import net.nemerosa.seed.triggering.SeedLauncher;
 import net.nemerosa.seed.triggering.SeedEvent;
+import net.nemerosa.seed.triggering.SeedLauncher;
 import net.nemerosa.seed.triggering.UnsupportedSeedEventTypeException;
 import org.apache.commons.lang.StringUtils;
 
@@ -59,9 +59,17 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     protected void seed(SeedEvent event, SeedLauncher seedLauncher, SeedConfiguration configuration, SeedProjectConfiguration projectConfiguration) {
         if (Configuration.getBoolean(ProjectProperties.PIPELINE_AUTO, projectConfiguration, configuration, true)) {
-            LOGGER.finer(format("Seed files changed for branch %s of project %s - regenerating the pipeline", event.getBranch(), event.getProject()));
             // Gets the path to the branch seed job
             String path = getBranchSeedPath(projectConfiguration, event.getBranch());
+            // Logging
+            LOGGER.info(
+                    format(
+                            "Seed files changed for branch %s of project %s - regenerating the pipeline at %s",
+                            event.getBranch(),
+                            event.getProject(),
+                            path
+                    )
+            );
             // Launches the job (no parameter)
             seedLauncher.launch(event.getChannel(), path, null);
         } else {
@@ -75,7 +83,15 @@ public class SeedBranchStrategy extends AbstractBranchStrategy {
             String path = getBranchStartPath(projectConfiguration, event.getBranch());
             // Uses the commit (must be specified in the event)
             String commit = event.getConfiguration().getString("commit", false, "HEAD");
-            LOGGER.finer(format("Commit %s for branch %s of project %s - starting the pipeline", commit, event.getBranch(), event.getProject()));
+            LOGGER.info(
+                    format(
+                            "Commit %s for branch %s of project %s - starting the pipeline at %s",
+                            commit,
+                            event.getBranch(),
+                            event.getProject(),
+                            path
+                    )
+            );
             // Launching the job
             seedLauncher.launch(event.getChannel(), path, ImmutableMap.of(
                     getCommitParameter(configuration, projectConfiguration),

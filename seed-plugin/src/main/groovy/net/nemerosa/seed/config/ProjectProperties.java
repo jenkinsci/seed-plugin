@@ -16,6 +16,11 @@ public interface ProjectProperties {
     String PIPELINE_GENERATOR_EXTENSIONS = "pipeline-generator-extensions";
 
     /**
+     * Branching strategy to use
+     */
+    String BRANCH_STRATEGY = "branch-strategy";
+
+    /**
      * Specific path to the branch generator. Optional and defaults to the path defined
      * by the branching strategy.
      */
