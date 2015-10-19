@@ -279,6 +279,7 @@ projects:
 strategies:
   - id: ci
     branch-start-expression: "\${project}/\${project}-*/\${project}-*-ci"
+    commit-parameter: SVN_REVISION
 classes:
     - id: my-class
       branch-strategy: ci
