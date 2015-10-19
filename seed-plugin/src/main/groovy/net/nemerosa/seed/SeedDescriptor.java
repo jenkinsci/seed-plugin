@@ -5,6 +5,7 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Item;
 import hudson.model.listeners.ItemListener;
+import jenkins.model.Jenkins;
 import net.nemerosa.seed.config.SeedProjectEnvironment;
 import net.nemerosa.seed.config.SeedProjectSavedConfiguration;
 
@@ -43,17 +44,25 @@ public class SeedDescriptor extends Descriptor<SeedDescriptor> implements Descri
         save();
     }
 
+    private static void removeProjectConfiguration(String name) {
+        SeedDescriptor descriptor = Jenkins.getInstance().getDescriptorByType(SeedDescriptor.class);
+        SeedProjectSavedConfiguration removed = descriptor.projectConfigurations.remove(name);
+        if (removed != null) {
+            descriptor.save();
+        }
+    }
+
     @Extension
     public static class GeneratedJobMapItemListener extends ItemListener {
 
         @Override
         public void onDeleted(Item item) {
-            // TODO removeSeedReference(item.getFullName());
+            removeProjectConfiguration(item.getFullName());
         }
 
         @Override
         public void onLocationChanged(Item item, String oldFullName, String newFullName) {
-            // TODO removeSeedReference(oldFullName);
+            removeProjectConfiguration(oldFullName);
         }
 
     }
