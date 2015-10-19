@@ -22,6 +22,10 @@ public class Configuration {
         return mergeMap(cfg.data, this.data);
     }
 
+    public Map<String, ?> getData() {
+        return data;
+    }
+
     private static Map<String, ?> mergeMap(Map<String, ?> data, Map<String, ?> defaultData) {
         Map<String, Object> result = new LinkedHashMap<String, Object>(data);
         for (Map.Entry<String, ?> defaultEntry : defaultData.entrySet()) {

@@ -5,6 +5,8 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import jenkins.model.Jenkins;
+import net.nemerosa.seed.SeedDescriptor;
 import net.nemerosa.seed.config.SeedNamingStrategyHelper;
 import net.nemerosa.seed.config.SeedProjectEnvironment;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -17,6 +19,12 @@ public class ProjectSeedBuilder extends AbstractSeedBuilder {
     @DataBoundConstructor
     public ProjectSeedBuilder(String project, String projectClass, String projectScmType, String projectScmUrl, String projectScmCredentials) {
         super(project, projectClass, projectScmType, projectScmUrl, projectScmCredentials);
+    }
+
+    @Override
+    protected void afterGeneration(SeedProjectEnvironment projectEnvironment) {
+        SeedDescriptor descriptor = Jenkins.getInstance().getDescriptorByType(SeedDescriptor.class);
+        descriptor.saveProjectConfiguration(projectEnvironment);
     }
 
     @Override

@@ -23,7 +23,10 @@ public class SeedDSLHelper {
 
     /**
      * Gets the configuration for a project
+     *
+     * @deprecated Must be used only by the {@link net.nemerosa.seed.generator.ProjectSeedBuilder}
      */
+    @Deprecated
     public SeedProjectEnvironment getProjectEnvironment(String project, String projectClass, String scmType, String scmUrl, String scmCredentials) {
         SeedConfiguration configuration = configurationLoader.load();
         SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(project, projectClass);

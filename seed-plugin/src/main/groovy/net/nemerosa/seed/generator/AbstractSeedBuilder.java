@@ -101,8 +101,14 @@ public abstract class AbstractSeedBuilder extends Builder {
         // Launching the generation
         launchGenerationScript(build, listener, env, script);
 
+        // Post generation
+        afterGeneration(projectEnvironment);
+
         // Done
         return true;
+    }
+
+    protected void afterGeneration(SeedProjectEnvironment projectEnvironment) {
     }
 
     protected String replaceExtensionPoint(String script, String extensionPoint, String extension) {
