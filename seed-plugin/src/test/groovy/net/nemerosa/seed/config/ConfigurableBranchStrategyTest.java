@@ -34,6 +34,8 @@ public class ConfigurableBranchStrategyTest {
         SeedConfigurationLoader configurationLoader = mock(SeedConfigurationLoader.class);
         when(configurationLoader.load()).thenReturn(configuration);
 
+        SeedProjectConfigurationCache projectConfigurationCache = mock(SeedProjectConfigurationCache.class);
+
         launcher = mock(SeedLauncher.class);
 
         ConfigurableBranchStrategiesLoader configurableBranchStrategiesLoader = new ConfigurableBranchStrategiesLoader();
@@ -41,6 +43,7 @@ public class ConfigurableBranchStrategyTest {
 
         seedService = new SeedServiceImpl(
                 configurationLoader,
+                projectConfigurationCache,
                 launcher,
                 branchStrategies
         );

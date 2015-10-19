@@ -23,7 +23,9 @@ public class SeedServiceImplTest {
 
         SeedLauncher launcher = mock(SeedLauncher.class);
 
-        SeedServiceImpl service = new SeedServiceImpl(loader, launcher, branchStrategies);
+        SeedProjectConfigurationCache projectConfigurationCache = mock(SeedProjectConfigurationCache.class);
+
+        SeedServiceImpl service = new SeedServiceImpl(loader, projectConfigurationCache, launcher, branchStrategies);
         service.post(new SeedEvent("nemerosa/ontrack", "master", SeedEventType.CREATION, TEST_CHANNEL));
 
         verify(launcher, times(1)).launch(TEST_CHANNEL, "ontrack/ontrack-seed", Collections.singletonMap("BRANCH", "master"));

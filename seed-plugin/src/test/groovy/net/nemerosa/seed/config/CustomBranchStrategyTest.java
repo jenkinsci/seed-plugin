@@ -28,6 +28,8 @@ public class CustomBranchStrategyTest {
                 )
         );
 
+        SeedProjectConfigurationCache projectConfigurationCache = mock(SeedProjectConfigurationCache.class);
+
         launcher = mock(SeedLauncher.class);
 
         BranchStrategies branchStrategies = mock(BranchStrategies.class);
@@ -35,6 +37,7 @@ public class CustomBranchStrategyTest {
 
         seedService = new SeedServiceImpl(
                 configurationLoader,
+                projectConfigurationCache,
                 launcher,
                 branchStrategies
         );

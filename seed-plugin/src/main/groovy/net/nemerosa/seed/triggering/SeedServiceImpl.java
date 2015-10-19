@@ -12,12 +12,17 @@ public class SeedServiceImpl implements SeedService {
     private static final Logger LOGGER = Logger.getLogger(SeedService.class.getName());
 
     private final SeedConfigurationLoader configurationLoader;
+    private final SeedProjectConfigurationCache projectConfigurationCache;
     private final SeedLauncher seedLauncher;
     private final BranchStrategies branchStrategies;
 
     @Inject
-    public SeedServiceImpl(SeedConfigurationLoader configurationLoader, SeedLauncher seedLauncher, BranchStrategies branchStrategies) {
+    public SeedServiceImpl(SeedConfigurationLoader configurationLoader,
+                           SeedProjectConfigurationCache projectConfigurationCache,
+                           SeedLauncher seedLauncher,
+                           BranchStrategies branchStrategies) {
         this.configurationLoader = configurationLoader;
+        this.projectConfigurationCache = projectConfigurationCache;
         this.seedLauncher = seedLauncher;
         this.branchStrategies = branchStrategies;
     }
@@ -33,10 +38,19 @@ public class SeedServiceImpl implements SeedService {
                     event.getType()
             ));
         }
-        // Loads the configuration
-        SeedConfiguration configuration = configurationLoader.load();
-        // Loads the project's configuration
-        SeedProjectConfiguration projectConfiguration = configuration.getProjectConfiguration(event.getProject());
+
+        // Gets the project configuration from the cache
+        SeedConfiguration configuration;
+        SeedProjectConfiguration projectConfiguration;
+        SeedProjectSavedConfiguration cache = projectConfigurationCache.load(event.getProject());
+        if (cache != null) {
+            configuration = new SeedConfiguration(cache.getGlobalConfiguration());
+            projectConfiguration = new SeedProjectConfiguration(cache.getProjectConfiguration());
+        } else {
+            configuration = configurationLoader.load();
+            projectConfiguration = configuration.getProjectConfiguration(event.getProject());
+        }
+
         // Checks the channel
         checkChannel(event, projectConfiguration, configuration);
         // Gets the branch strategy

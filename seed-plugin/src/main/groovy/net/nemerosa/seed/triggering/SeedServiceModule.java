@@ -1,10 +1,7 @@
 package net.nemerosa.seed.triggering;
 
 import com.google.inject.AbstractModule;
-import net.nemerosa.seed.config.SeedConfigurationLoader;
-import net.nemerosa.seed.config.JenkinsBranchStrategies;
-import net.nemerosa.seed.config.JenkinsSeedConfigurationLoader;
-import net.nemerosa.seed.config.BranchStrategies;
+import net.nemerosa.seed.config.*;
 
 public class SeedServiceModule extends AbstractModule {
 
@@ -14,5 +11,6 @@ public class SeedServiceModule extends AbstractModule {
         bind(SeedLauncher.class).to(JenkinsSeedLauncher.class);
         bind(BranchStrategies.class).to(JenkinsBranchStrategies.class);
         bind(SeedService.class).to(SeedServiceImpl.class);
+        bind(SeedProjectConfigurationCache.class).to(JenkinsSeedProjectConfigurationCache.class);
     }
 }
