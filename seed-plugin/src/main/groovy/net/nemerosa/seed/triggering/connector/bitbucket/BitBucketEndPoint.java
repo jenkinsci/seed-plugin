@@ -79,7 +79,7 @@ public class BitBucketEndPoint extends AbstractEndPoint {
             String message = commit.getString("message");
             // TODO The BitBucket payload does not contain any information about the modified paths
             // Using the message in order to identify a seed event :(
-            if (message.contains("seed")) {
+            if (StringUtils.containsIgnoreCase(message, "seed")) {
                 seed = true;
             }
         }
