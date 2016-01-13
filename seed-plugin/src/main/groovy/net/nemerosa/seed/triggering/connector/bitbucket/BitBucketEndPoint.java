@@ -1,10 +1,14 @@
 package net.nemerosa.seed.triggering.connector.bitbucket;
 
 import hudson.Extension;
+import net.nemerosa.seed.triggering.SeedChannel;
 import net.nemerosa.seed.triggering.SeedEvent;
+import net.nemerosa.seed.triggering.SeedEventType;
 import net.nemerosa.seed.triggering.SeedService;
 import net.nemerosa.seed.triggering.connector.AbstractEndPoint;
+import net.nemerosa.seed.triggering.connector.RequestFormatException;
 import net.nemerosa.seed.triggering.connector.UnknownRequestException;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +21,8 @@ public class BitBucketEndPoint extends AbstractEndPoint {
 
     public static final String X_EVENT_KEY = "X-Event-Key";
     public static final String X_EVENT_VALUE = "repo:push";
+
+    private static final SeedChannel SEED_CHANNEL = SeedChannel.of("bitbucket", "Seed BitBucket end point");
 
     public BitBucketEndPoint(SeedService seedService) {
         super(seedService);
@@ -40,12 +46,71 @@ public class BitBucketEndPoint extends AbstractEndPoint {
         String payload = IOUtils.toString(req.getReader());
         // Parses as JSON
         JSONObject json = JSONObject.fromObject(payload);
+        // Gets the list of changes
+        JSONArray changes = json.getJSONObject("push").optJSONArray("changes");
+        // We request at least one change
+        if (changes.size() == 0) {
+            throw new RequestFormatException("At least one change is required.");
+        }
+        // Takes only the first change
+        JSONObject change = changes.getJSONObject(0);
+        // Branch boundaries
+        JSONObject oldBranch = change.optJSONObject("old");
+        JSONObject newBranch = change.optJSONObject("new");
+        // Branch push
+        if (oldBranch != null && newBranch != null) {
+            return pushEvent(json, change);
+        }
         // FIXME Method net.nemerosa.seed.triggering.connector.bitbucket.BitBucketEndPoint.extractEvent
         throw new UnknownRequestException("Unknown request");
+    }
+
+    private SeedEvent pushEvent(JSONObject json, JSONObject change) {
+        // Gets the list of commits
+        JSONArray commits = change.getJSONArray("commits");
+        // No commit?
+        if (commits.size() == 0) {
+            throw new RequestFormatException("No commit was specified.");
+        }
+        // Scans for a seed event
+        boolean seed = false;
+        for (Object o : commits) {
+            JSONObject commit = (JSONObject) o;
+            String message = commit.getString("message");
+            // TODO The BitBucket payload does not contain any information about the modified paths
+            // Using the message in order to identify a seed event :(
+            if (message.contains("seed")) {
+                seed = true;
+            }
+        }
+        // Branch name
+        String branch = change.getJSONObject("new").getString("name");
+        // Seed event
+        if (seed) {
+            return new SeedEvent(
+                    getProject(json),
+                    branch,
+                    SeedEventType.SEED,
+                    SEED_CHANNEL
+            );
+        }
+        // Commit event
+        else {
+            return new SeedEvent(
+                    getProject(json),
+                    branch,
+                    SeedEventType.COMMIT,
+                    SEED_CHANNEL
+            ).withParam("commit", commits.getJSONObject(0).getString("hash"));
+        }
     }
 
     @Override
     public String getUrlName() {
         return "seed-bitbucket";
+    }
+
+    private String getProject(JSONObject json) {
+        return json.getJSONObject("repository").getString("full_name");
     }
 }
