@@ -28,6 +28,7 @@ public class BitBucketEndPoint extends AbstractEndPoint {
         super(seedService);
     }
 
+    @SuppressWarnings("unused")
     public BitBucketEndPoint() {
         super();
     }
@@ -61,8 +62,40 @@ public class BitBucketEndPoint extends AbstractEndPoint {
         if (oldBranch != null && newBranch != null) {
             return pushEvent(json, change);
         }
-        // FIXME Method net.nemerosa.seed.triggering.connector.bitbucket.BitBucketEndPoint.extractEvent
-        throw new UnknownRequestException("Unknown request");
+        // Branch creation
+        else if (oldBranch == null && newBranch != null) {
+            return createEvent(json, newBranch);
+        }
+        // Branch deletion
+        else if (oldBranch != null) {
+            return deleteEvent(json, oldBranch);
+        }
+        // No branch?
+        else {
+            throw new RequestFormatException("No branch was mentioned in the payload");
+        }
+    }
+
+    private SeedEvent createEvent(JSONObject json, JSONObject branch) {
+        return branchEvent(json, branch, SeedEventType.CREATION);
+    }
+
+    private SeedEvent deleteEvent(JSONObject json, JSONObject branch) {
+        return branchEvent(json, branch, SeedEventType.DELETION);
+    }
+
+    private SeedEvent branchEvent(JSONObject json, JSONObject branch, SeedEventType eventType) {
+        // Project
+        String project = getProject(json);
+        // Branch
+        String branchName = branch.getString("name");
+        // OK
+        return new SeedEvent(
+                project,
+                branchName,
+                eventType,
+                SEED_CHANNEL
+        );
     }
 
     private SeedEvent pushEvent(JSONObject json, JSONObject change) {

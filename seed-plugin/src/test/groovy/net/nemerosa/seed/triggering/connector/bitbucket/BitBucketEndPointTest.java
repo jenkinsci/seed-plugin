@@ -77,6 +77,25 @@ public class BitBucketEndPointTest {
         );
     }
 
+    @Test
+    public void create_branch() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockBitBucketRequest("repo:push", "/bitbucket-payload-create.json");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        // Call
+        new BitBucketEndPoint(seedService).doDynamic(request, response);
+        // Verifying
+        verify(seedService, times(1)).post(
+                new SeedEvent(
+                        "nemerosa/seed-demo",
+                        "test",
+                        SeedEventType.CREATION,
+                        BITBUCKET_CHANNEL)
+        );
+    }
+
     private StaplerRequest mockBitBucketRequest(String event, String payload) throws IOException {
         StaplerRequest request = mock(StaplerRequest.class);
         when(request.getHeader("X-Event-Key")).thenReturn(event);
