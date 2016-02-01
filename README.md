@@ -2,7 +2,9 @@ Seed Jenkins plug-in
 ====================
 
 The Seed project aims to help automating the generation and management of pipelines
-for branches of a project in Jenkins.
+for branches of a project in Jenkins, by splitting the definition of pipelines using the Job DSL and their use and parameterization by actual projects.
+
+![Overview](TeamWork.png)
 
 The Seed structure can be generated automatically
 
