@@ -14,8 +14,11 @@ import java.net.URL;
 
 /**
  * Configuration of the Seed plug-in.
+ *
+ * @deprecated Use v1 instead
  */
 @Extension
+@Deprecated
 public class SeedPlugin extends GlobalConfiguration {
 
     public static SeedPlugin getSeedPlugin() {
