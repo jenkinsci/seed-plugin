@@ -41,6 +41,12 @@ public class ProjectSeedBuilder extends AbstractSeedBuilder {
         env.put("projectSeedPath", projectEnvironment.getNamingStrategy().getProjectSeed(
                 projectEnvironment.getId()
         ));
+        env.put("projectDestructorEnabled", projectEnvironment.getConfigurationValue(
+                "project-destructor", "no"
+        ));
+        env.put("projectDestructorPath", projectEnvironment.getNamingStrategy().getProjectDestructor(
+                projectEnvironment.getId()
+        ));
     }
 
     @Override

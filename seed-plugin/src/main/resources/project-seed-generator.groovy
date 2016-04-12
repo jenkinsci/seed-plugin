@@ -44,3 +44,23 @@ freeStyleJob(projectSeedPath) {
     }
     projectSeedExtensionPoint()
 }
+
+// Generates a destructor only if an option is defined for the project
+if (projectDestructorEnabled == "yes") {
+    freeStyleJob(projectDestructorPath) {
+        description "Branch destructor for ${PROJECT} - deletes a branch folder."
+        parameters {
+            // Default seed parameters
+            stringParam('BRANCH', '', 'Path or name of the branch')
+        }
+        steps {
+            buildDescription('', '${BRANCH}')
+        }
+        configure { node ->
+            node / 'builders' / 'net.nemerosa.seed.generator.BranchDestructionBuilder' {
+                'project' PROJECT
+                'branch' '${BRANCH}'
+            }
+        }
+    }
+}

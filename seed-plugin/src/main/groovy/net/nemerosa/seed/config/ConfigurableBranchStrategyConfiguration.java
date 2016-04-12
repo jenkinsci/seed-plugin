@@ -7,6 +7,7 @@ public class ConfigurableBranchStrategyConfiguration extends Configuration {
 
     private final String id;
     private final String seedExpression;
+    private final String destructorExpression;
     private final String branchSeedExpression;
     private final String branchStartExpression;
     private final String branchNameExpression;
@@ -17,6 +18,7 @@ public class ConfigurableBranchStrategyConfiguration extends Configuration {
         super(data);
         this.id = getString("id");
         this.seedExpression = getString("seed-expression", false, "${project}/${project}-seed");
+        this.destructorExpression = getString("destructor-expression", false, "${project}/${project}-destructor");
         this.branchSeedExpression = getString("branch-seed-expression", false, "${project}/${project}-*/${project}-*-seed");
         this.branchStartExpression = getString("branch-start-expression", false, "${project}/${project}-*/${project}-*-build");
         this.branchNameExpression = getString("branch-name-expression", false, "${branch}");
@@ -30,6 +32,10 @@ public class ConfigurableBranchStrategyConfiguration extends Configuration {
 
     public String getSeedExpression() {
         return seedExpression;
+    }
+
+    public String getDestructorExpression() {
+        return destructorExpression;
     }
 
     public String getBranchSeedExpression() {

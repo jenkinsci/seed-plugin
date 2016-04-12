@@ -14,6 +14,14 @@ public interface SeedNamingStrategy {
     String getProjectSeed(String id);
 
     /**
+     * Gets the path to a project's destructor, used to destroy branch folders.
+     *
+     * @param id Project's ID
+     * @return Path to the project's destructor job
+     */
+    String getProjectDestructor(String id);
+
+    /**
      * Gets the path pattern to a project's branch seed, given the project ID
      *
      * @param id Project's ID
