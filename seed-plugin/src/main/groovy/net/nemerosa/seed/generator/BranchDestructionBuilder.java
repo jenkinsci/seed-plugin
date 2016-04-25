@@ -22,13 +22,10 @@ public class BranchDestructionBuilder extends Builder {
     private final String project;
     private final String branch;
 
-    protected final SeedService seedService;
-
     @DataBoundConstructor
     public BranchDestructionBuilder(String project, String branch) {
         this.project = project;
         this.branch = branch;
-        this.seedService = Guice.createInjector(new SeedServiceModule()).getInstance(SeedService.class);
     }
 
     public String getProject() {
@@ -41,6 +38,7 @@ public class BranchDestructionBuilder extends Builder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+        SeedService seedService = Guice.createInjector(new SeedServiceModule()).getInstance(SeedService.class);
 
         // Environment for the DSL execution
         EnvVars env = build.getEnvironment(listener);
