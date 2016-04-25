@@ -44,6 +44,17 @@ class JenkinsAccessRule implements TestRule {
         api(jobPath(path), timeoutSeconds, timeoutOnNotFound)
     }
 
+    public void gone(String path, int timeoutSeconds = 120) {
+        info """[job] Testing job presence at ${path}"""
+        try {
+            api(jobPath(path), timeoutSeconds, 0)
+            // Nope - the path should have been gone
+            throw new JenkinsAPIFoundException(path)
+        } catch (JenkinsAPINotFoundException ignored) {
+            // OK - the path is gone
+        }
+    }
+
     protected static String jobPath(String path) {
         String jobPath = path.replace('/', '/job/')
         "job/${jobPath}"

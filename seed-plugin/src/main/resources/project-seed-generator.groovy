@@ -46,7 +46,8 @@ freeStyleJob(projectSeedPath) {
 }
 
 // Generates a destructor only if an option is defined for the project
-if (projectDestructorEnabled == "yes") {
+println "projectDestructorEnabled = ${projectDestructorEnabled}"
+if (projectDestructorEnabled == "true") {
     freeStyleJob(projectDestructorPath) {
         description "Branch destructor for ${PROJECT} - deletes a branch folder."
         parameters {

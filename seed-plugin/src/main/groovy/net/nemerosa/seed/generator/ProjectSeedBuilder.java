@@ -7,6 +7,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
 import net.nemerosa.seed.SeedDescriptor;
+import net.nemerosa.seed.config.ProjectProperties;
 import net.nemerosa.seed.config.SeedNamingStrategyHelper;
 import net.nemerosa.seed.config.SeedProjectEnvironment;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -41,9 +42,9 @@ public class ProjectSeedBuilder extends AbstractSeedBuilder {
         env.put("projectSeedPath", projectEnvironment.getNamingStrategy().getProjectSeed(
                 projectEnvironment.getId()
         ));
-        env.put("projectDestructorEnabled", projectEnvironment.getConfigurationValue(
-                "project-destructor", "no"
-        ));
+        env.put("projectDestructorEnabled", String.valueOf(projectEnvironment.getConfigurationBoolean(
+                ProjectProperties.PIPELINE_DESTRUCTOR, false
+        )));
         env.put("projectDestructorPath", projectEnvironment.getNamingStrategy().getProjectDestructor(
                 projectEnvironment.getId()
         ));
