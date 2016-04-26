@@ -6,6 +6,8 @@ for branches of a project in Jenkins, by splitting the definition of pipelines u
 
 ![Overview](TeamWork.png)
 
+See my [BruJUG presentation](http://www.slideshare.net/DamienCoraboeuf/brujug-jenkins-pipeline-scalability) for an overview about the benefits of using this approach on a big scale.
+
 The Seed structure can be generated automatically
 
 * seed --> project seed
