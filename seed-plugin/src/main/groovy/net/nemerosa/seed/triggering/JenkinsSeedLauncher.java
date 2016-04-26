@@ -72,7 +72,15 @@ public class JenkinsSeedLauncher implements SeedLauncher {
         try {
             SecurityContext orig = ACL.impersonate(ACL.SYSTEM);
             try {
-                findItem(path).delete();
+                Item root = findItem(path);
+                // Deletes all children
+                for (Job job : root.getAllJobs()) {
+                    LOGGER.info(String.format("\tDeleting item at %s", job.getName()));
+                    job.delete();
+                }
+                // Deletes the root
+                LOGGER.info(String.format("\tDeleting item at %s", root.getName()));
+                root.delete();
             } finally {
                 SecurityContextHolder.setContext(orig);
             }
