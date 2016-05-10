@@ -30,7 +30,7 @@ public class SeedStep extends AbstractSeedStep {
     /**
      * Gets access to the pipeline configuration
      */
-    public ProjectPipelineConfig getProjectPipelineConfig() {
+    public ProjectPipelineConfig getProjectConfig() {
         return projectConfig;
     }
 

@@ -4,23 +4,28 @@
         The seed parameters can be hard coded, but can also be defined using parameters given
         when launching this job.
     </f:entry>
-    <f:section title="Project data">
-        <f:entry title="Project identifier" field="projectConfig.project">
-            <f:textbox/>
+    <f:section title="Project data" name="projectConfig">
+        <f:entry title="Project identifier" field="project">
+            <f:textbox value="${instance.projectConfig.project}"/>
         </f:entry>
-        <f:entry title="Project SCM type" field="projectConfigscmType">
-            <f:textbox/>
+        <f:entry title="Project SCM type" field="scmType">
+            <f:textbox value="${instance.projectConfig.scmType}"/>
         </f:entry>
-        <f:entry title="Project SCM base" field="projectConfigscmBase">
-            <f:textbox/>
+        <f:entry title="Project SCM base" field="scmBase">
+            <f:textbox value="${instance.projectConfig.scmBase}"/>
         </f:entry>
-        <f:entry title="Project SCM credentials" field="projectConfigscmCredentials">
-            <f:textbox/>
+        <f:entry title="Project SCM credentials" field="scmCredentials">
+            <f:textbox value="${instance.projectConfig.scmCredentials}"/>
         </f:entry>
-    </f:section>
-    <f:section title="Naming strategy">
-        <f:entry title="Project folder path" field="projectConfig.pipelineConfig.namingStrategy.projectFolderPath">
-            <f:textbox/>
-        </f:entry>
+        <f:section title="Pipeline configuration" name="pipelineConfig">
+            <f:entry title="Project branch destructor" field="destructor">
+                <f:checkbox checked="${instance.projectConfig.pipelineConfig.destructor}"/>
+            </f:entry>
+            <f:section title="Naming strategy" name="namingStrategy">
+                <f:entry title="Project folder path" field="projectFolderPath">
+                    <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.projectFolderPath}"/>
+                </f:entry>
+            </f:section>
+        </f:section>
     </f:section>
 </j:jelly>

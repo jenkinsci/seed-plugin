@@ -1,6 +1,7 @@
 package net.nemerosa.jenkins.seed.config;
 
 import lombok.Data;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * Configuration for a project.
@@ -33,4 +34,12 @@ public class ProjectPipelineConfig {
      */
     private final String scmCredentials;
 
+    @DataBoundConstructor
+    public ProjectPipelineConfig(PipelineConfig pipelineConfig, String project, String scmType, String scmBase, String scmCredentials) {
+        this.pipelineConfig = pipelineConfig;
+        this.project = project;
+        this.scmType = scmType;
+        this.scmBase = scmBase;
+        this.scmCredentials = scmCredentials;
+    }
 }

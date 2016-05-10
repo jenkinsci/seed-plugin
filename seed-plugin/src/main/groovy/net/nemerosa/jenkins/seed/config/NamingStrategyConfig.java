@@ -1,6 +1,7 @@
 package net.nemerosa.jenkins.seed.config;
 
 import lombok.Data;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 @Data
 public class NamingStrategyConfig {
@@ -35,4 +36,13 @@ public class NamingStrategyConfig {
      */
     private final String commitParameter/* = "COMMIT"*/;
 
+    @DataBoundConstructor
+    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String commitParameter) {
+        this.projectFolderPath = projectFolderPath;
+        this.branchFolderPath = branchFolderPath;
+        this.projectSeedName = projectSeedName;
+        this.branchSeedName = branchSeedName;
+        this.branchStartName = branchStartName;
+        this.commitParameter = commitParameter;
+    }
 }
