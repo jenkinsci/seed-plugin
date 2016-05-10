@@ -21,9 +21,27 @@
             <f:entry title="Project branch destructor" field="destructor">
                 <f:checkbox checked="${instance.projectConfig.pipelineConfig.destructor}"/>
             </f:entry>
+            <f:entry title="Commit/revision parameter" field="commitParameter">
+                <f:textbox value="${instance.projectConfig.pipelineConfig.commitParameter}"/>
+            </f:entry>
             <f:section title="Naming strategy" name="namingStrategy">
                 <f:entry title="Project folder path" field="projectFolderPath">
                     <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.projectFolderPath}"/>
+                </f:entry>
+                <f:entry title="Branch folder path" field="branchFolderPath">
+                    <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.branchFolderPath}"/>
+                </f:entry>
+                <f:entry title="Project seed name" field="projectSeedName">
+                    <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.projectSeedName}"/>
+                </f:entry>
+                <f:entry title="Project destructor name" field="projectDestructorName">
+                    <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.projectDestructorName}"/>
+                </f:entry>
+                <f:entry title="Branch seed name" field="branchSeedName">
+                    <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.branchSeedName}"/>
+                </f:entry>
+                <f:entry title="Branch start name" field="branchStartName">
+                    <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.branchStartName}"/>
                 </f:entry>
             </f:section>
         </f:section>

@@ -12,6 +12,11 @@ public class PipelineConfig {
     private final boolean destructor;
 
     /**
+     * Parameter to pass to the branch start
+     */
+    private final String commitParameter;
+
+    /**
      * Naming strategy
      */
     private final NamingStrategyConfig namingStrategy;
@@ -22,8 +27,9 @@ public class PipelineConfig {
     private final EventStrategyConfig eventStrategy;
 
     @DataBoundConstructor
-    public PipelineConfig(boolean destructor, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
+    public PipelineConfig(boolean destructor, String commitParameter, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
         this.destructor = destructor;
+        this.commitParameter = commitParameter;
         this.namingStrategy = namingStrategy;
         this.eventStrategy = eventStrategy;
     }

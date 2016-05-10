@@ -22,6 +22,11 @@ public class NamingStrategyConfig {
     private final String projectSeedName/* = "${project}-seed"*/;
 
     /**
+     * Name of the project destructor
+     */
+    private final String projectDestructorName;
+
+    /**
      * Name of the branch seed
      */
     private final String branchSeedName/* = "${project}-*-seed"*/;
@@ -31,18 +36,13 @@ public class NamingStrategyConfig {
      */
     private final String branchStartName/* = "${project}-*-build"*/;
 
-    /**
-     * Parameter to pass to the branch start
-     */
-    private final String commitParameter/* = "COMMIT"*/;
-
     @DataBoundConstructor
-    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String commitParameter) {
+    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String commitParameter, String projectDestructorName) {
         this.projectFolderPath = projectFolderPath;
         this.branchFolderPath = branchFolderPath;
         this.projectSeedName = projectSeedName;
+        this.projectDestructorName = projectDestructorName;
         this.branchSeedName = branchSeedName;
         this.branchStartName = branchStartName;
-        this.commitParameter = commitParameter;
     }
 }
