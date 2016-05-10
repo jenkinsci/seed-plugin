@@ -11,26 +11,26 @@ public class ProjectPipelineConfig {
     /**
      * General pipeline configuration, set by a Seed job.
      */
-    private PipelineConfig pipelineConfig = new PipelineConfig();
+    private final PipelineConfig pipelineConfig;
 
     /**
      * Name of the project
      */
-    private String project;
+    private final String project;
 
     /**
      * SCM type
      */
-    private String scmType;
+    private final String scmType;
 
     /**
      * SCM base (without any branch)
      */
-    private String scmBase;
+    private final String scmBase;
 
     /**
      * SCM credentials (ref. to Jenkins credentials)
      */
-    private String scmCredentials;
+    private final String scmCredentials;
 
 }

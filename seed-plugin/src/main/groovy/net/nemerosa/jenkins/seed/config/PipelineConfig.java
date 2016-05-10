@@ -8,16 +8,16 @@ public class PipelineConfig {
     /**
      * Boolean to enable the creation of a destructor job.
      */
-    private boolean destructor = false;
+    private final boolean destructor;
 
     /**
      * Naming strategy
      */
-    private NamingStrategyConfig namingStrategy = new NamingStrategyConfig();
+    private final NamingStrategyConfig namingStrategy;
 
     /**
      * Events configurations
      */
-    private EventStrategyConfig eventStrategy = new EventStrategyConfig();
+    private final EventStrategyConfig eventStrategy;
 
 }
