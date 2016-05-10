@@ -1,4 +1,4 @@
-package net.nemerosa.seed.plugin;
+package net.nemerosa.jenkins.seed;
 
 import hudson.Extension;
 import jenkins.model.GlobalConfiguration;
