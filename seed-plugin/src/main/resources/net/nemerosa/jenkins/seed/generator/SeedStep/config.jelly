@@ -5,21 +5,21 @@
         when launching this job.
     </f:entry>
     <f:section title="Project data">
-        <f:entry title="Project identifier" field="project">
+        <f:entry title="Project identifier" field="projectConfig.project">
             <f:textbox/>
         </f:entry>
-        <f:entry title="Project SCM type" field="scmType">
+        <f:entry title="Project SCM type" field="projectConfigscmType">
             <f:textbox/>
         </f:entry>
-        <f:entry title="Project SCM base" field="scmBase">
+        <f:entry title="Project SCM base" field="projectConfigscmBase">
             <f:textbox/>
         </f:entry>
-        <f:entry title="Project SCM credentials" field="scmCredentials">
+        <f:entry title="Project SCM credentials" field="projectConfigscmCredentials">
             <f:textbox/>
         </f:entry>
     </f:section>
     <f:section title="Naming strategy">
-        <f:entry title="Project folder path" field="pipelineConfig.namingStrategy.projectFolderPath">
+        <f:entry title="Project folder path" field="projectConfig.pipelineConfig.namingStrategy.projectFolderPath">
             <f:textbox/>
         </f:entry>
     </f:section>

@@ -4,7 +4,7 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import net.nemerosa.jenkins.seed.config.PipelineConfig;
+import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -15,23 +15,23 @@ public class SeedStep extends AbstractSeedStep {
     /**
      * Pipeline configuration to pass to the projects being generated/updated.
      */
-    private final PipelineConfig pipelineConfig;
+    private final ProjectPipelineConfig projectConfig;
 
     /**
      * Initialisation
      *
-     * @param pipelineConfig Pipeline configuration
+     * @param projectConfig Pipeline configuration
      */
     @DataBoundConstructor
-    public SeedStep(PipelineConfig pipelineConfig) {
-        this.pipelineConfig = pipelineConfig;
+    public SeedStep(ProjectPipelineConfig projectConfig) {
+        this.projectConfig = projectConfig;
     }
 
     /**
      * Gets access to the pipeline configuration
      */
-    public PipelineConfig getPipelineConfig() {
-        return pipelineConfig;
+    public ProjectPipelineConfig getProjectPipelineConfig() {
+        return projectConfig;
     }
 
     @Extension
