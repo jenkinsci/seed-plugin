@@ -18,6 +18,11 @@ public class ConfigurableSeedNamingStrategy extends AbstractSeedNamingStrategy {
     }
 
     @Override
+    public String getProjectDestructor(String id) {
+        return evaluate(configuration.getDestructorExpression(), "project", id);
+    }
+
+    @Override
     public String getBranchSeed(String id) {
         return evaluate(configuration.getBranchSeedExpression(), "project", id);
     }

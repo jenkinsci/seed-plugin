@@ -525,4 +525,91 @@ projects:
         }
     }
 
+    @Test
+    void 'Destructor job'() {
+        // Project name
+        String project = uid('P')
+        // Default configuration
+        jenkins.configureSeed """
+projects:
+    - id: ${project}
+      project-destructor: yes
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}-seed")
+        // Checks the destructor job is created
+        jenkins.job("${project}/${project}-destructor")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job("${project}/${project}-master/${project}-master-seed")
+
+        // Fires the destructor
+        jenkins.fireJob("${project}/${project}-destructor", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+
+        // Checks the branch folder is gone
+        jenkins.gone("${project}/${project}-master")
+    }
+
+    @Test
+    void 'Destructor job with custom naming convention'() {
+        // Project name
+        String project = uid('P')
+        // Default configuration
+        jenkins.configureSeed """
+strategies:
+  - id: custom
+    seed-expression: "\${PROJECT}/\${PROJECT}_GENERATOR"
+    destructor-expression: "\${PROJECT}/\${PROJECT}_DESTRUCTOR"
+    branch-seed-expression: "\${PROJECT}/\${PROJECT}_*/\${PROJECT}_*_GENERATOR"
+    branch-start-expression: "\${PROJECT}/\${PROJECT}_*/\${PROJECT}_*_010_BUILD"
+    branch-name-expression: "\${BRANCH}"
+    branch-name-prefixes:
+      - "branches/"
+    commit-parameter: "REVISION"
+projects:
+    - id: ${project}
+      branch-strategy: custom
+      project-destructor: yes
+"""
+        // Firing the seed job
+        jenkins.fireJob('seed', [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+
+        // Checks the project seed is created
+        jenkins.job("${project}/${project}_GENERATOR")
+        // Checks the destructor job is created
+        jenkins.job("${project}/${project}_DESTRUCTOR")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}_GENERATOR", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.job("${project}/${project}_MASTER/${project}_MASTER_GENERATOR")
+
+        // Fires the destructor
+        jenkins.fireJob("${project}/${project}_DESTRUCTOR", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+
+        // Checks the branch folder is gone
+        jenkins.gone("${project}/${project}_MASTER")
+    }
+
 }

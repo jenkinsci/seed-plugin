@@ -27,6 +27,11 @@ public interface ProjectProperties {
     String SEED = "seed";
 
     /**
+     * Boolean to enable the creation of a destructor job.
+     */
+    String PIPELINE_DESTRUCTOR = "project-destructor";
+
+    /**
      * Specific path to the branch seed. Optional and defaults to the path defined by the branching strategy.
      */
     String PIPELINE_SEED = "pipeline-seed";

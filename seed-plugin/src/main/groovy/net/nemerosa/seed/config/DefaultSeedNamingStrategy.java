@@ -11,6 +11,11 @@ public class DefaultSeedNamingStrategy extends AbstractSeedNamingStrategy {
     }
 
     @Override
+    public String getProjectDestructor(String id) {
+        return format("%1$s/%1$s-destructor", defaultName(id));
+    }
+
+    @Override
     public String getBranchSeed(String id) {
         return format("%1$s/%1$s-*/%1$s-*-seed", defaultName(id));
     }
