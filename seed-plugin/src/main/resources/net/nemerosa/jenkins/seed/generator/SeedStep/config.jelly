@@ -19,7 +19,7 @@
         </f:entry>
         <f:section title="Pipeline configuration" name="pipelineConfig">
             <f:entry title="Project branch destructor" field="destructor">
-                <f:checkbox checked="${instance.projectConfig.pipelineConfig.destructor}"/>
+                <f:checkbox checked="${instance.projectConfig.pipelineConfig.destructor}" default="false"/>
             </f:entry>
             <f:entry title="Commit/revision parameter" field="commitParameter">
                 <f:textbox value="${instance.projectConfig.pipelineConfig.commitParameter}"/>
@@ -46,16 +46,16 @@
             </f:section>
             <f:section title="Event strategy" name="eventStrategy">
                 <f:entry title="Delete complete pipeline on branch deletion" field="delete">
-                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.delete}"/>
+                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.delete}" default="true"/>
                 </f:entry>
                 <f:entry title="Regenerate pipeline when seed files changed" field="auto">
-                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.auto}"/>
+                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.auto}" default="true"/>
                 </f:entry>
                 <f:entry title="Triggers the pipeline start when commit received" field="trigger">
-                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.trigger}"/>
+                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.trigger}" default="true"/>
                 </f:entry>
                 <f:entry title="Starts the pipeline upon (re)generation" field="startAuto">
-                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.startAuto}"/>
+                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.startAuto}" default="true"/>
                 </f:entry>
                 <f:entry title="Event parameter which contains the commit" field="commit">
                     <f:textbox value="${instance.projectConfig.pipelineConfig.eventStrategy.commit}"/>
