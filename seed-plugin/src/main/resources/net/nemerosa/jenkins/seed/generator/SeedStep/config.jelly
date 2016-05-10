@@ -1,0 +1,26 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:entry>
+        This step generates a project, using the parameters below.
+        The seed parameters can be hard coded, but can also be defined using parameters given
+        when launching this job.
+    </f:entry>
+    <f:section title="Project data">
+        <f:entry title="Project identifier" field="project">
+            <f:textbox/>
+        </f:entry>
+        <f:entry title="Project SCM type" field="scmType">
+            <f:textbox/>
+        </f:entry>
+        <f:entry title="Project SCM base" field="scmBase">
+            <f:textbox/>
+        </f:entry>
+        <f:entry title="Project SCM credentials" field="scmCredentials">
+            <f:textbox/>
+        </f:entry>
+    </f:section>
+    <f:section title="Naming strategy">
+        <f:entry title="Project folder path" field="pipelineConfig.namingStrategy.projectFolderPath">
+            <f:textbox/>
+        </f:entry>
+    </f:section>
+</j:jelly>
