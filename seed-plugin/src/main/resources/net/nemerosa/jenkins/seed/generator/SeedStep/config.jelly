@@ -44,6 +44,24 @@
                     <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.branchStartName}"/>
                 </f:entry>
             </f:section>
+            <f:section title="Event strategy" name="eventStrategy">
+                <f:entry title="Delete complete pipeline on branch deletion" field="delete">
+                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.delete}"/>
+                </f:entry>
+                <f:entry title="Regenerate pipeline when seed files changed" field="auto">
+                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.auto}"/>
+                </f:entry>
+                <f:entry title="Triggers the pipeline start when commit received" field="trigger">
+                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.trigger}"/>
+                </f:entry>
+                <f:entry title="Starts the pipeline upon (re)generation" field="startAuto">
+                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.startAuto}"/>
+                </f:entry>
+                <f:entry title="Event parameter which contains the commit" field="commit">
+                    <f:textbox value="${instance.projectConfig.pipelineConfig.eventStrategy.commit}"/>
+                    <!-- TODO Depends on the end point - might not be needed at all -->
+                </f:entry>
+            </f:section>
         </f:section>
     </f:section>
 </j:jelly>
