@@ -7,7 +7,7 @@
 
 # Base Java image
 
-FROM java:openjdk-8u40-jdk
+FROM java:openjdk-8u66-jdk
 
 # Basic tools
 
