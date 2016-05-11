@@ -5,15 +5,11 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.tasks.Builder;
-import javaposse.jobdsl.dsl.*;
-import javaposse.jobdsl.plugin.JenkinsJobManagement;
-import javaposse.jobdsl.plugin.LookupStrategy;
-import jenkins.model.Jenkins;
+import net.nemerosa.jenkins.seed.support.DSLHelper;
 import net.nemerosa.seed.config.SeedDSLHelper;
 import net.nemerosa.seed.config.SeedProjectEnvironment;
 
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * Build step which can generates other jobs and folders.
@@ -99,7 +95,7 @@ public abstract class AbstractSeedBuilder extends Builder {
         script = replaceExtensionPoints(script, env, projectEnvironment);
 
         // Launching the generation
-        launchGenerationScript(build, listener, env, script);
+        DSLHelper.launchGenerationScript(build, listener, env, script);
 
         // Post generation
         afterGeneration(projectEnvironment);
@@ -125,35 +121,4 @@ public abstract class AbstractSeedBuilder extends Builder {
     protected abstract void configureEnvironment(EnvVars env, SeedProjectEnvironment projectEnvironment);
 
     protected abstract String getScriptPath();
-
-    protected void launchGenerationScript(AbstractBuild<?, ?> build, BuildListener listener, EnvVars env, String script) throws IOException {
-
-        // Jobs are created at the Jenkins root level
-        JenkinsJobManagement jm = new JenkinsJobManagement(listener.getLogger(), env, build, LookupStrategy.JENKINS_ROOT);
-
-        // Generation request
-        ScriptRequest scriptRequest = new ScriptRequest(
-                null,
-                script,
-                new URL[0],
-                false // not ignoring existing,
-        );
-
-        // Generation
-        GeneratedItems generatedItems = DslScriptLoader.runDslEngine(
-                scriptRequest,
-                jm
-        );
-
-        // Logging
-        for (GeneratedJob job : generatedItems.getJobs()) {
-            listener.getLogger().format("Generated item: %s", job);
-        }
-        for (GeneratedView view : generatedItems.getViews()) {
-            listener.getLogger().format("Generated view: %s", view);
-        }
-
-        // Done
-        Jenkins.getInstance().rebuildDependencyGraph();
-    }
 }

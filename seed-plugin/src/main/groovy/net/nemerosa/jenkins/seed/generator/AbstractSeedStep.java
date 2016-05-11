@@ -6,11 +6,19 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.tasks.Builder;
+import javaposse.jobdsl.dsl.*;
+import javaposse.jobdsl.plugin.JenkinsJobManagement;
+import javaposse.jobdsl.plugin.LookupStrategy;
+import jenkins.model.Jenkins;
 import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
+import net.nemerosa.jenkins.seed.support.DSLHelper;
+import net.nemerosa.seed.config.SeedDSLHelper;
+import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,19 +58,28 @@ public abstract class AbstractSeedStep extends Builder {
         Map<String, String> config = new HashMap<>();
         configuration(projectConfig, parameters, config);
 
-        // TODO Extensions: authorisations, etc.
-
         // Traces
         for (Map.Entry<String, String> entry : config.entrySet()) {
-            listener.getLogger().format("Config: %s: %s", entry.getKey(), entry.getValue());
+            listener.getLogger().format("Config: %s: %s%n", entry.getKey(), entry.getValue());
         }
         env.putAll(config);
 
-        // TODO Runs the script
+        // Generation script
+        String scriptPath = getScriptPath();
+        listener.getLogger().format("Script: %s%n", scriptPath);
+        String script = IOUtils.toString(SeedDSLHelper.class.getResource(scriptPath));
+
+        // TODO Replacements of extension points
+        // script = replaceExtensionPoints(script, env, projectEnvironment);
+
+        // Runs the script
+        DSLHelper.launchGenerationScript(build, listener, env, script);
 
         // OK
         return true;
     }
+
+    protected abstract String getScriptPath();
 
     protected void configuration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
         generalConfiguration(parameters, config);
@@ -70,7 +87,7 @@ public abstract class AbstractSeedStep extends Builder {
     }
 
     private void projectConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
-        config.put("PROJECT_FOLDER", projectConfig.getPipelineConfig().getProjectFolder(parameters));
+        config.put("PROJECT_SEED_FOLDER", projectConfig.getPipelineConfig().getProjectFolder(parameters));
         config.put("PROJECT_SEED_JOB", projectConfig.getPipelineConfig().getProjectSeedJob(parameters));
         config.put("PROJECT_DESTRUCTOR_ENABLED", String.valueOf(projectConfig.getPipelineConfig().isDestructor()));
         config.put("PROJECT_DESTRUCTOR_JOB", String.valueOf(projectConfig.getPipelineConfig().getProjectDestructorJob(parameters)));

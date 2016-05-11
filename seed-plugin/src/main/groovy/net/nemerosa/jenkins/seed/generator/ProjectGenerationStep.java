@@ -10,7 +10,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 /**
  * Configuration of a Seed job when it's time to generate/update a project.
  */
-public class SeedStep extends AbstractSeedStep {
+public class ProjectGenerationStep extends AbstractSeedStep {
 
     /**
      * Pipeline configuration to pass to the projects being generated/updated.
@@ -23,7 +23,7 @@ public class SeedStep extends AbstractSeedStep {
      * @param projectConfig Pipeline configuration
      */
     @DataBoundConstructor
-    public SeedStep(ProjectPipelineConfig projectConfig) {
+    public ProjectGenerationStep(ProjectPipelineConfig projectConfig) {
         this.projectConfig = projectConfig;
     }
 
@@ -32,6 +32,11 @@ public class SeedStep extends AbstractSeedStep {
      */
     public ProjectPipelineConfig getProjectConfig() {
         return projectConfig;
+    }
+
+    @Override
+    protected String getScriptPath() {
+        return "/seed-step.groovy";
     }
 
     @Extension
