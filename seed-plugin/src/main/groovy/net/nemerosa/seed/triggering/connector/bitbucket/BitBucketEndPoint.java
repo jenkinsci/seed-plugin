@@ -19,12 +19,12 @@ import java.io.IOException;
 @Extension
 public class BitBucketEndPoint extends AbstractEndPoint {
 
-    public static final String X_EVENT_KEY = "X-Event-Key";
-    public static final String X_EVENT_VALUE = "repo:push";
+    private static final String X_EVENT_KEY = "X-Event-Key";
+    private static final String X_EVENT_VALUE = "repo:push";
 
     private static final SeedChannel SEED_CHANNEL = SeedChannel.of("bitbucket", "Seed BitBucket end point");
 
-    public BitBucketEndPoint(SeedService seedService) {
+    BitBucketEndPoint(SeedService seedService) {
         super(seedService);
     }
 
@@ -58,21 +58,26 @@ public class BitBucketEndPoint extends AbstractEndPoint {
         // Branch boundaries
         JSONObject oldBranch = change.optJSONObject("old");
         JSONObject newBranch = change.optJSONObject("new");
+        // Branch type
+        String oldBranchType = oldBranch != null ? oldBranch.optString("type", null) : null;
+        String newBranchType = newBranch != null ? newBranch.optString("type", null) : null;
+        boolean oldIsBranch = "branch".equals(oldBranchType);
+        boolean newIsBranch = "branch".equals(newBranchType);
         // Branch push
-        if (oldBranch != null && newBranch != null) {
+        if (oldBranch != null && newBranch != null && oldIsBranch && newIsBranch) {
             return pushEvent(json, change);
         }
         // Branch creation
-        else if (oldBranch == null && newBranch != null) {
+        else if (oldBranch == null && newBranch != null && newIsBranch) {
             return createEvent(json, newBranch);
         }
         // Branch deletion
-        else if (oldBranch != null) {
+        else if (oldBranch != null && oldIsBranch) {
             return deleteEvent(json, oldBranch);
         }
         // No branch?
         else {
-            throw new RequestFormatException("No branch was mentioned in the payload");
+            return null;
         }
     }
 

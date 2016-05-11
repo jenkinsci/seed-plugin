@@ -1,0 +1,135 @@
+{
+  "push": {
+    "changes": [
+      {
+        "forced": false,
+        "old": null,
+        "links": {
+          "commits": {
+            "href": "https://api.bitbucket.org/2.0/repositories/nemerosa/seed-demo/commits?include=74ec8b968ee588fc72853576ee4fdd2df6b21f7b"
+          }
+        },
+        "truncated": false,
+        "created": true,
+        "closed": false,
+        "new": {
+          "type": "tag",
+          "name": "2.0.6",
+          "links": {
+            "commits": {
+              "href": "https://api.bitbucket.org/2.0/repositories/nemerosa/seed-demo/commits/2.0.6"
+            },
+            "self": {
+              "href": "https://api.bitbucket.org/2.0/repositories/nemerosa/seed-demo/refs/tags/2.0.6"
+            },
+            "html": {
+              "href": "https://bitbucket.org/nemerosa/seed-demo/commits/tag/2.0.6"
+            }
+          },
+          "target": {
+            "hash": "74ec8b968ee588fc72853576ee4fdd2df6b21f7b",
+            "links": {
+              "self": {
+                "href": "https://api.bitbucket.org/2.0/repositories/nemerosa/seed-demo/commit/74ec8b968ee588fc72853576ee4fdd2df6b21f7b"
+              },
+              "html": {
+                "href": "https://bitbucket.org/nemerosa/seed-demo/commits/74ec8b968ee588fc72853576ee4fdd2df6b21f7b"
+              }
+            },
+            "author": {
+              "raw": "Damien Coraboeuf <damien.coraboeuf@gmail.com>",
+              "user": {
+                "username": "dcoraboeuf",
+                "display_name": "dcoraboeuf",
+                "type": "user",
+                "uuid": "{ea1846d6-d44b-45c5-ad3f-a093f0afd322}",
+                "links": {
+                  "self": {
+                    "href": "https://api.bitbucket.org/2.0/users/dcoraboeuf"
+                  },
+                  "html": {
+                    "href": "https://bitbucket.org/dcoraboeuf/"
+                  },
+                  "avatar": {
+                    "href": "https://bitbucket.org/account/dcoraboeuf/avatar/32/"
+                  }
+                }
+              }
+            },
+            "parents": [
+              {
+                "hash": "3cfb71082291edbd426b1a066d607b12fbbff302",
+                "type": "commit",
+                "links": {
+                  "self": {
+                    "href": "https://api.bitbucket.org/2.0/repositories/nemerosa/seed-demo/commit/3cfb71082291edbd426b1a066d607b12fbbff302"
+                  },
+                  "html": {
+                    "href": "https://bitbucket.org/nemerosa/seed-demo/commits/3cfb71082291edbd426b1a066d607b12fbbff302"
+                  }
+                }
+              }
+            ],
+            "date": "2016-05-11T09:04:05+00:00",
+            "message": "xxxx\n",
+            "type": "commit"
+          }
+        }
+      }
+    ]
+  },
+  "actor": {
+    "username": "nemerosa",
+    "display_name": "nemerosa",
+    "type": "user",
+    "uuid": "{c2975f60-16e2-4308-80cc-00c63315bd3d}",
+    "links": {
+      "self": {
+        "href": "https://api.bitbucket.org/2.0/users/nemerosa"
+      },
+      "html": {
+        "href": "https://bitbucket.org/nemerosa/"
+      },
+      "avatar": {
+        "href": "https://bitbucket.org/account/nemerosa/avatar/32/"
+      }
+    }
+  },
+  "repository": {
+    "scm": "git",
+    "website": "",
+    "name": "pipeline-common",
+    "links": {
+      "self": {
+        "href": "https://api.bitbucket.org/2.0/repositories/nemerosa/seed-demo"
+      },
+      "html": {
+        "href": "https://bitbucket.org/nemerosa/seed-demo"
+      },
+      "avatar": {
+        "href": "https://bitbucket.org/nemerosa/seed-demo/avatar/32/"
+      }
+    },
+    "full_name": "nemerosa/seed-demo",
+    "owner": {
+      "username": "nemerosa",
+      "display_name": "Nemerosa",
+      "type": "team",
+      "uuid": "{87577f49-e414-4e66-a8a7-d1ff5c2e04f8}",
+      "links": {
+        "self": {
+          "href": "https://api.bitbucket.org/2.0/teams/nemerosa"
+        },
+        "html": {
+          "href": "https://bitbucket.org/nemerosa/"
+        },
+        "avatar": {
+          "href": "https://bitbucket.org/account/nemerosa/avatar/32/"
+        }
+      }
+    },
+    "type": "repository",
+    "is_private": true,
+    "uuid": "{2a684521-66ce-4274-b5c7-06a627517d2b}"
+  }
+}
