@@ -96,6 +96,19 @@ public class BitBucketEndPointTest {
         );
     }
 
+    @Test
+    public void create_tag() throws IOException {
+        StaplerResponse response = mockStaplerResponse();
+        // Request
+        StaplerRequest request = mockBitBucketRequest("repo:push", "/bitbucket-payload-create-tag.json");
+        // Service mock
+        SeedService seedService = mock(SeedService.class);
+        // Call
+        new BitBucketEndPoint(seedService).doDynamic(request, response);
+        // Verifying that the event is not accepted
+        verify(seedService, times(0)).post(any(SeedEvent.class));
+    }
+
     private StaplerRequest mockBitBucketRequest(String event, String payload) throws IOException {
         StaplerRequest request = mock(StaplerRequest.class);
         when(request.getHeader("X-Event-Key")).thenReturn(event);
