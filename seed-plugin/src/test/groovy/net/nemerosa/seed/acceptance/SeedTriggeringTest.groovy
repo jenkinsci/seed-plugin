@@ -1,5 +1,8 @@
 package net.nemerosa.seed.acceptance
 
+import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
+import net.nemerosa.jenkins.seed.test.JenkinsAPIRefusedException
+import net.nemerosa.jenkins.seed.test.JenkinsAccessRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -7,7 +10,7 @@ import org.junit.runner.RunWith
 
 import java.util.concurrent.TimeoutException
 
-import static net.nemerosa.seed.acceptance.TestUtils.uid
+import static net.nemerosa.jenkins.seed.test.TestUtils.uid
 import static org.junit.Assert.fail
 
 /**

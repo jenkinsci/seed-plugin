@@ -1,4 +1,4 @@
-package net.nemerosa.seed.acceptance
+package net.nemerosa.jenkins.seed.test
 
 import java.text.SimpleDateFormat
 import java.util.concurrent.atomic.AtomicLong

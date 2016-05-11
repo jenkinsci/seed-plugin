@@ -1,4 +1,4 @@
-package net.nemerosa.seed.acceptance
+package net.nemerosa.jenkins.seed.test
 
 import groovy.json.JsonSlurper
 import org.junit.Assert
