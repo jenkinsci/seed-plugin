@@ -255,6 +255,7 @@ class JenkinsAccessRule implements TestRule {
         return url.text
     }
 
+    @Deprecated
     void configureSeed(String yaml) {
         def url = new URL(jenkinsUrl, "seed-config/")
         info "[config] Updating Seed configuration at ${url}..."
