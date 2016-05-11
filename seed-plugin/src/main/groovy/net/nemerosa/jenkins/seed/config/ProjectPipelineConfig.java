@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.config;
 
+import com.google.common.base.Function;
 import lombok.Data;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -42,4 +43,17 @@ public class ProjectPipelineConfig {
         this.scmBase = scmBase;
         this.scmCredentials = scmCredentials;
     }
+
+    /**
+     * Gets the parameters for a project
+     */
+    public ProjectParameters getProjectParameters(Function<String, String> expandFn) {
+        return new ProjectParameters(
+                expandFn.apply(project),
+                expandFn.apply(scmType),
+                expandFn.apply(scmBase),
+                expandFn.apply(scmCredentials)
+        );
+    }
+
 }

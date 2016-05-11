@@ -2,7 +2,7 @@ package net.nemerosa.seed.config;
 
 import org.apache.commons.lang.StringUtils;
 
-import static net.nemerosa.seed.config.Evaluator.evaluate;
+import static net.nemerosa.jenkins.seed.support.Evaluator.evaluate;
 
 public class ConfigurableSeedNamingStrategy extends AbstractSeedNamingStrategy {
 

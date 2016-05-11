@@ -1,4 +1,4 @@
-package net.nemerosa.seed.config;
+package net.nemerosa.jenkins.seed.support;
 
 import org.apache.commons.lang.StringUtils;
 

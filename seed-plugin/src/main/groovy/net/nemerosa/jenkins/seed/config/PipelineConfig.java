@@ -33,4 +33,16 @@ public class PipelineConfig {
         this.namingStrategy = namingStrategy;
         this.eventStrategy = eventStrategy;
     }
+
+    public String getProjectFolder(ProjectParameters parameters) {
+        return namingStrategy.getProjectFolder(parameters);
+    }
+
+    public String getProjectSeedJob(ProjectParameters parameters) {
+        return namingStrategy.getProjectSeedJob(parameters);
+    }
+
+    public String getProjectDestructorJob(ProjectParameters parameters) {
+        return namingStrategy.getProjectDestructorJob(parameters);
+    }
 }
