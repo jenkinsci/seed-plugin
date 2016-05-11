@@ -36,7 +36,7 @@ public class ProjectGenerationStep extends AbstractSeedStep {
 
     @Override
     protected String getScriptPath() {
-        return "/seed-step.groovy";
+        return "/project-generation.groovy";
     }
 
     @Extension
