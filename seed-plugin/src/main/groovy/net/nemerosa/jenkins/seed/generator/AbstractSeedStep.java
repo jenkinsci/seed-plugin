@@ -6,10 +6,6 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.tasks.Builder;
-import javaposse.jobdsl.dsl.*;
-import javaposse.jobdsl.plugin.JenkinsJobManagement;
-import javaposse.jobdsl.plugin.LookupStrategy;
-import jenkins.model.Jenkins;
 import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
 import net.nemerosa.jenkins.seed.support.DSLHelper;
@@ -18,7 +14,6 @@ import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,8 +64,8 @@ public abstract class AbstractSeedStep extends Builder {
         listener.getLogger().format("Script: %s%n", scriptPath);
         String script = IOUtils.toString(SeedDSLHelper.class.getResource(scriptPath));
 
-        // TODO Replacements of extension points
-        // script = replaceExtensionPoints(script, env, projectEnvironment);
+        // Replacements of extension points
+        script = replaceExtensionPoints(script, env, projectConfig, parameters);
 
         // Runs the script
         DSLHelper.launchGenerationScript(build, listener, env, script);
@@ -99,6 +94,15 @@ public abstract class AbstractSeedStep extends Builder {
         config.put("PROJECT_SCM_BASE", parameters.getScmBase());
         config.put("PROJECT_SCM_CREDENTIALS", parameters.getScmCredentials());
     }
+
+    protected String replaceExtensionPoint(String script, String extensionPoint, String extension) {
+        return script.replace(
+                String.format("%sExtensionPoint()", extensionPoint),
+                extension
+        );
+    }
+
+    protected abstract String replaceExtensionPoints(String script, EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters);
 
     protected abstract ProjectPipelineConfig getProjectConfig();
 }

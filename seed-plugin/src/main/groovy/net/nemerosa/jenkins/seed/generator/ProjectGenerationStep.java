@@ -1,10 +1,14 @@
 package net.nemerosa.jenkins.seed.generator;
 
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
+import net.nemerosa.seed.generator.ProjectFolderAuthorisationsExtension;
+import net.nemerosa.seed.generator.ProjectSeedExtension;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -37,6 +41,14 @@ public class ProjectGenerationStep extends AbstractSeedStep {
     @Override
     protected String getScriptPath() {
         return "/project-generation.groovy";
+    }
+
+    @Override
+    protected String replaceExtensionPoints(String script, EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
+        String result;
+        result = replaceExtensionPoint(script, "projectAuthorisations", new ProjectAuthorisationsExtension(projectConfig, parameters).generate());
+        // TODO result = replaceExtensionPoint(result, "projectGeneration", new ProjectGenerationExtension(projectConfig, parameters).generate());
+        return result;
     }
 
     @Extension

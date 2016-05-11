@@ -5,7 +5,7 @@
  */
 
 folder(PROJECT_SEED_FOLDER) {
-    // TODO authorisationsExtensionPoint()
+    projectAuthorisationsExtensionPoint()
 }
 
 freeStyleJob("${PROJECT_SEED_FOLDER}/${PROJECT_SEED_JOB}") {
@@ -28,7 +28,7 @@ freeStyleJob("${PROJECT_SEED_FOLDER}/${PROJECT_SEED_JOB}") {
 //            'branch' '${BRANCH}'
 //        }
 //    }
-    // TODO projectSeedExtensionPoint()
+    // TODO projectGenerationExtensionPoint()
 }
 
 // Generates a destructor only if an option is defined for the project
