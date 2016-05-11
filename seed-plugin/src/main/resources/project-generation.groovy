@@ -28,7 +28,7 @@ freeStyleJob("${PROJECT_SEED_FOLDER}/${PROJECT_SEED_JOB}") {
 //            'branch' '${BRANCH}'
 //        }
 //    }
-    // TODO projectGenerationExtensionPoint()
+    projectGenerationExtensionPoint()
 }
 
 // Generates a destructor only if an option is defined for the project

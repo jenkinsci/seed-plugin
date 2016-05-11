@@ -24,6 +24,17 @@
             <f:entry title="Commit/revision parameter" field="commitParameter">
                 <f:textbox value="${instance.projectConfig.pipelineConfig.commitParameter}"/>
             </f:entry>
+            <f:entry title="Extra Branch SCM parameter" field="branchSCMParameter">
+                <f:checkbox checked="${instance.projectConfig.pipelineConfig.branchSCMParameter}" default="false"/>
+            </f:entry>
+            <f:entry title="Extra branch parameters" field="branchParameters">
+                <f:textarea value="${instance.projectConfig.pipelineConfig.branchParameters}"/>
+            </f:entry>
+            <f:entry title="Extra DSL for project generation" field="generationExtension">
+                <f:textarea value="${instance.projectConfig.pipelineConfig.generationExtension}"
+                            codemirror-mode="groovy"
+                            codemirror-config="mode: 'text/x-groovy', lineNumbers: true, matchBrackets: true, onBlur: function(editor){editor.save()}"/>
+            </f:entry>
             <f:section title="Naming strategy" name="namingStrategy">
                 <f:entry title="Project folder path" field="projectFolderPath">
                     <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.projectFolderPath}"/>

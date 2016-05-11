@@ -47,7 +47,7 @@ public class ProjectGenerationStep extends AbstractSeedStep {
     protected String replaceExtensionPoints(String script, EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
         String result;
         result = replaceExtensionPoint(script, "projectAuthorisations", new ProjectAuthorisationsExtension(projectConfig, parameters).generate());
-        // TODO result = replaceExtensionPoint(result, "projectGeneration", new ProjectGenerationExtension(projectConfig, parameters).generate());
+        result = replaceExtensionPoint(result, "projectGeneration", new ProjectGenerationExtension(projectConfig, parameters).generate());
         return result;
     }
 

@@ -2,6 +2,7 @@ package net.nemerosa.jenkins.seed.config;
 
 import com.google.common.base.Function;
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
