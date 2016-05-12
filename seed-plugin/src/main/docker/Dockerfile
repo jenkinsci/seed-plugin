@@ -42,12 +42,12 @@ RUN /usr/share/jenkins/plugins.sh /usr/share/jenkins/plugins.txt
 
 # Jenkins version
 
-ENV JENKINS_VERSION 1.610
+ENV JENKINS_VERSION 1.609.3
 
 # Download of the Jenkins application
 # Could use ADD but this one does not check Last-Modified header
 # see https://github.com/docker/docker/issues/8331
-RUN curl -L --silent --fail http://mirrors.jenkins-ci.org/war/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war
+RUN curl -L --silent --fail http://mirrors.jenkins-ci.org/war-stable/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war
 
 # Add the Seed plug-in
 COPY seed.hpi /usr/share/jenkins/ref/plugins/
