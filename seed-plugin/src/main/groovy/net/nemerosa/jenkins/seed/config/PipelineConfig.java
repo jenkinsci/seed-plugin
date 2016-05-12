@@ -1,6 +1,7 @@
 package net.nemerosa.jenkins.seed.config;
 
 import lombok.Data;
+import lombok.experimental.Builder;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+@Builder
 public class PipelineConfig {
 
     /**
@@ -113,5 +115,12 @@ public class PipelineConfig {
             }
         }
         return list;
+    }
+
+    /**
+     * Default configuration
+     */
+    public static PipelineConfig defaultConfig() {
+        return PipelineConfig.builder().build();
     }
 }

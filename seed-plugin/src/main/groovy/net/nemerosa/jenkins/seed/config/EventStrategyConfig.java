@@ -1,9 +1,11 @@
 package net.nemerosa.jenkins.seed.config;
 
 import lombok.Data;
+import lombok.experimental.Builder;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 @Data
+@Builder
 public class EventStrategyConfig {
 
     /**

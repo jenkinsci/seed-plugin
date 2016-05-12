@@ -1,6 +1,8 @@
 package net.nemerosa.jenkins.seed.test
 
 import groovy.json.JsonSlurper
+import net.nemerosa.jenkins.seed.acceptance.SeedDSLGenerator
+import net.nemerosa.jenkins.seed.config.PipelineConfig
 import org.junit.Assert
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -280,6 +282,26 @@ class JenkinsAccessRule implements TestRule {
         info "[build] Getting build ${buildNumber} for ${path}"
         def url = new URL(jenkinsUrl, jobPath(path) + "/${buildNumber}")
         return waitForBuild(url as String, timeoutSeconds)
+    }
+
+    /**
+     * Creates a seed job
+     * @return Name of the generated seed job
+     */
+    String seed(PipelineConfig config, String jobName = null) {
+        String name = jobName ?: TestUtils.uid('seed-')
+        info "[seed] Generating seed job: ${jobName}"
+        fireJob("seed-generator", [DSL: SeedDSLGenerator.seedDsl(name, config)]).checkSuccess()
+        return name
+    }
+
+    String defaultSeed() {
+        // Creates a seed job
+        String seed = seed(PipelineConfig.defaultConfig())
+        // ... checks it is there
+        job(seed)
+        // Returns its name
+        return seed
     }
 
     class Build {

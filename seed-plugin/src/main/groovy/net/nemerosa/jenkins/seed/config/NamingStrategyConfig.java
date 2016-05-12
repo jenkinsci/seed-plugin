@@ -1,11 +1,13 @@
 package net.nemerosa.jenkins.seed.config;
 
 import lombok.Data;
+import lombok.experimental.Builder;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import static net.nemerosa.jenkins.seed.support.Evaluator.evaluate;
 
 @Data
+@Builder
 public class NamingStrategyConfig {
 
     /**

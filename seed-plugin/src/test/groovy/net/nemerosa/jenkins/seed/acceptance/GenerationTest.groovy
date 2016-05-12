@@ -1,9 +1,9 @@
 package net.nemerosa.jenkins.seed.acceptance
 
+import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
 import net.nemerosa.jenkins.seed.test.JenkinsAccessRule
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -25,21 +25,26 @@ class GenerationTest {
     @Rule
     public JenkinsAccessRule jenkins = new JenkinsAccessRule()
 
-    @Before
+    @Test
     void 'Default seed job created'() {
-        jenkins.job('seed-v1', JOB_TIMEOUT, JOB_TIMEOUT)
+        // Creates a seed job
+        String seed = jenkins.seed(PipelineConfig.defaultConfig())
+        // ... checks it is there
+        jenkins.job(seed, JOB_TIMEOUT, JOB_TIMEOUT)
     }
 
     @Test
     void 'Creating a complete seed tree'() {
+        // Default seed
+        String seed = jenkins.defaultSeed()
         // Project name
         def projectName = uid('P')
         // Firing the seed job
-        jenkins.fireJob('seed-v1', [
+        jenkins.fireJob(seed, [
                 PROJECT         : projectName,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL: '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job("${projectName}/${projectName}-seed")

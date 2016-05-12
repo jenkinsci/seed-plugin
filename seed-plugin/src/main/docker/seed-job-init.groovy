@@ -30,4 +30,4 @@ def generateJob(String dslFile, String jobName) {
 }
 
 generateJob '/var/lib/jenkins/dsl/seed-job-dsl.groovy', 'seed'
-generateJob '/var/lib/jenkins/dsl/seed-job-dsl-v1.groovy', 'seed-v1'
+generateJob '/var/lib/jenkins/dsl/seed-job-dsl-v1.groovy', 'seed-generator'
