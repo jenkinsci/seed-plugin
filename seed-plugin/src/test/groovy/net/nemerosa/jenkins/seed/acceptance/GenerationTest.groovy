@@ -27,38 +27,40 @@ class GenerationTest {
 
     @Before
     void 'Default seed job created'() {
-        jenkins.job('seed', JOB_TIMEOUT, JOB_TIMEOUT)
+        jenkins.job('seed-v1', JOB_TIMEOUT, JOB_TIMEOUT)
     }
 
     @Test
     @Ignore
     void 'Creating a complete seed tree'() {
+        // Project name
+        def projectName = uid('P')
         // Firing the seed job
-        jenkins.fireJob('seed', [
-                PROJECT         : 'test',
+        jenkins.fireJob('seed-v1', [
+                PROJECT         : projectName,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL: '/var/lib/jenkins/tests/git/seed-std',
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job('test/test-seed')
+        jenkins.job("${projectName}/${projectName}-seed")
         // Fires the project seed
-        jenkins.fireJob('test/test-seed', [
+        jenkins.fireJob("${projectName}/${projectName}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job('test/test-master/test-master-seed')
+        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-seed")
         // Fires the branch seed
-        jenkins.fireJob('test/test-master/test-master-seed').checkSuccess()
+        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job('test/test-master/test-master-build')
-        jenkins.job('test/test-master/test-master-ci')
-        jenkins.job('test/test-master/test-master-publish')
+        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-build")
+        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-ci")
+        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-publish")
         // Fires the branch pipeline start
-        jenkins.fireJob('test/test-master/test-master-build', [COMMIT: 'HEAD']).checkSuccess()
+        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-build", [COMMIT: 'HEAD']).checkSuccess()
         // Checks the result of the pipeline (ci & publish must have been fired)
-        jenkins.getBuild('test/test-master/test-master-ci', 1).checkSuccess()
-        jenkins.getBuild('test/test-master/test-master-publish', 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}-master/${projectName}-master-ci", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}-master/${projectName}-master-publish", 1).checkSuccess()
     }
 
     @Test
