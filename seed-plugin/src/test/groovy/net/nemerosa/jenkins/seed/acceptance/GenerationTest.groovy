@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.acceptance
 
+import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
 import net.nemerosa.jenkins.seed.test.JenkinsAccessRule
@@ -77,7 +78,6 @@ class GenerationTest {
         // Firing the seed job
         jenkins.fireJob(seed, [
                 PROJECT         : projectName,
-                PROJECT_CLASS   : 'branch-path',
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
                 PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-env',
@@ -100,20 +100,18 @@ class GenerationTest {
     }
 
     @Test
-    @Ignore
     void 'Branch SCM parameter'() {
         // Project name
         def projectName = uid('P')
         // Configuration of environment variables
-        jenkins.configureSeed '''\
-classes:
-    - id: branch-scm
-      branch-scm: yes
-'''
+        def seed = jenkins.seed(
+                PipelineConfig.builder()
+                        .branchSCMParameter(true)
+                        .build()
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : projectName,
-                PROJECT_CLASS   : 'branch-scm',
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
                 PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-scm',
@@ -137,6 +135,7 @@ classes:
         assert build.output.contains('Branch SCM: master')
     }
 
+    // TODO Direct script execution?
     @Test
     @Ignore
     void 'Direct script execution - not allowed'() {
@@ -165,6 +164,7 @@ pipeline-generator-script-allowed: no
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
     }
 
+    // TODO Direct script execution?
     @Test
     @Ignore
     void 'Direct script execution - not allowed at project level'() {
@@ -179,7 +179,6 @@ classes:
         // Firing the seed job
         jenkins.fireJob('seed', [
                 PROJECT         : project,
-                PROJECT_CLASS   : 'my-class',
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
                 PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
@@ -196,6 +195,7 @@ classes:
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
     }
 
+    // TODO Direct script execution?
     @Test
     @Ignore
     void 'Direct script execution - allowed at project level'() {
@@ -211,7 +211,6 @@ classes:
         // Firing the seed job
         jenkins.fireJob('seed', [
                 PROJECT         : project,
-                PROJECT_CLASS   : 'my-class',
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
                 PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
@@ -229,21 +228,22 @@ classes:
     }
 
     @Test
-    @Ignore
     void 'Project folder authorisations'() {
         // Configuration of the Seed job
-        jenkins.configureSeed '''\
-classes:
-    - id: custom-auth
-      authorisations:
-          - hudson.model.Item.Workspace:jenkins_*
-          - hudson.model.Item.Read:jenkins_*
-          - hudson.model.Item.Discover:jenkins_*
-'''
+        def seed = jenkins.seed(
+                PipelineConfig.builder()
+                        .authorisations('''\
+                        hudson.model.Item.Workspace:jenkins_*
+                        hudson.model.Item.Read:jenkins_*
+                        # Comments and empty lines are allowed
+
+                        hudson.model.Item.Discover:jenkins_*
+                        ''')
+                        .build()
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : 'test-auth',
-                PROJECT_CLASS   : 'custom-auth',
                 PROJECT_SCM_TYPE: 'git',
                 PROJECT_SCM_URL : 'path/to/repo',
         ]).checkSuccess()
@@ -261,49 +261,52 @@ classes:
     }
 
     @Test
-    @Ignore
     void 'Creating a project tree based of full customisation'() {
         // Configuration
-        jenkins.configureSeed '''\
-strategies:
-  - id: custom
-    seed-expression: "${PROJECT}/${PROJECT}_GENERATOR"
-    branch-seed-expression: "${PROJECT}/${PROJECT}_*/${PROJECT}_*_GENERATOR"
-    branch-start-expression: "${PROJECT}/${PROJECT}_*/${PROJECT}_*_010_BUILD"
-    branch-name-expression: "${BRANCH}"
-    branch-name-prefixes:
-      - "branches/"
-    commit-parameter: "REVISION"
-classes:
-    - id: custom-pipeline
-      branch-strategy: custom
-'''
+        // @formatter:off
+        def seed = jenkins.seed(
+                PipelineConfig.builder()
+                        .namingStrategy(
+                            NamingStrategyConfig.builder()
+                                .projectFolderPath('${PROJECT}')
+                                .projectSeedName('${PROJECT}_GENERATOR')
+                                .branchFolderPath('${PROJECT}_*')
+                                .branchSeedName('${PROJECT}_*_GENERATOR')
+                                .branchStartName('${PROJECT}_*_010_BUILD')
+                                // TODO Commit parameter? REVISION
+                                // TODO Branch name prefixes? branches/
+                                .build()
+                        )
+                        .build()
+        )
+        // @formatter:on
+        // Project name
+        def projectName = uid('P')
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : 'PRJ',
-                PROJECT_CLASS   : 'custom-pipeline',
                 PROJECT_SCM_TYPE: 'svn',
                 PROJECT_SCM_URL : 'svn://localhost/PRJ',
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job('PRJ/PRJ_GENERATOR')
+        jenkins.job("${projectName}/${projectName}_GENERATOR")
         // Fires the project seed
-        jenkins.fireJob('PRJ/PRJ_GENERATOR', [
+        jenkins.fireJob("${projectName}/${projectName}_GENERATOR", [
                 BRANCH: 'branches/R11.7.0'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR')
+        jenkins.job("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_GENERATOR")
         // Fires the branch seed (extra timeout because of Gradle runtime download)
-        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR', [:], 600).checkSuccess()
+        jenkins.fireJob("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_GENERATOR", [:], 600).checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_010_BUILD')
-        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_020_CI')
-        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_030_PUBLISH')
+        jenkins.job("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_010_BUILD")
+        jenkins.job("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_020_CI")
+        jenkins.job("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_030_PUBLISH")
         // Fires the branch pipeline start
-        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_010_BUILD').checkSuccess()
+        jenkins.fireJob("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_010_BUILD").checkSuccess()
         // Checks the result of the pipeline (ci & publish must have been fired)
-        jenkins.getBuild('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_020_CI', 1).checkSuccess()
-        jenkins.getBuild('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_030_PUBLISH', 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_020_CI", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_030_PUBLISH", 1).checkSuccess()
     }
 
     @Test
