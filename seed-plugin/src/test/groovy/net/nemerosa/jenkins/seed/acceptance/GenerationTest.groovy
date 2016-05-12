@@ -31,7 +31,6 @@ class GenerationTest {
     }
 
     @Test
-    @Ignore
     void 'Creating a complete seed tree'() {
         // Project name
         def projectName = uid('P')
