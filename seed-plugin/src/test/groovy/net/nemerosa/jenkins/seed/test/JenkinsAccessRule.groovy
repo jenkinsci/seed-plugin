@@ -289,19 +289,19 @@ class JenkinsAccessRule implements TestRule {
      * @return Name of the generated seed job
      */
     String seed(PipelineConfig config, String jobName = null) {
+        // Name of the seed job
         String name = jobName ?: TestUtils.uid('seed-')
+        // Generation
         info "[seed] Generating seed job: ${jobName}"
         fireJob("seed-generator", [DSL: SeedDSLGenerator.seedDsl(name, config)]).checkSuccess()
+        // ... checks it is there
+        job(name)
+        // Returns its name
         return name
     }
 
     String defaultSeed() {
-        // Creates a seed job
-        String seed = seed(PipelineConfig.defaultConfig())
-        // ... checks it is there
-        job(seed)
-        // Returns its name
-        return seed
+        return seed(PipelineConfig.defaultConfig())
     }
 
     class Build {

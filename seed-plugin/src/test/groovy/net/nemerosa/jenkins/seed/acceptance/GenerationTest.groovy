@@ -27,10 +27,7 @@ class GenerationTest {
 
     @Test
     void 'Default seed job created'() {
-        // Creates a seed job
-        String seed = jenkins.seed(PipelineConfig.defaultConfig())
-        // ... checks it is there
-        jenkins.job(seed, JOB_TIMEOUT, JOB_TIMEOUT)
+        jenkins.defaultSeed()
     }
 
     @Test
@@ -68,19 +65,17 @@ class GenerationTest {
     }
 
     @Test
-    @Ignore
     void 'Custom environment variable'() {
         // Project name
         def projectName = uid('P')
         // Configuration of environment variables
-        jenkins.configureSeed '''\
-classes:
-    - id: branch-path
-      branch-parameters:
-        BRANCH_PARAM: Additional parameter
-'''
+        String seed = jenkins.seed(
+                PipelineConfig.builder()
+                        .branchParameters('BRANCH_PARAM: Additional parameter')
+                        .build()
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : projectName,
                 PROJECT_CLASS   : 'branch-path',
                 PROJECT_SCM_TYPE: 'git',
