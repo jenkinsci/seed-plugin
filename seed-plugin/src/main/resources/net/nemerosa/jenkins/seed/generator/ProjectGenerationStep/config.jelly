@@ -11,8 +11,8 @@
         <f:entry title="Project SCM type" field="scmType">
             <f:textbox value="${instance.projectConfig.scmType}"/>
         </f:entry>
-        <f:entry title="Project SCM base" field="scmBase">
-            <f:textbox value="${instance.projectConfig.scmBase}"/>
+        <f:entry title="Project SCM URL" field="scmUrl">
+            <f:textbox value="${instance.projectConfig.scmUrl}"/>
         </f:entry>
         <f:entry title="Project SCM credentials" field="scmCredentials">
             <f:textbox value="${instance.projectConfig.scmCredentials}"/>

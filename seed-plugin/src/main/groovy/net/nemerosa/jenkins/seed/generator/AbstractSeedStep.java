@@ -91,7 +91,7 @@ public abstract class AbstractSeedStep extends Builder {
     private void generalConfiguration(ProjectParameters parameters, Map<String, String> config) {
         config.put("PROJECT", parameters.getProject());
         config.put("PROJECT_SCM_TYPE", parameters.getScmType());
-        config.put("PROJECT_SCM_BASE", parameters.getScmBase());
+        config.put("PROJECT_SCM_URL", parameters.getScmUrl());
         config.put("PROJECT_SCM_CREDENTIALS", parameters.getScmCredentials());
     }
 

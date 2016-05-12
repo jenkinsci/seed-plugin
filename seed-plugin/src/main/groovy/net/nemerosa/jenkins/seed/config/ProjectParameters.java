@@ -21,7 +21,7 @@ public class ProjectParameters {
     /**
      * SCM base (without any branch)
      */
-    private final String scmBase;
+    private final String scmUrl;
 
     /**
      * SCM credentials (ref. to Jenkins credentials)

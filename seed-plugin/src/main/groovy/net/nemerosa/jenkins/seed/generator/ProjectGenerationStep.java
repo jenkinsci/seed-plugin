@@ -7,8 +7,6 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
-import net.nemerosa.seed.generator.ProjectFolderAuthorisationsExtension;
-import net.nemerosa.seed.generator.ProjectSeedExtension;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**

@@ -27,9 +27,9 @@ public class ProjectPipelineConfig {
     private final String scmType;
 
     /**
-     * SCM base (without any branch)
+     * SCM URL (without any branch)
      */
-    private final String scmBase;
+    private final String scmUrl;
 
     /**
      * SCM credentials (ref. to Jenkins credentials)
@@ -37,11 +37,11 @@ public class ProjectPipelineConfig {
     private final String scmCredentials;
 
     @DataBoundConstructor
-    public ProjectPipelineConfig(PipelineConfig pipelineConfig, String project, String scmType, String scmBase, String scmCredentials) {
+    public ProjectPipelineConfig(PipelineConfig pipelineConfig, String project, String scmType, String scmUrl, String scmCredentials) {
         this.pipelineConfig = pipelineConfig;
         this.project = project;
         this.scmType = scmType;
-        this.scmBase = scmBase;
+        this.scmUrl = scmUrl;
         this.scmCredentials = scmCredentials;
     }
 
@@ -52,7 +52,7 @@ public class ProjectPipelineConfig {
         return new ProjectParameters(
                 expandFn.apply(project),
                 expandFn.apply(scmType),
-                expandFn.apply(scmBase),
+                expandFn.apply(scmUrl),
                 expandFn.apply(scmCredentials)
         );
     }
