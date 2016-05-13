@@ -8,7 +8,6 @@ import org.apache.commons.httpclient.methods.PostMethod
 import org.apache.commons.httpclient.methods.multipart.FilePart
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
 import org.apache.commons.httpclient.methods.multipart.Part
-import org.apache.commons.httpclient.methods.multipart.StringPart
 import org.junit.Assert
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -87,7 +86,9 @@ class JenkinsAccessRule implements TestRule {
     }
 
     /**
-     * Fires a job with a file as a parameter
+     * Fires a job with a file as a parameter.
+     *
+     * See https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API
      */
     Build fireJobWithFileParam(String path, String fileName, File file, int timeoutSeconds = 120) {
         info "[fire] Firing job at ${path} with ${fileName} = ${file}"
@@ -96,13 +97,12 @@ class JenkinsAccessRule implements TestRule {
         // URL to upload to
         def url = new URL(jenkinsUrl, buildPath)
         // Parts
-        StringPart json = new StringPart('json', """{"parameter": [{"name":"${fileName}", "file":"file0"}]}""")
-        FilePart file0 = new FilePart('file0', file)
+        FilePart file0 = new FilePart(fileName, file)
         // Method
         PostMethod post = new PostMethod(url as String)
         // Multipart upload
         MultipartRequestEntity multipart = new MultipartRequestEntity(
-                [file0, json] as Part[],
+                [file0] as Part[],
                 post.params
         )
         post.requestEntity = multipart
