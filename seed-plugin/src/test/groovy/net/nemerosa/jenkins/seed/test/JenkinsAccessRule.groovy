@@ -3,6 +3,12 @@ package net.nemerosa.jenkins.seed.test
 import groovy.json.JsonSlurper
 import net.nemerosa.jenkins.seed.acceptance.SeedDSLGenerator
 import net.nemerosa.jenkins.seed.config.PipelineConfig
+import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.methods.PostMethod
+import org.apache.commons.httpclient.methods.multipart.FilePart
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
+import org.apache.commons.httpclient.methods.multipart.Part
+import org.apache.commons.httpclient.methods.multipart.StringPart
 import org.junit.Assert
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -81,6 +87,39 @@ class JenkinsAccessRule implements TestRule {
     }
 
     /**
+     * Fires a job with a file as a parameter
+     */
+    Build fireJobWithFileParam(String path, String fileName, File file, int timeoutSeconds = 120) {
+        info "[fire] Firing job at ${path} with ${fileName} = ${file}"
+        // Build path
+        String buildPath = "${jobPath(path)}/build"
+        // URL to upload to
+        def url = new URL(jenkinsUrl, buildPath)
+        // Parts
+        StringPart json = new StringPart('json', """{"parameter": [{"name":"${fileName}", "file":"file0"}]}""")
+        FilePart file0 = new FilePart('file0', file)
+        // Method
+        PostMethod post = new PostMethod(url as String)
+        // Multipart upload
+        MultipartRequestEntity multipart = new MultipartRequestEntity(
+                [file0, json] as Part[],
+                post.params
+        )
+        post.requestEntity = multipart
+        // Client
+        HttpClient client = new HttpClient()
+        // Call
+        int responseCode = client.executeMethod(post)
+        // OK
+        return waitForBuild(
+                url as String,
+                responseCode,
+                { post.getResponseHeader('Location').value },
+                timeoutSeconds
+        )
+    }
+
+    /**
      * Fires a build
      */
     protected Build fireBuild(String path, int timeoutSeconds = 120, String query = null) {
@@ -96,33 +135,41 @@ class JenkinsAccessRule implements TestRule {
         }
         connection.connect()
         try {
-            if (connection.responseCode == HttpURLConnection.HTTP_CREATED) {
-                // The `Location` header contains the link to the queued build
-                String location = connection.getHeaderField('Location')
-                if (!location) throw new JenkinsAPIBuildException(path, "Location header was not returned")
-                debug "Queue item at: ${location}"
-                // Waits until the item is built
-                def buildUrl = Until.until(timeoutSeconds).every(5) {
-                    debug "Checking if the build is scheduled for ${location}..."
-                    def json = callUrl(new URL(location + "api/json"), 10, 10)
-                    if (json.executable) {
-                        return json.executable.url
-                    } else {
-                        return false
-                    }
-                } as String
-                // Build URL
-                if (buildUrl) {
-                    debug "Build available at ${buildUrl}"
-                    waitForBuild(buildUrl, timeoutSeconds)
-                } else {
-                    throw new JenkinsAPIBuildException(path, "Build not scheduled after ${timeoutSeconds} seconds")
-                }
-            } else {
-                throw new JenkinsAPIBuildException(path, "Build not fired: ${connection.responseCode}")
-            }
+            return waitForBuild(
+                    url as String,
+                    connection.responseCode,
+                    { connection.getHeaderField('Location') },
+                    timeoutSeconds)
         } finally {
             connection.disconnect()
+        }
+    }
+
+    protected Build waitForBuild(String url, int responseCode, Closure<String> locationHeader, int timeoutSeconds) {
+        if (responseCode == HttpURLConnection.HTTP_CREATED) {
+            // The `Location` header contains the link to the queued build
+            String location = locationHeader()
+            if (!location) throw new JenkinsAPIBuildException(url, "Location header was not returned")
+            debug "Queue item at: ${location}"
+            // Waits until the item is built
+            def buildUrl = Until.until(timeoutSeconds).every(5) {
+                debug "Checking if the build is scheduled for ${location}..."
+                def json = callUrl(new URL(location + "api/json"), 10, 10)
+                if (json.executable) {
+                    return json.executable.url
+                } else {
+                    return false
+                }
+            } as String
+            // Build URL
+            if (buildUrl) {
+                debug "Build available at ${buildUrl}"
+                waitForBuild(buildUrl, timeoutSeconds)
+            } else {
+                throw new JenkinsAPIBuildException(url, "Build not scheduled after ${timeoutSeconds} seconds")
+            }
+        } else {
+            throw new JenkinsAPIBuildException(url, "Build not fired: ${responseCode}")
         }
     }
 
@@ -291,13 +338,23 @@ class JenkinsAccessRule implements TestRule {
     String seed(PipelineConfig config, String jobName = null) {
         // Name of the seed job
         String name = jobName ?: TestUtils.uid('seed-')
-        // Generation
-        info "[seed] Generating seed job: ${jobName}"
-        fireJob("seed-generator", [DSL: SeedDSLGenerator.seedDsl(name, config)]).checkSuccess()
-        // ... checks it is there
-        job(name)
-        // Returns its name
-        return name
+        // DSL definition
+        def dsl = SeedDSLGenerator.seedDsl(name, config)
+        // Temporary file
+        def dslFile = File.createTempFile(name, ".groovy")
+        try {
+            dslFile.text = dsl
+            // Generation
+            info "[seed] Generating seed job: ${jobName}"
+            // Uploads and fires the job with 'dsl.groovy' as a parameter
+            fireJobWithFileParam("seed-generator", "dsl.groovy", dslFile).checkSuccess()
+            // ... checks it is there
+            job(name)
+            // Returns its name
+            return name
+        } finally {
+            dslFile.delete()
+        }
     }
 
     String defaultSeed() {
