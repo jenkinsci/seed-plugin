@@ -56,7 +56,7 @@ COPY seed.hpi /usr/share/jenkins/ref/plugins/
 
 COPY job-dsl-core-standalone.jar /usr/share/jenkins/ref/init.groovy.d/
 COPY seed-job-init.groovy /usr/share/jenkins/ref/init.groovy.d/
-COPY seed-job-dsl.groovy /usr/share/jenkins/ref/dsl/
+COPY seed-job-dsl*.groovy /usr/share/jenkins/ref/dsl/
 
 # For main web interface:
 EXPOSE 8080
