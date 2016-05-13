@@ -71,9 +71,8 @@ class GenerationTest {
         def projectName = uid('P')
         // Configuration of environment variables
         String seed = jenkins.seed(
-                PipelineConfig.builder()
-                        .branchParameters('BRANCH_PARAM: Additional parameter')
-                        .build()
+                new PipelineConfig()
+                        .withBranchParameters('BRANCH_PARAM: Additional parameter')
         )
         // Firing the seed job
         jenkins.fireJob(seed, [
@@ -105,9 +104,8 @@ class GenerationTest {
         def projectName = uid('P')
         // Configuration of environment variables
         def seed = jenkins.seed(
-                PipelineConfig.builder()
-                        .branchSCMParameter(true)
-                        .build()
+                new PipelineConfig()
+                        .withBranchSCMParameter(true)
         )
         // Firing the seed job
         jenkins.fireJob(seed, [
@@ -231,15 +229,14 @@ classes:
     void 'Project folder authorisations'() {
         // Configuration of the Seed job
         def seed = jenkins.seed(
-                PipelineConfig.builder()
-                        .authorisations('''\
+                new PipelineConfig()
+                        .withAuthorisations('''\
                         hudson.model.Item.Workspace:jenkins_*
                         hudson.model.Item.Read:jenkins_*
                         # Comments and empty lines are allowed
 
                         hudson.model.Item.Discover:jenkins_*
                         ''')
-                        .build()
         )
         // Firing the seed job
         jenkins.fireJob(seed, [
@@ -265,19 +262,17 @@ classes:
         // Configuration
         // @formatter:off
         def seed = jenkins.seed(
-                PipelineConfig.builder()
-                        .namingStrategy(
-                            NamingStrategyConfig.builder()
-                                .projectFolderPath('${PROJECT}')
-                                .projectSeedName('${PROJECT}_GENERATOR')
-                                .branchFolderPath('${PROJECT}_*')
-                                .branchSeedName('${PROJECT}_*_GENERATOR')
-                                .branchStartName('${PROJECT}_*_010_BUILD')
+                new PipelineConfig()
+                        .withNamingStrategy(
+                            new NamingStrategyConfig()
+                                .withProjectFolderPath('${PROJECT}')
+                                .withProjectSeedName('${PROJECT}_GENERATOR')
+                                .withBranchFolderPath('${PROJECT}_*')
+                                .withBranchSeedName('${PROJECT}_*_GENERATOR')
+                                .withBranchStartName('${PROJECT}_*_010_BUILD')
                                 // TODO Commit parameter? REVISION
                                 // TODO Branch name prefixes? branches/
-                                .build()
                         )
-                        .build()
         )
         // @formatter:on
         // Project name

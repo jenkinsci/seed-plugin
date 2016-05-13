@@ -1,7 +1,7 @@
 package net.nemerosa.jenkins.seed.config;
 
 import lombok.Data;
-import lombok.experimental.Builder;
+import lombok.experimental.Wither;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -11,48 +11,73 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@Builder
 public class PipelineConfig {
 
     /**
      * Boolean to enable the creation of a destructor job.
      */
+    @Wither
     private final boolean destructor;
 
     /**
      * Parameter to pass to the branch start
      */
+    @Wither
     private final String commitParameter;
 
     /**
      * Line separated list of authorisations for a project
      */
+    @Wither
     private final String authorisations;
 
     /**
      * Boolean which configures the project generator to have an extra BRANCH_SCM parameter
      */
+    @Wither
     private final boolean branchSCMParameter;
 
     /**
      * Additional parameters to define.
      */
+    @Wither
     private final String branchParameters;
 
     /**
      * Arbitrary DSL to add to the project generator job.
      */
+    @Wither
     private final String generationExtension;
 
     /**
      * Naming strategy
      */
+    @Wither
     private final NamingStrategyConfig namingStrategy;
 
     /**
      * Events configurations
      */
+    @Wither
     private final EventStrategyConfig eventStrategy;
+
+    public PipelineConfig() {
+        this(
+                false, // No destructor by default
+                null,
+                null, // No authorisations
+                false, // No branch SCM parameter
+                null, // No extra parameter
+                null, // No extra DSL
+                new NamingStrategyConfig(), // Default values
+                new EventStrategyConfig() // Default values
+        );
+    }
+
+    /**
+     * Default constructor with default values
+     */
+
 
     @DataBoundConstructor
     public PipelineConfig(boolean destructor, String commitParameter, String authorisations, boolean branchSCMParameter, String branchParameters, String generationExtension, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
@@ -121,6 +146,6 @@ public class PipelineConfig {
      * Default configuration
      */
     public static PipelineConfig defaultConfig() {
-        return PipelineConfig.builder().build();
+        return new PipelineConfig();
     }
 }
