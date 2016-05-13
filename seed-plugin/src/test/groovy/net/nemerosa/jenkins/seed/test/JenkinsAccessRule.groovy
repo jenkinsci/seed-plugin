@@ -92,7 +92,7 @@ class JenkinsAccessRule implements TestRule {
     Build fireJobWithFileParam(String path, String fileName, File file, int timeoutSeconds = 120) {
         info "[fire] Firing job at ${path} with ${fileName} = ${file}"
         // Build path
-        String buildPath = "${jobPath(path)}/build"
+        String buildPath = "${jobPath(path)}/buildWithParameters"
         // URL to upload to
         def url = new URL(jenkinsUrl, buildPath)
         // Parts
@@ -345,7 +345,7 @@ class JenkinsAccessRule implements TestRule {
         try {
             dslFile.text = dsl
             // Generation
-            info "[seed] Generating seed job: ${jobName}"
+            info "[seed] Generating seed job: ${name}"
             // Uploads and fires the job with 'dsl.groovy' as a parameter
             fireJobWithFileParam("seed-generator", "dsl.groovy", dslFile).checkSuccess()
             // ... checks it is there
