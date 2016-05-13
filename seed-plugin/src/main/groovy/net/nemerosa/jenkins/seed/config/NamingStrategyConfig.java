@@ -41,7 +41,7 @@ public class NamingStrategyConfig {
     private final String branchStartName;
 
     @DataBoundConstructor
-    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String commitParameter, String projectDestructorName) {
+    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String projectDestructorName) {
         this.projectFolderPath = projectFolderPath;
         this.branchFolderPath = branchFolderPath;
         this.projectSeedName = projectSeedName;
