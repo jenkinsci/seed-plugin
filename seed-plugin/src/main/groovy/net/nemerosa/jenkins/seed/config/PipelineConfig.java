@@ -148,4 +148,16 @@ public class PipelineConfig {
     public static PipelineConfig defaultConfig() {
         return new PipelineConfig();
     }
+
+    public String getBranchFolderPath(ProjectParameters parameters, String branch) {
+        return namingStrategy.getBranchFolderPath(parameters, branch);
+    }
+
+    public String getBranchSeedName(ProjectParameters parameters, String branch) {
+        return namingStrategy.getBranchSeedName(parameters, branch);
+    }
+
+    public String getBranchStartName(ProjectParameters parameters, String branch) {
+        return namingStrategy.getBranchStartName(parameters, branch);
+    }
 }

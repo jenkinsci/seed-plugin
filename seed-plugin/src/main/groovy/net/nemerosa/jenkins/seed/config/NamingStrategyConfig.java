@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.config;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import lombok.experimental.Wither;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -79,5 +80,26 @@ public class NamingStrategyConfig {
 
     public String getProjectDestructorJob(ProjectParameters parameters) {
         return evaluate(projectDestructorName, "${project}-destructor", "project", parameters.getProject());
+    }
+
+    public String getBranchFolderPath(ProjectParameters parameters, String branch) {
+        return evaluate(branchFolderPath, "${project}-${branch}", ImmutableMap.of(
+                "project", parameters.getProject(),
+                "branch", branch
+        ));
+    }
+
+    public String getBranchSeedName(ProjectParameters parameters, String branch) {
+        return evaluate(branchFolderPath, "${project}-${branch}-seed", ImmutableMap.of(
+                "project", parameters.getProject(),
+                "branch", branch
+        ));
+    }
+
+    public String getBranchStartName(ProjectParameters parameters, String branch) {
+        return evaluate(branchFolderPath, "${project}-${branch}-build", ImmutableMap.of(
+                "project", parameters.getProject(),
+                "branch", branch
+        ));
     }
 }

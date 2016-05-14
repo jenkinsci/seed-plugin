@@ -41,6 +41,9 @@ class PipelineConfigTest {
         assert config.getProjectFolder(parameters) == "test"
         assert config.getProjectSeedJob(parameters) == "test-seed"
         assert config.getProjectDestructorJob(parameters) == "test-destructor"
+        assert config.getBranchFolderPath(parameters, "master") == "test-master"
+        assert config.getBranchSeedName(parameters, "master") == "test-master-seed"
+        assert config.getBranchStartName(parameters, "master") == "test-master-build"
     }
 
 }

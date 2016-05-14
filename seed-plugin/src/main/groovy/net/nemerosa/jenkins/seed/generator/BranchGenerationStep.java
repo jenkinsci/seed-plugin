@@ -10,12 +10,12 @@ import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- * Configuration of a Seed job when it's time to generate/update a project.
+ * Configuration of a Project job when it's time to generate/update a branch.
  */
-public class ProjectGenerationStep extends AbstractSeedStep {
+public class BranchGenerationStep extends AbstractSeedStep {
 
     /**
-     * Pipeline configuration to pass to the projects being generated/updated.
+     * Pipeline configuration for the project.
      */
     private final ProjectPipelineConfig projectConfig;
 
@@ -25,7 +25,7 @@ public class ProjectGenerationStep extends AbstractSeedStep {
      * @param projectConfig Pipeline configuration
      */
     @DataBoundConstructor
-    public ProjectGenerationStep(ProjectPipelineConfig projectConfig) {
+    public BranchGenerationStep(ProjectPipelineConfig projectConfig) {
         this.projectConfig = projectConfig;
     }
 
@@ -38,19 +38,20 @@ public class ProjectGenerationStep extends AbstractSeedStep {
 
     @Override
     protected String getScriptPath() {
-        return "/project-generation.groovy";
+        return "/branch-generation.groovy";
     }
 
     @Override
     protected String replaceExtensionPoints(String script, EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
-        String result;
-        result = replaceExtensionPoint(script, "projectAuthorisations", new ProjectAuthorisationsExtension(projectConfig, parameters).generate());
-        result = replaceExtensionPoint(result, "projectGeneration", new ProjectGenerationExtension(projectConfig, parameters).generate());
+        String result = "";
+        // TODO Branch extensions
+//        result = replaceExtensionPoint(script, "projectAuthorisations", new ProjectAuthorisationsExtension(projectConfig, parameters).generate());
+//        result = replaceExtensionPoint(result, "projectGeneration", new ProjectGenerationExtension(projectConfig, parameters).generate());
         return result;
     }
 
     @Extension
-    public static class SeedStepExtension extends BuildStepDescriptor<Builder> {
+    public static class BranchGenerationStepExtension extends BuildStepDescriptor<Builder> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
@@ -59,7 +60,7 @@ public class ProjectGenerationStep extends AbstractSeedStep {
 
         @Override
         public String getDisplayName() {
-            return "Project folder generation";
+            return "Branch folder generation";
         }
     }
 }

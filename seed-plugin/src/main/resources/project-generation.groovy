@@ -4,11 +4,11 @@
  * @see net.nemerosa.jenkins.seed.generator.ProjectGenerationStep
  */
 
-folder(PROJECT_SEED_FOLDER) {
+folder(PROJECT_FOLDER_PATH) {
     projectAuthorisationsExtensionPoint()
 }
 
-freeStyleJob("${PROJECT_SEED_FOLDER}/${PROJECT_SEED_JOB}") {
+freeStyleJob("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
     description "Project seed for ${PROJECT} - generates one branch folder and seed."
     parameters {
         // Default seed parameters
@@ -17,24 +17,47 @@ freeStyleJob("${PROJECT_SEED_FOLDER}/${PROJECT_SEED_JOB}") {
     steps {
         buildDescription('', '${BRANCH}')
     }
-    // TODO BranchGenerationStep
-//    configure { node ->
-//        node / 'builders' / 'net.nemerosa.seed.generator.BranchSeedBuilder' {
-//            'project' PROJECT
-//            'projectClass' PROJECT_CLASS
-//            'projectScmType' PROJECT_SCM_TYPE
-//            'projectScmUrl' PROJECT_SCM_URL
-//            'projectScmCredentials' PROJECT_SCM_CREDENTIALS
-//            'branch' '${BRANCH}'
-//        }
-//    }
+    // Branch generation
+    configure { node ->
+        node / 'builders' / 'net.nemerosa.jenkins.seed.generator.BranchGenerationStep' {
+            projectConfig {
+                pipelineConfig {
+                    destructor PIPELINE_DESTRUCTOR
+                    commitParameter PIPELINE_COMMIT_PARARAMETER
+                    branchSCMParameter PIPELINE_BRANCH_SCM_PARAMETER
+                    branchParameters PIPELINE_BRANCH_PARAMETERS
+                    generationExtension PIPELINE_GENERATION_EXTENSION
+                    namingStrategy {
+                        projectFolderPath PROJECT_FOLDER_PATH
+                        projectSeedName PROJECT_SEED_NAME
+                        projectDestructorName PROJECT_DESTRUCTOR_NAME
+                        branchFolderPath BRANCH_FOLDER_PATH
+                        branchSeedName BRANCH_SEED_NAME
+                        branchStartName BRANCH_START_NAME
+                    }
+                    eventStrategy {
+                        delete EVENT_STRATEGY_DELETE
+                        auto EVENT_STRATEGY_AUTO
+                        trigger EVENT_STRATEGY_TRIGGER
+                        commit EVENT_STRATEGY_COMMIT
+                        startAuto EVENT_STRATEGY_START_AUTO
+                    }
+                }
+                project PROJECT
+                scmType PROJECT_SCM_TYPE
+                scmUrl PROJECT_SCM_URL
+                scmCredentials PROJECT_SCM_CREDENTIALS
+            }
+        }
+    }
+    // Extension points
     projectGenerationExtensionPoint()
 }
 
 // Generates a destructor only if an option is defined for the project
-println "PROJECT_DESTRUCTOR_ENABLED = ${PROJECT_DESTRUCTOR_ENABLED}"
-if (PROJECT_DESTRUCTOR_ENABLED == "true") {
-    freeStyleJob("${PROJECT_SEED_FOLDER}/${PROJECT_DESTRUCTOR_PATH}") {
+println "PIPELINE_DESTRUCTOR = ${PIPELINE_DESTRUCTOR}"
+if (PIPELINE_DESTRUCTOR == "true") {
+    freeStyleJob("${PROJECT_FOLDER_PATH}/${PROJECT_DESTRUCTOR_NAME}") {
         description "Branch destructor for ${PROJECT} - deletes a branch folder."
         parameters {
             // Default seed parameters

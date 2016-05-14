@@ -78,21 +78,45 @@ public abstract class AbstractSeedStep extends Builder {
 
     protected void configuration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
         generalConfiguration(parameters, config);
+        pipelineConfiguration(projectConfig, parameters, config);
         projectConfiguration(projectConfig, parameters, config);
+        branchConfiguration(projectConfig, parameters, config);
+        eventConfiguration(projectConfig, parameters, config);
     }
 
-    private void projectConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
-        config.put("PROJECT_SEED_FOLDER", projectConfig.getPipelineConfig().getProjectFolder(parameters));
-        config.put("PROJECT_SEED_JOB", projectConfig.getPipelineConfig().getProjectSeedJob(parameters));
-        config.put("PROJECT_DESTRUCTOR_ENABLED", String.valueOf(projectConfig.getPipelineConfig().isDestructor()));
-        config.put("PROJECT_DESTRUCTOR_JOB", String.valueOf(projectConfig.getPipelineConfig().getProjectDestructorJob(parameters)));
+    protected void pipelineConfiguration(ProjectPipelineConfig projectConfig, @SuppressWarnings("UnusedParameters") ProjectParameters parameters, Map<String, String> config) {
+        config.put("PIPELINE_DESTRUCTOR", String.valueOf(projectConfig.getPipelineConfig().isDestructor()));
+        config.put("PIPELINE_COMMIT_PARARAMETER", projectConfig.getPipelineConfig().getCommitParameter());
+        config.put("PIPELINE_BRANCH_SCM_PARAMETER", String.valueOf(projectConfig.getPipelineConfig().isBranchSCMParameter()));
+        config.put("PIPELINE_BRANCH_PARAMETERS", projectConfig.getPipelineConfig().getBranchParameters());
+        config.put("PIPELINE_GENERATION_EXTENSION", projectConfig.getPipelineConfig().getGenerationExtension());
     }
 
-    private void generalConfiguration(ProjectParameters parameters, Map<String, String> config) {
+    protected void projectConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
+        config.put("PROJECT_FOLDER_PATH", projectConfig.getPipelineConfig().getProjectFolder(parameters));
+        config.put("PROJECT_SEED_NAME", projectConfig.getPipelineConfig().getProjectSeedJob(parameters));
+        config.put("PROJECT_DESTRUCTOR_NAME", String.valueOf(projectConfig.getPipelineConfig().getProjectDestructorJob(parameters)));
+    }
+
+    protected void branchConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
+        config.put("BRANCH_FOLDER_PATH", projectConfig.getPipelineConfig().getBranchFolderPath(parameters, "*"));
+        config.put("BRANCH_SEED_NAME", projectConfig.getPipelineConfig().getBranchSeedName(parameters, "*"));
+        config.put("BRANCH_START_NAME", String.valueOf(projectConfig.getPipelineConfig().getBranchStartName(parameters, "*")));
+    }
+
+    protected void generalConfiguration(ProjectParameters parameters, Map<String, String> config) {
         config.put("PROJECT", parameters.getProject());
         config.put("PROJECT_SCM_TYPE", parameters.getScmType());
         config.put("PROJECT_SCM_URL", parameters.getScmUrl());
         config.put("PROJECT_SCM_CREDENTIALS", parameters.getScmCredentials());
+    }
+
+    protected void eventConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
+        config.put("EVENT_STRATEGY_DELETE", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isDelete()));
+        config.put("EVENT_STRATEGY_AUTO", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isAuto()));
+        config.put("EVENT_STRATEGY_TRIGGER", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isTrigger()));
+        config.put("EVENT_STRATEGY_START_AUTO", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isStartAuto()));
+        config.put("EVENT_STRATEGY_COMMIT", projectConfig.getPipelineConfig().getEventStrategy().getCommit());
     }
 
     protected String replaceExtensionPoint(String script, String extensionPoint, String extension) {
