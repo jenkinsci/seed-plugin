@@ -16,7 +16,7 @@ public class DSLHelper {
     public static void launchGenerationScript(AbstractBuild<?, ?> build, BuildListener listener, EnvVars env, String script) throws IOException {
 
         // Jobs are created at the Jenkins root level
-        JenkinsJobManagement jm = new JenkinsJobManagement(listener.getLogger(), env, build, LookupStrategy.JENKINS_ROOT);
+        JenkinsJobManagement jm = new JenkinsJobManagement(listener.getLogger(), env, build, LookupStrategy.SEED_JOB);
 
         // Generation request
         ScriptRequest scriptRequest = new ScriptRequest(
