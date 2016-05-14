@@ -1,7 +1,6 @@
-package net.nemerosa.seed.generator.scm.git
+package net.nemerosa.jenkins.seed.generator.scm.git
 
-import net.nemerosa.seed.generator.scm.SCMService
-import net.nemerosa.seed.config.SeedProjectEnvironment
+import net.nemerosa.jenkins.seed.generator.scm.SCMService
 
 class GitSCMService implements SCMService {
 
@@ -11,13 +10,13 @@ class GitSCMService implements SCMService {
     }
 
     @Override
-    String generatePartial(SeedProjectEnvironment env, String branch, String path) {
+    String generatePartial(String scmUrl, String scmCredentials, String branch, String path) {
         """\
 scm {
     git {
         remote {
-            url '${env.scmUrl}'
-            credentials '${env.scmCredentials}'
+            url '${scmUrl}'
+            credentials '${scmCredentials}'
         }
         branch '${branch}'
         configure { node ->

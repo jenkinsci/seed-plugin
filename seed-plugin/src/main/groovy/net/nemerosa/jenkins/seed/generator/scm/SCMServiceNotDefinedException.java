@@ -1,4 +1,4 @@
-package net.nemerosa.seed.generator.scm;
+package net.nemerosa.jenkins.seed.generator.scm;
 
 import net.nemerosa.seed.config.SeedException;
 

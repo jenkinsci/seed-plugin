@@ -1,7 +1,7 @@
-package net.nemerosa.seed.generator.scm
+package net.nemerosa.jenkins.seed.generator.scm
 
-import net.nemerosa.seed.generator.scm.git.GitSCMService
-import net.nemerosa.seed.generator.scm.svn.SvnSCMService
+import net.nemerosa.jenkins.seed.generator.scm.git.GitSCMService
+import net.nemerosa.jenkins.seed.generator.scm.svn.SvnSCMService
 
 class SCMServiceRegistryImpl implements SCMServiceRegistry {
 
