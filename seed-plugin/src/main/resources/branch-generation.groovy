@@ -33,7 +33,8 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
             branchSeedName BRANCH_SEED_NAME
         }
     }
-    // TODO branchSeedScmExtensionPoint()
+    // SCM configuration
+    branchSeedScmExtensionPoint()
     // TODO pipelineGenerationExtensionPoint()
 }
 

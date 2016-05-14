@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.generator;
 
+import com.google.common.collect.ImmutableMap;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.AbstractProject;
@@ -54,22 +55,25 @@ public class BranchGenerationStep extends AbstractSeedStep {
      */
     @Override
     protected void branchConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config, EnvVars env) {
-        String branch = env.get("BRANCH", null);
-        if (StringUtils.isBlank(branch)) {
-            throw new MissingParameterException("BRANCH");
-        }
+        String branch = getBranchParameter(env);
         config.put("BRANCH_FOLDER_PATH", projectConfig.getPipelineConfig().getBranchFolderPath(parameters, branch));
         config.put("BRANCH_SEED_NAME", projectConfig.getPipelineConfig().getBranchSeedName(parameters, branch));
         config.put("BRANCH_START_NAME", String.valueOf(projectConfig.getPipelineConfig().getBranchStartName(parameters, branch)));
     }
 
+    private String getBranchParameter(EnvVars env) {
+        String branch = env.get("BRANCH", null);
+        if (StringUtils.isBlank(branch)) {
+            throw new MissingParameterException("BRANCH");
+        }
+        return branch;
+    }
+
     @Override
-    protected String replaceExtensionPoints(String script, EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
-        String result = script;
-        // TODO Branch extensions
-//        result = replaceExtensionPoint(script, "projectAuthorisations", new ProjectAuthorisationsExtension(projectConfig, parameters).generate());
-//        result = replaceExtensionPoint(result, "projectGeneration", new ProjectGenerationExtension(projectConfig, parameters).generate());
-        return result;
+    protected Map<String, GenerationExtension> getExtensionPoints(EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
+        return ImmutableMap.<String, GenerationExtension>of(
+                "branchSeedScm", new BranchSeedSCMExtension(projectConfig, parameters, getBranchParameter(env))
+        );
     }
 
     @Extension

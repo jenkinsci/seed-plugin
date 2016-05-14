@@ -8,7 +8,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.util.Map;
+import java.util.Collections;
 
 public class PipelineGenerationStep extends AbstractGenerationStep {
 
@@ -30,9 +30,12 @@ public class PipelineGenerationStep extends AbstractGenerationStep {
     }
 
     @Override
-    protected String configure(Function<String, String> expandFn, Map<String, String> config, String script, EnvVars env) {
+    protected GenerationContext configure(Function<String, String> expandFn, EnvVars env) {
         // FIXME Method net.nemerosa.jenkins.seed.generator.PipelineGenerationStep.configure
-        return script;
+        return new GenerationContext(
+                Collections.<String, String>emptyMap(),
+                Collections.<String, GenerationExtension>emptyMap()
+        );
     }
 
     @Override

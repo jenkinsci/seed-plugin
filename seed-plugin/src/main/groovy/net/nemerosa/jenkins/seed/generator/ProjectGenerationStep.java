@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.generator;
 
+import com.google.common.collect.ImmutableMap;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.AbstractProject;
@@ -8,6 +9,8 @@ import hudson.tasks.Builder;
 import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
 import org.kohsuke.stapler.DataBoundConstructor;
+
+import java.util.Map;
 
 /**
  * Configuration of a Seed job when it's time to generate/update a project.
@@ -42,11 +45,11 @@ public class ProjectGenerationStep extends AbstractSeedStep {
     }
 
     @Override
-    protected String replaceExtensionPoints(String script, EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
-        String result;
-        result = replaceExtensionPoint(script, "projectAuthorisations", new ProjectAuthorisationsExtension(projectConfig, parameters).generate());
-        result = replaceExtensionPoint(result, "projectGeneration", new ProjectGenerationExtension(projectConfig, parameters).generate());
-        return result;
+    protected Map<String, GenerationExtension> getExtensionPoints(EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
+        return ImmutableMap.<String, GenerationExtension>of(
+                "projectAuthorisations", new ProjectAuthorisationsGenerationExtension(projectConfig, parameters),
+                "projectGeneration", new ProjectGenerationGenerationExtension(projectConfig, parameters)
+        );
     }
 
     @Extension

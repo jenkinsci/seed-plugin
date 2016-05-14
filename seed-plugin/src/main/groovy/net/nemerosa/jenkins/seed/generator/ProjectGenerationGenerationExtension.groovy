@@ -3,17 +3,17 @@ package net.nemerosa.jenkins.seed.generator
 import net.nemerosa.jenkins.seed.config.ProjectParameters
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig
 
-public class ProjectGenerationExtension {
+public class ProjectGenerationGenerationExtension implements GenerationExtension {
 
     private final ProjectPipelineConfig projectConfig;
     private final ProjectParameters parameters;
 
-    public ProjectGenerationExtension(ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
+    public ProjectGenerationGenerationExtension(ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
         this.projectConfig = projectConfig;
         this.parameters = parameters;
     }
 
-
+    @Override
     public String generate() {
 
         // Snippets

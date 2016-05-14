@@ -5,6 +5,7 @@ import hudson.EnvVars;
 import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class AbstractSeedStep extends AbstractGenerationStep {
@@ -12,7 +13,9 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
     protected abstract String getScriptPath();
 
     @Override
-    protected String configure(Function<String, String> expandFn, Map<String, String> config, String script, EnvVars env) {
+    protected GenerationContext configure(Function<String, String> expandFn, EnvVars env) {
+        // Environment variables
+        Map<String, String> config = new LinkedHashMap<>();
         // Project pipeline
         ProjectPipelineConfig projectConfig = getProjectConfig();
         // Project actual parameters
@@ -20,7 +23,12 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         // Environment variables
         configuration(projectConfig, parameters, config, env);
         // Script replacements
-        return replaceExtensionPoints(script, env, projectConfig, parameters);
+        Map<String, GenerationExtension> extensions = getExtensionPoints(env, projectConfig, parameters);
+        // OK
+        return new GenerationContext(
+                config,
+                extensions
+        );
     }
 
     protected void configuration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config, EnvVars env) {
@@ -59,7 +67,7 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         config.put("PROJECT_SCM_CREDENTIALS", parameters.getScmCredentials());
     }
 
-    protected void eventConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
+    protected void eventConfiguration(ProjectPipelineConfig projectConfig, @SuppressWarnings("UnusedParameters") ProjectParameters parameters, Map<String, String> config) {
         config.put("EVENT_STRATEGY_DELETE", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isDelete()));
         config.put("EVENT_STRATEGY_AUTO", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isAuto()));
         config.put("EVENT_STRATEGY_TRIGGER", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isTrigger()));
@@ -67,7 +75,7 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         config.put("EVENT_STRATEGY_COMMIT", projectConfig.getPipelineConfig().getEventStrategy().getCommit());
     }
 
-    protected abstract String replaceExtensionPoints(String script, EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters);
+    protected abstract Map<String, GenerationExtension> getExtensionPoints(EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters);
 
     protected abstract ProjectPipelineConfig getProjectConfig();
 }
