@@ -1,0 +1,13 @@
+<div>
+    <p>Expression to define the name of the job in the branch folder which is fired to start the pipeline.</p>
+    <p>This job <i>should</i> be parameterised with the commit or revision to build.</p>
+    <p><b>Default value</b>: <code>${project}-${branch}-build</code></p>
+    <p>In all expressions, the following replacements are taken into account:</p>
+    <ul>
+        <li><code>${PROJECT}</code> or <code>${BRANCH}</code> - name of the project or the branch in UPPERCASE</li>
+        <li><code>${PROJECT_}</code> or <code>${BRANCH_}</code> - name of the project or the branch in UPPERCASE and dashes (-) are replaced by underscores (_)</li>
+        <li><code>${project}</code> or <code>${branch}</code> - name of the project or the branch in lowercase</li>
+        <li><code>${Project}</code> or <code>${Branch}</code> - name of the project or the branch, capitalised</li>
+        <li>any other unsupported replacement expression will be left as is</li>
+    </ul>
+</div>

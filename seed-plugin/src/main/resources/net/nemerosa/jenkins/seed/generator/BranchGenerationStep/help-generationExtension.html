@@ -1,0 +1,16 @@
+<div>
+    <p>
+        This section allows you to define an arbitrary snippet of
+        <a href="https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin">Job DSL</a> code
+        in the project generator job.
+    </p>
+    <p>
+        This can be used to perform additional actions when generating/updating a project.
+    </p>
+    <p>Example:</p>
+    <pre>
+        publishers {
+            ontrackBuild(PROJECT, BRANCH, '${BUILD_NUMBER}')
+        }
+    </pre>
+</div>
