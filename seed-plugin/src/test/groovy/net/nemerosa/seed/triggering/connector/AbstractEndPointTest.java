@@ -1,6 +1,6 @@
 package net.nemerosa.seed.triggering.connector;
 
-import net.nemerosa.seed.config.MissingParameterException;
+import net.nemerosa.jenkins.seed.generator.MissingParameterException;
 import net.nemerosa.seed.triggering.connector.AbstractEndPoint;
 import org.junit.Assert;
 import org.junit.Test;

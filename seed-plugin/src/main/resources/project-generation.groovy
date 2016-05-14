@@ -8,7 +8,7 @@ folder(PROJECT_FOLDER_PATH) {
     projectAuthorisationsExtensionPoint()
 }
 
-freeStyleJob("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
+job("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
     description "Project seed for ${PROJECT} - generates one branch folder and seed."
     parameters {
         // Default seed parameters
@@ -57,7 +57,7 @@ freeStyleJob("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
 // Generates a destructor only if an option is defined for the project
 println "PIPELINE_DESTRUCTOR = ${PIPELINE_DESTRUCTOR}"
 if (PIPELINE_DESTRUCTOR == "true") {
-    freeStyleJob("${PROJECT_FOLDER_PATH}/${PROJECT_DESTRUCTOR_NAME}") {
+    job("${PROJECT_FOLDER_PATH}/${PROJECT_DESTRUCTOR_NAME}") {
         description "Branch destructor for ${PROJECT} - deletes a branch folder."
         parameters {
             // Default seed parameters

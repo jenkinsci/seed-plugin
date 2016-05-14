@@ -2,7 +2,7 @@ package net.nemerosa.seed.triggering.connector
 
 import com.google.inject.Guice
 import hudson.model.UnprotectedRootAction
-import net.nemerosa.seed.config.MissingParameterException
+import net.nemerosa.jenkins.seed.generator.MissingParameterException
 import net.nemerosa.seed.triggering.SeedEvent
 import net.nemerosa.seed.triggering.SeedEventType
 import net.nemerosa.seed.triggering.SeedService

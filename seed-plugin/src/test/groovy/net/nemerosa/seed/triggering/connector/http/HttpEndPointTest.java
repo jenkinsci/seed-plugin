@@ -2,7 +2,7 @@ package net.nemerosa.seed.triggering.connector.http;
 
 import net.nemerosa.seed.triggering.SeedService;
 import net.nemerosa.seed.triggering.connector.UnknownRequestException;
-import net.nemerosa.seed.config.MissingParameterException;
+import net.nemerosa.jenkins.seed.generator.MissingParameterException;
 import net.nemerosa.seed.triggering.SeedChannel;
 import net.nemerosa.seed.triggering.SeedEvent;
 import net.nemerosa.seed.triggering.SeedEventType;

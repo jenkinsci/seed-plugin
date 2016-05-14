@@ -2,6 +2,7 @@ package net.nemerosa.seed.config;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import net.nemerosa.jenkins.seed.generator.MissingParameterException;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;

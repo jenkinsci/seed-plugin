@@ -51,7 +51,7 @@ public abstract class AbstractSeedStep extends Builder {
 
         // General configuration
         Map<String, String> config = new HashMap<>();
-        configuration(projectConfig, parameters, config);
+        configuration(projectConfig, parameters, config, env);
 
         // Traces
         for (Map.Entry<String, String> entry : config.entrySet()) {
@@ -67,6 +67,9 @@ public abstract class AbstractSeedStep extends Builder {
         // Replacements of extension points
         script = replaceExtensionPoints(script, env, projectConfig, parameters);
 
+        // Saves the script
+        build.getWorkspace().child("dsl.groovy").write(script, "UTF-8");
+
         // Runs the script
         DSLHelper.launchGenerationScript(build, listener, env, script);
 
@@ -76,11 +79,11 @@ public abstract class AbstractSeedStep extends Builder {
 
     protected abstract String getScriptPath();
 
-    protected void configuration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
+    protected void configuration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config, EnvVars env) {
         generalConfiguration(parameters, config);
         pipelineConfiguration(projectConfig, parameters, config);
         projectConfiguration(projectConfig, parameters, config);
-        branchConfiguration(projectConfig, parameters, config);
+        branchConfiguration(projectConfig, parameters, config, env);
         eventConfiguration(projectConfig, parameters, config);
     }
 
@@ -98,7 +101,7 @@ public abstract class AbstractSeedStep extends Builder {
         config.put("PROJECT_DESTRUCTOR_NAME", String.valueOf(projectConfig.getPipelineConfig().getProjectDestructorJob(parameters)));
     }
 
-    protected void branchConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
+    protected void branchConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config, EnvVars env) {
         config.put("BRANCH_FOLDER_PATH", projectConfig.getPipelineConfig().getBranchFolderPath(parameters, "*"));
         config.put("BRANCH_SEED_NAME", projectConfig.getPipelineConfig().getBranchSeedName(parameters, "*"));
         config.put("BRANCH_START_NAME", String.valueOf(projectConfig.getPipelineConfig().getBranchStartName(parameters, "*")));

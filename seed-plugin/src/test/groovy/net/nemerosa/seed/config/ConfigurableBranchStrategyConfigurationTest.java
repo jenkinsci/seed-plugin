@@ -1,8 +1,7 @@
 package net.nemerosa.seed.config;
 
 import com.google.common.collect.ImmutableMap;
-import net.nemerosa.seed.config.ConfigurableBranchStrategyConfiguration;
-import net.nemerosa.seed.config.MissingParameterException;
+import net.nemerosa.jenkins.seed.generator.MissingParameterException;
 import org.junit.Test;
 
 import java.util.Arrays;
