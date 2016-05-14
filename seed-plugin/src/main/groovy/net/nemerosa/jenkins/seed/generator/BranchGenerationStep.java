@@ -65,7 +65,7 @@ public class BranchGenerationStep extends AbstractSeedStep {
 
     @Override
     protected String replaceExtensionPoints(String script, EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
-        String result = "";
+        String result = script;
         // TODO Branch extensions
 //        result = replaceExtensionPoint(script, "projectAuthorisations", new ProjectAuthorisationsExtension(projectConfig, parameters).generate());
 //        result = replaceExtensionPoint(result, "projectGeneration", new ProjectGenerationExtension(projectConfig, parameters).generate());
