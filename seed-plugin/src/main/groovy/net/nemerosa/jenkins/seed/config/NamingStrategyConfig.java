@@ -1,6 +1,5 @@
 package net.nemerosa.jenkins.seed.config;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import lombok.experimental.Wither;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -9,6 +8,11 @@ import static net.nemerosa.jenkins.seed.support.Evaluator.evaluate;
 
 @Data
 public class NamingStrategyConfig {
+
+    /**
+     * Placeholder for the branch name
+     */
+    public static final String BRANCH_PLACEHOLDER = "*";
 
     /**
      * Path to the project folder
@@ -46,14 +50,21 @@ public class NamingStrategyConfig {
     @Wither
     private final String branchStartName;
 
+    /**
+     * Branch name expression
+     */
+    @Wither
+    private final String branchName;
+
     @DataBoundConstructor
-    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String projectDestructorName) {
+    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String projectDestructorName, String branchName) {
         this.projectFolderPath = projectFolderPath;
         this.branchFolderPath = branchFolderPath;
         this.projectSeedName = projectSeedName;
         this.projectDestructorName = projectDestructorName;
         this.branchSeedName = branchSeedName;
         this.branchStartName = branchStartName;
+        this.branchName = branchName;
     }
 
     /**
@@ -66,8 +77,8 @@ public class NamingStrategyConfig {
                 null,
                 null,
                 null,
-                null
-        );
+                null,
+                null);
     }
 
     public String getProjectFolder(ProjectParameters parameters) {
@@ -82,24 +93,35 @@ public class NamingStrategyConfig {
         return evaluate(projectDestructorName, "${project}-destructor", "project", parameters.getProject());
     }
 
+    public String getBranchName(String branch) {
+        String value = branch;
+        // TODO Removes branch prefixes
+//        for (String prefix : configuration.getBranchNamePrefixes()) {
+//            value = StringUtils.removeStart(value, prefix);
+//        }
+        // Normalisation
+        value = normalise(value);
+        // Evaluation
+        return evaluate(branchName, "${branch}", "branch", value);
+    }
+
     public String getBranchFolderPath(ProjectParameters parameters, String branch) {
-        return evaluate(branchFolderPath, "${project}-${branch}", ImmutableMap.of(
-                "project", parameters.getProject(),
-                "branch", branch
-        ));
+        return evaluate(branchFolderPath, "${project}-*", "project", parameters.getProject())
+                .replace(BRANCH_PLACEHOLDER, getBranchName(branch));
     }
 
     public String getBranchSeedName(ProjectParameters parameters, String branch) {
-        return evaluate(branchFolderPath, "${project}-${branch}-seed", ImmutableMap.of(
-                "project", parameters.getProject(),
-                "branch", branch
-        ));
+        return evaluate(branchFolderPath, "${project}-*-seed", "project", parameters.getProject())
+                .replace(BRANCH_PLACEHOLDER, getBranchName(branch));
     }
 
     public String getBranchStartName(ProjectParameters parameters, String branch) {
-        return evaluate(branchFolderPath, "${project}-${branch}-build", ImmutableMap.of(
-                "project", parameters.getProject(),
-                "branch", branch
-        ));
+        return evaluate(branchFolderPath, "${project}-*-build", "project", parameters.getProject())
+                .replace(BRANCH_PLACEHOLDER, getBranchName(branch));
     }
+
+    public static String normalise(String value) {
+        return value.replaceAll("[^A-Za-z0-9._-]", "-");
+    }
+
 }

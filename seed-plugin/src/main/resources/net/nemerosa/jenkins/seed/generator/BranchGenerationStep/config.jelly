@@ -57,6 +57,9 @@
                 <f:entry title="Branch start name" field="branchStartName">
                     <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.branchStartName}"/>
                 </f:entry>
+                <f:entry title="Branch name" field="branchName">
+                    <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.branchName}"/>
+                </f:entry>
             </f:section>
             <f:section title="Event strategy" name="eventStrategy">
                 <f:entry title="Delete complete pipeline on branch deletion" field="delete">

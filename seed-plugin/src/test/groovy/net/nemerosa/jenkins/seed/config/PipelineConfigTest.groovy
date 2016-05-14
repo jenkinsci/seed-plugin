@@ -44,6 +44,16 @@ class PipelineConfigTest {
         assert config.getBranchFolderPath(parameters, "master") == "test-master"
         assert config.getBranchSeedName(parameters, "master") == "test-master-seed"
         assert config.getBranchStartName(parameters, "master") == "test-master-build"
+        assert config.getBranchName("master") == "master"
+    }
+
+    @Test
+    void 'Default branch names'() {
+        PipelineConfig config = new PipelineConfig()
+        assert config.getBranchName("master") == "master"
+        assert config.getBranchName("release/1.0") == "release-1.0"
+        assert config.getBranchName("feature/great") == "feature-great"
+        assert config.getBranchName("RELEASE-1.0") == "release-1.0"
     }
 
 }

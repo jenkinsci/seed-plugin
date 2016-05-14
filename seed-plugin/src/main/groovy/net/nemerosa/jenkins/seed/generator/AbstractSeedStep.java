@@ -102,9 +102,10 @@ public abstract class AbstractSeedStep extends Builder {
     }
 
     protected void branchConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config, EnvVars env) {
-        config.put("BRANCH_FOLDER_PATH", projectConfig.getPipelineConfig().getBranchFolderPath(parameters, "*"));
-        config.put("BRANCH_SEED_NAME", projectConfig.getPipelineConfig().getBranchSeedName(parameters, "*"));
-        config.put("BRANCH_START_NAME", String.valueOf(projectConfig.getPipelineConfig().getBranchStartName(parameters, "*")));
+        config.put("BRANCH_FOLDER_PATH", projectConfig.getPipelineConfig().getNamingStrategy().getBranchFolderPath());
+        config.put("BRANCH_SEED_NAME", projectConfig.getPipelineConfig().getNamingStrategy().getBranchSeedName());
+        config.put("BRANCH_START_NAME", String.valueOf(projectConfig.getPipelineConfig().getNamingStrategy().getBranchStartName()));
+        config.put("BRANCH_NAME", String.valueOf(projectConfig.getPipelineConfig().getNamingStrategy().getBranchName()));
     }
 
     protected void generalConfiguration(ProjectParameters parameters, Map<String, String> config) {

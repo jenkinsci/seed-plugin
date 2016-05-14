@@ -160,4 +160,8 @@ public class PipelineConfig {
     public String getBranchStartName(ProjectParameters parameters, String branch) {
         return namingStrategy.getBranchStartName(parameters, branch);
     }
+
+    public String getBranchName(String branch) {
+        return namingStrategy.getBranchName(branch);
+    }
 }

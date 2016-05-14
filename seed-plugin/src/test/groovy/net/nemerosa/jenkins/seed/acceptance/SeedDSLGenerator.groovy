@@ -33,6 +33,7 @@ job('${jobName}') {
                         projectDestructorName '${config.namingStrategy.projectDestructorName ?: ''}'
                         branchSeedName '${config.namingStrategy.branchSeedName ?: ''}'
                         branchStartName '${config.namingStrategy.branchStartName ?: ''}'
+                        branchName '${config.namingStrategy.branchName ?: ''}'
                     }
                     eventStrategy {
                         delete ${config.eventStrategy.delete}

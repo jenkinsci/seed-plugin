@@ -34,6 +34,7 @@ job("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
                         branchFolderPath BRANCH_FOLDER_PATH
                         branchSeedName BRANCH_SEED_NAME
                         branchStartName BRANCH_START_NAME
+                        branchName BRANCH_NAME
                     }
                     eventStrategy {
                         delete EVENT_STRATEGY_DELETE
