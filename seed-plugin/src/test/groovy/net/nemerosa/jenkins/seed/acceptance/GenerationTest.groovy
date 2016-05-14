@@ -36,7 +36,7 @@ class GenerationTest {
         // Default seed
         String seed = jenkins.defaultSeed()
         // Project name
-        def projectName = uid('P')
+        def projectName = uid('p')
         // Firing the seed job
         jenkins.fireJob(seed, [
                 PROJECT         : projectName,
@@ -68,7 +68,7 @@ class GenerationTest {
     @Test
     void 'Custom environment variable'() {
         // Project name
-        def projectName = uid('P')
+        def projectName = uid('p')
         // Configuration of environment variables
         String seed = jenkins.seed(
                 new PipelineConfig()
@@ -101,7 +101,7 @@ class GenerationTest {
     @Test
     void 'Branch SCM parameter'() {
         // Project name
-        def projectName = uid('P')
+        def projectName = uid('p')
         // Configuration of environment variables
         def seed = jenkins.seed(
                 new PipelineConfig()
@@ -138,7 +138,7 @@ class GenerationTest {
     @Ignore
     void 'Direct script execution - not allowed'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 pipeline-generator-script-allowed: no
@@ -167,7 +167,7 @@ pipeline-generator-script-allowed: no
     @Ignore
     void 'Direct script execution - not allowed at project level'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 classes:
@@ -198,7 +198,7 @@ classes:
     @Ignore
     void 'Direct script execution - allowed at project level'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 pipeline-generator-script-allowed: no
@@ -279,7 +279,7 @@ classes:
         def projectName = uid('P')
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT         : 'PRJ',
+                PROJECT         : projectName,
                 PROJECT_SCM_TYPE: 'svn',
                 PROJECT_SCM_URL : 'svn://localhost/PRJ',
         ]).checkSuccess()
@@ -308,7 +308,7 @@ classes:
     @Ignore
     void 'Repository credentials'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Configuration (default)
         jenkins.configureSeed ""
         // Firing the seed job
@@ -369,7 +369,7 @@ task prepare(dependsOn: copyLibraries)
     @Ignore
     void 'Branch pipeline extensions'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Configuration
         jenkins.configureSeed """\
 extensions:
@@ -423,7 +423,7 @@ projects:
     @Ignore
     void 'Project pipeline extensions'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Configuration
         jenkins.configureSeed """\
 extensions:
@@ -469,7 +469,7 @@ projects:
     @Ignore
     void 'Pipeline is fired by default after regeneration'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Default configuration
         jenkins.configureSeed ''
         // Firing the seed job
@@ -501,7 +501,7 @@ projects:
     @Ignore
     void 'Pipeline is not fired after regeneration when pipeline-start-auto is disabled'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Default configuration
         jenkins.configureSeed """
 projects:
@@ -542,7 +542,7 @@ projects:
     @Ignore
     void 'Destructor job'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Default configuration
         jenkins.configureSeed """
 projects:
@@ -581,7 +581,7 @@ projects:
     @Ignore
     void 'Destructor job with custom naming convention'() {
         // Project name
-        String project = uid('P')
+        String project = uid('p')
         // Default configuration
         jenkins.configureSeed """
 strategies:

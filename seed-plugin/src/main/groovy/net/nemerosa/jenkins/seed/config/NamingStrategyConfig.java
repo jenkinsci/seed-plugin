@@ -70,14 +70,14 @@ public class NamingStrategyConfig {
     }
 
     public String getProjectFolder(ProjectParameters parameters) {
-        return evaluate(projectFolderPath, "project", parameters.getProject());
+        return evaluate(projectFolderPath, "${project}", "project", parameters.getProject());
     }
 
     public String getProjectSeedJob(ProjectParameters parameters) {
-        return evaluate(projectSeedName, "project", parameters.getProject());
+        return evaluate(projectSeedName, "${project}-seed", "project", parameters.getProject());
     }
 
     public String getProjectDestructorJob(ProjectParameters parameters) {
-        return evaluate(projectDestructorName, "project", parameters.getProject());
+        return evaluate(projectDestructorName, "${project}-destructor", "project", parameters.getProject());
     }
 }

@@ -22,23 +22,23 @@ job('${jobName}') {
             projectConfig {
                 pipelineConfig {
                     destructor ${config.destructor}
-                    commitParameter '${config.commitParameter}'
-                    branchSCMParameter ${config.branchSCMParameter}
-                    branchParameters '${config.branchParameters}'
-                    generationExtension '${config.generationExtension}'
+                    commitParameter '${config.commitParameter ?: ''}'
+                    branchSCMParameter ${config.branchSCMParameter ?: ''}
+                    branchParameters '${config.branchParameters ?: ''}'
+                    generationExtension '${config.generationExtension ?: ''}'
                     namingStrategy {
-                        projectFolderPath '${config.namingStrategy.projectFolderPath}'
-                        branchFolderPath '${config.namingStrategy.branchFolderPath}'
-                        projectSeedName '${config.namingStrategy.projectSeedName}'
-                        projectDestructorName '${config.namingStrategy.projectDestructorName}'
-                        branchSeedName '${config.namingStrategy.branchSeedName}'
-                        branchStartName '${config.namingStrategy.branchStartName}'
+                        projectFolderPath '${config.namingStrategy.projectFolderPath ?: ''}'
+                        branchFolderPath '${config.namingStrategy.branchFolderPath ?: ''}'
+                        projectSeedName '${config.namingStrategy.projectSeedName ?: ''}'
+                        projectDestructorName '${config.namingStrategy.projectDestructorName ?: ''}'
+                        branchSeedName '${config.namingStrategy.branchSeedName ?: ''}'
+                        branchStartName '${config.namingStrategy.branchStartName ?: ''}'
                     }
                     eventStrategy {
                         delete ${config.eventStrategy.delete}
                         auto ${config.eventStrategy.auto}
                         trigger ${config.eventStrategy.trigger}
-                        commit '${config.eventStrategy.commit}'
+                        commit '${config.eventStrategy.commit ?: ''}'
                         startAuto ${config.eventStrategy.startAuto}
                     }
                 }

@@ -29,4 +29,18 @@ class PipelineConfigTest {
         assert eventStrategy.startAuto
     }
 
+    @Test
+    void 'Default naming strategy'() {
+        def parameters = new ProjectParameters(
+                "test",
+                "git",
+                "https://github.com/nemerosa/ontrack.git",
+                ""
+        )
+        PipelineConfig config = new PipelineConfig()
+        assert config.getProjectFolder(parameters) == "test"
+        assert config.getProjectSeedJob(parameters) == "test-seed"
+        assert config.getProjectDestructorJob(parameters) == "test-destructor"
+    }
+
 }

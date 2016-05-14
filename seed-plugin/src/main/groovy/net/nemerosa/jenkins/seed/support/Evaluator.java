@@ -4,6 +4,16 @@ import org.apache.commons.lang.StringUtils;
 
 public class Evaluator {
 
+    public static String evaluate(String expression, String defaultExpression, String name, String value) {
+        String actualExpression;
+        if (StringUtils.isNotBlank(expression)) {
+            actualExpression = expression;
+        } else {
+            actualExpression = defaultExpression;
+        }
+        return evaluate(actualExpression, name, value);
+    }
+
     public static String evaluate(String expression, String name, String value) {
         return expression
                 .replace(lower(name), value.toLowerCase())
