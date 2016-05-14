@@ -32,6 +32,23 @@ class GenerationTest {
     }
 
     @Test
+    void 'Project seed'() {
+        // Default seed
+        String seed = jenkins.defaultSeed()
+        // Project name
+        def projectName = uid('p')
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : projectName,
+                PROJECT_SCM_TYPE: 'git',
+                // Path to the prepared Git repository in docker.gradle
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.job("${projectName}/${projectName}-seed")
+    }
+
+    @Test
     void 'Creating a complete seed tree'() {
         // Default seed
         String seed = jenkins.defaultSeed()
