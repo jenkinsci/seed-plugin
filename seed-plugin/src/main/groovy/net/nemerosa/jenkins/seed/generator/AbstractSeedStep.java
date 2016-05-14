@@ -2,82 +2,26 @@ package net.nemerosa.jenkins.seed.generator;
 
 import com.google.common.base.Function;
 import hudson.EnvVars;
-import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
-import hudson.tasks.Builder;
 import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
-import net.nemerosa.jenkins.seed.support.DSLHelper;
-import net.nemerosa.seed.config.SeedDSLHelper;
-import org.apache.commons.io.IOUtils;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractSeedStep extends Builder {
-
-    /**
-     * Generation of the project folder and project seed.
-     *
-     * @param build    Seed job
-     * @param launcher Its launcher
-     * @param listener Its listener
-     * @return State of the execution
-     */
-    @Override
-    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-
-        // Default environment for the DSL execution
-        final EnvVars env = build.getEnvironment(listener);
-        env.putAll(build.getBuildVariables());
-
-        // Function to expand the values
-        Function<String, String> expandFn = new Function<String, String>() {
-            @Nullable
-            @Override
-            public String apply(@Nullable String input) {
-                return env.expand(input);
-            }
-        };
-
-        // Gets the project configuration
-        ProjectPipelineConfig projectConfig = getProjectConfig();
-
-        // Project parameters
-        ProjectParameters parameters = projectConfig.getProjectParameters(expandFn);
-
-        // General configuration
-        Map<String, String> config = new HashMap<>();
-        configuration(projectConfig, parameters, config, env);
-
-        // Traces
-        for (Map.Entry<String, String> entry : config.entrySet()) {
-            listener.getLogger().format("Config: %s: %s%n", entry.getKey(), entry.getValue());
-        }
-        env.putAll(config);
-
-        // Generation script
-        String scriptPath = getScriptPath();
-        listener.getLogger().format("Script: %s%n", scriptPath);
-        String script = IOUtils.toString(SeedDSLHelper.class.getResource(scriptPath));
-
-        // Replacements of extension points
-        script = replaceExtensionPoints(script, env, projectConfig, parameters);
-
-        // Saves the script
-        build.getWorkspace().child("dsl.groovy").write(script, "UTF-8");
-
-        // Runs the script
-        DSLHelper.launchGenerationScript(build, listener, env, script);
-
-        // OK
-        return true;
-    }
+public abstract class AbstractSeedStep extends AbstractGenerationStep {
 
     protected abstract String getScriptPath();
+
+    @Override
+    protected String configure(Function<String, String> expandFn, Map<String, String> config, String script, EnvVars env) {
+        // Project pipeline
+        ProjectPipelineConfig projectConfig = getProjectConfig();
+        // Project actual parameters
+        ProjectParameters parameters = projectConfig.getProjectParameters(expandFn);
+        // Environment variables
+        configuration(projectConfig, parameters, config, env);
+        // Script replacements
+        return replaceExtensionPoints(script, env, projectConfig, parameters);
+    }
 
     protected void configuration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config, EnvVars env) {
         generalConfiguration(parameters, config);
@@ -121,13 +65,6 @@ public abstract class AbstractSeedStep extends Builder {
         config.put("EVENT_STRATEGY_TRIGGER", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isTrigger()));
         config.put("EVENT_STRATEGY_START_AUTO", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isStartAuto()));
         config.put("EVENT_STRATEGY_COMMIT", projectConfig.getPipelineConfig().getEventStrategy().getCommit());
-    }
-
-    protected String replaceExtensionPoint(String script, String extensionPoint, String extension) {
-        return script.replace(
-                String.format("%sExtensionPoint()", extensionPoint),
-                extension
-        );
     }
 
     protected abstract String replaceExtensionPoints(String script, EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters);
