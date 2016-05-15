@@ -244,6 +244,8 @@ classes:
 
     @Test
     void 'Project folder authorisations'() {
+        // Project name
+        def projectName = uid('p')
         // Configuration of the Seed job
         def seed = jenkins.seed(
                 new PipelineConfig()
@@ -257,21 +259,21 @@ classes:
         )
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT         : 'test-auth',
+                PROJECT         : projectName,
                 PROJECT_SCM_TYPE: 'git',
                 PROJECT_SCM_URL : 'path/to/repo',
         ]).checkSuccess()
         // Checks the project folder is created
-        jenkins.job('test-auth')
+        jenkins.job(projectName)
         // Checks the project folder authorisation matrix
-        def xml = jenkins.jobConfig('test-auth')
+        def xml = jenkins.jobConfig(projectName)
         def matrix = xml.properties['com.cloudbees.hudson.plugins.folder.properties.AuthorizationMatrixProperty']
         assert matrix
         assert matrix.permission.collect { it.text() as String } == [
-                'hudson.model.Item.Workspace:jenkins_test-auth',
-                'hudson.model.Item.Read:jenkins_test-auth',
-                'hudson.model.Item.Discover:jenkins_test-auth',
-        ]
+                "hudson.model.Item.Workspace:jenkins_${projectName}",
+                "hudson.model.Item.Read:jenkins_${projectName}",
+                "hudson.model.Item.Discover:jenkins_${projectName}",
+        ] as List<String>
     }
 
     @Test

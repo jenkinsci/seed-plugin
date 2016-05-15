@@ -47,7 +47,7 @@ public class ProjectGenerationStep extends AbstractSeedStep {
     @Override
     protected Map<String, GenerationExtension> getExtensionPoints(EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
         return ImmutableMap.<String, GenerationExtension>of(
-                "projectAuthorisations", new ProjectAuthorisationsGenerationExtension(projectConfig, parameters),
+                "projectAuthorisations", new ProjectAuthorisationsGenerationExtension(projectConfig.getPipelineConfig(), parameters),
                 "projectGeneration", new ProjectGenerationGenerationExtension(projectConfig, parameters)
         );
     }

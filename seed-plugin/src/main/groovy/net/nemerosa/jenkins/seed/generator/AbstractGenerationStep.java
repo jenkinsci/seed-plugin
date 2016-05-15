@@ -9,6 +9,7 @@ import hudson.tasks.Builder;
 import net.nemerosa.jenkins.seed.support.DSLHelper;
 import net.nemerosa.seed.config.SeedDSLHelper;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public abstract class AbstractGenerationStep extends Builder {
         env.putAll(context.getEnvironment());
 
         // Replacements
-        script = replaceExtensionPoints(script, context.getExtensions());
+        script = replaceExtensionPoints(listener, script, context.getExtensions());
 
         // Saves the script
         build.getWorkspace().child("dsl.groovy").write(script, "UTF-8");
@@ -64,16 +65,27 @@ public abstract class AbstractGenerationStep extends Builder {
 
     protected abstract String getScriptPath();
 
-    private String replaceExtensionPoints(String script, Map<String, GenerationExtension> extensions) {
+    private String replaceExtensionPoints(BuildListener listener, String script, Map<String, GenerationExtension> extensions) {
         AtomicReference<String> result = new AtomicReference<>(script);
         for (Map.Entry<String, GenerationExtension> entry : extensions.entrySet()) {
+            String extensionKey = entry.getKey();
+            String oldResult = result.get();
+            String extensionScript = entry.getValue().generate();
+            // Logging
+            listener.getLogger().format("Extension %s has produced:%n%s%n", extensionKey, extensionScript);
+            // Replacement
             result.set(
                     replaceExtensionPoint(
                             result.get(),
-                            entry.getKey(),
-                            entry.getValue().generate()
+                            extensionKey,
+                            extensionScript
                     )
             );
+            if (StringUtils.equals(oldResult, result.get())) {
+                throw new IllegalStateException(String.format("Extension %s has NOT been applied.%n", extensionKey));
+            } else {
+                listener.getLogger().format("Extension %s has been applied.%n", extensionKey);
+            }
         }
         // OK
         return result.get();

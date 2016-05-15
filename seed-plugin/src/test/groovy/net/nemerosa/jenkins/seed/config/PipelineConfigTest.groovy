@@ -56,4 +56,28 @@ class PipelineConfigTest {
         assert config.getBranchName("RELEASE-1.0") == "release-1.0"
     }
 
+    @Test
+    void 'Project authorisations'() {
+        def parameters = new ProjectParameters(
+                "test",
+                "git",
+                "https://github.com/nemerosa/ontrack.git",
+                ""
+        )
+        PipelineConfig config = new PipelineConfig()
+                .withAuthorisations('''\
+                hudson.model.Item.Workspace:jenkins_*
+                hudson.model.Item.Read:jenkins_*
+                # Comments and empty lines are allowed
+
+                hudson.model.Item.Discover:jenkins_*
+                ''')
+        def authorisations = config.getProjectAuthorisations(parameters)
+        assert authorisations == [
+                'hudson.model.Item.Workspace:jenkins_test',
+                'hudson.model.Item.Read:jenkins_test',
+                'hudson.model.Item.Discover:jenkins_test',
+        ]
+    }
+
 }
