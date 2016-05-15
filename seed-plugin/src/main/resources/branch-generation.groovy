@@ -56,7 +56,7 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
         injectPasswords()
     }
     steps {
-        shell '''\\
+        shell '''\
 #!/bin/bash
 if [ "\${SEED_GRADLE}" == "yes" ]
 then
