@@ -8,7 +8,8 @@ import net.nemerosa.seed.config.SeedDSLHelper
 import net.nemerosa.seed.config.SeedProjectEnvironment
 import org.apache.commons.lang.StringUtils
 
-import static net.nemerosa.seed.generator.SeedProperties.*
+import static net.nemerosa.jenkins.seed.generator.PipelineGeneration.*
+import static net.nemerosa.jenkins.seed.generator.SeedProperties.*
 
 /**
  * This class prepares the DSL environment for the {@link BranchPipelineGeneratorExtension}.
@@ -39,12 +40,8 @@ import static net.nemerosa.seed.generator.SeedProperties.*
  *     </ul>
  * </ul>
  */
+@Deprecated
 class SeedPipelineGeneratorHelper {
-
-    public static final String ENV_SEED_GRADLE = 'SEED_GRADLE'
-    public static final String ENV_SEED_DSL_SCRIPT_LOCATION = 'SEED_DSL_SCRIPT_LOCATION'
-    public static final String ENV_SEED_PROJECT = 'SEED_PROJECT'
-    public static final String ENV_SEED_BRANCH = 'SEED_BRANCH'
 
     private final String project
     private final String projectClass
@@ -118,33 +115,7 @@ class SeedPipelineGeneratorHelper {
         if (!repositoryUrl) {
             repositoryUrl = projectEnvironment.getConfigurationValue('pipeline-generator-repository', '')
         }
-        String repository
-        if (repositoryUrl) {
-            if (repositoryUrl.startsWith('flat:')) {
-                repository = "flatDir { dirs '${repositoryUrl - 'flat:'}' }"
-            } else {
-                String repositoryUser = properties[SEED_DSL_REPOSITORY_USER]
-                String repositoryPassword = properties[SEED_DSL_REPOSITORY_PASSWORD]
-                if (repositoryUser && repositoryPassword) {
-                    repositoryUser = extractCredential(repositoryUser);
-                    repositoryPassword = extractCredential(repositoryPassword);
-                    repository = """\
-maven {
-    url '${repositoryUrl}'
-    credentials {
-        username ${repositoryUser}
-        password ${repositoryPassword}
-    }
-}
-"""
-                } else {
-                    // Repository without credentials
-                    repository = "maven { url '${repositoryUrl}' }"
-                }
-            }
-        } else {
-            repository = "mavenCentral()"
-        }
+        def repository = generateRepositoryGradle(repositoryUrl, properties, listener)
 
         // Computation of seed names
         String seedProjectName = projectEnvironment.projectConfiguration.name
@@ -167,71 +138,14 @@ maven {
         ))
 
         // Prepares the Gradle environment
-        listener.logger.println("Preparing the Gradle environment...")
-        def gradleDir = build.workspace.child('seed')
-        gradleDir.mkdirs()
-        gradleDir.child('gradlew').copyFrom(getClass().getResource('/gradle/gradlew'))
-        gradleDir.child('gradlew.bat').copyFrom(getClass().getResource('/gradle/gradlew.bat'))
-        def wrapperDir = gradleDir.child('gradle/wrapper')
-        wrapperDir.mkdirs()
-        wrapperDir.child('gradle-wrapper.jar').copyFrom(getClass().getResource('/gradle/gradle/wrapper/gradle-wrapper.jar'))
-        wrapperDir.child('gradle-wrapper.properties').copyFrom(getClass().getResource('/gradle/gradle/wrapper/gradle-wrapper.properties'))
+        def gradleDir = prepareGradleEnvironment(listener, build)
 
         // Generates the build.gradle file
-        listener.logger.println("Generating the Gradle file...")
-        String gradle = """\
-repositories {
-    ${repository}
-}
-configurations {
-    dslLibrary
-}
-dependencies {
-${dependencies.collect { "dslLibrary '${it}'" }.join('\n')}
-}
-task clean {
-    delete 'lib'
-}
-task copyLibraries(type: Copy, dependsOn: clean) {
-    into 'lib'
-    from configurations.dslLibrary
-}
-"""
-        if (dslBootstrapDependency) {
-            gradle += """\
-task extractScript(dependsOn: copyLibraries) {
-    doFirst {
-        ant.unzip(dest: '.') {
-            fileset(dir: 'lib') {
-                include(name: '${dslBootstrapDependency}*.jar')
-            }
-            patternset {
-                include(name: '${dslBootstrapLocation}')
-            }
-        }
-    }
-}
-task prepare(dependsOn: extractScript)
-"""
-        } else {
-            gradle += """\
-task prepare(dependsOn: copyLibraries)
-"""
-        }
-
+        def gradle = generateGradle(listener, repository, dependencies, dslBootstrapDependency, dslBootstrapLocation)
         gradleDir.child('build.gradle').write(gradle, 'UTF-8')
 
         // OK
         return true
-    }
-
-    static String extractCredential(String expression) {
-        if (expression.startsWith('${') && expression.endsWith('}')) {
-            String variable = expression[2..-2]
-            return "System.getenv('${variable}')";
-        } else {
-            return "'${expression}'";
-        }
     }
 
 }

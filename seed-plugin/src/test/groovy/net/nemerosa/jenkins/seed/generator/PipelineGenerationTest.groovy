@@ -1,10 +1,10 @@
-package net.nemerosa.seed.generator
+package net.nemerosa.jenkins.seed.generator
 
 import org.junit.Test
 
-import static net.nemerosa.seed.generator.SeedPipelineGeneratorHelper.extractCredential
+import static net.nemerosa.jenkins.seed.generator.PipelineGeneration.extractCredential
 
-class SeedPipelineGeneratorHelperTest {
+class PipelineGenerationTest {
 
     @Test
     void 'Extract credential from text'() {

@@ -1,16 +1,18 @@
 package net.nemerosa.jenkins.seed.generator;
 
-import com.google.common.base.Function;
-import hudson.EnvVars;
 import hudson.Extension;
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import net.nemerosa.seed.generator.SeedPipelineGeneratorHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.util.Collections;
+import java.io.IOException;
 
-public class PipelineGenerationStep extends AbstractGenerationStep {
+public class PipelineGenerationStep extends Builder {
 
     private final String project;
     private final String projectScmType;
@@ -28,19 +30,16 @@ public class PipelineGenerationStep extends AbstractGenerationStep {
         this.branch = branch;
         this.branchSeedName = branchSeedName;
     }
-
     @Override
-    protected GenerationContext configure(Function<String, String> expandFn, EnvVars env) {
-        // FIXME Method net.nemerosa.jenkins.seed.generator.PipelineGenerationStep.configure
-        return new GenerationContext(
-                Collections.<String, String>emptyMap(),
-                Collections.<String, GenerationExtension>emptyMap()
-        );
-    }
-
-    @Override
-    protected String getScriptPath() {
-        return "/pipeline-generation.groovy";
+    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+        return new PipelineGeneration(
+                project,
+                projectScmType,
+                projectScmUrl,
+                projectScmCredentials,
+                branch,
+                branchSeedName
+        ).perform(build, listener);
     }
 
     @Extension

@@ -1,4 +1,4 @@
-package net.nemerosa.seed.generator;
+package net.nemerosa.jenkins.seed.generator;
 
 /**
  * Definition of the core Seed properties.

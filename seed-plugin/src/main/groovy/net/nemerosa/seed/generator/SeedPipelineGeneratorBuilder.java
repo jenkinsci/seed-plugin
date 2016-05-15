@@ -18,6 +18,7 @@ import java.io.IOException;
  * Due to some limitations in the detection of descriptors in Jenkins, the builder itself
  * must be written in Java, not in Groovy.
  */
+@Deprecated
 public class SeedPipelineGeneratorBuilder extends Builder {
 
     private final String project;

@@ -15,6 +15,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 /**
  * Build step which creates a project folder and a project seed inside.
  */
+@Deprecated
 public class ProjectSeedBuilder extends AbstractSeedBuilder {
 
     @DataBoundConstructor

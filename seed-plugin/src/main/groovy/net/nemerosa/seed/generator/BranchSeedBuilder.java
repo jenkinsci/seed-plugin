@@ -13,6 +13,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 /**
  * Build step which creates a branch folder and a branch seed inside.
  */
+@Deprecated
 public class BranchSeedBuilder extends AbstractSeedBuilder {
 
     private final String branch;
