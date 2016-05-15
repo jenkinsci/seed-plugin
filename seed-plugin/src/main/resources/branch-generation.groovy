@@ -28,13 +28,14 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
             scmCredentials PROJECT_SCM_CREDENTIALS
             // Branch
             branch BRANCH
-            // TODO Branch parameters (extension)
             // Jenkins-safe names
             branchSeedName BRANCH_SEED_NAME
         }
     }
     // SCM configuration
     branchSeedScmExtensionPoint()
+    // Branch parameters
+    branchSeedParametersExtensionPoint()
     // TODO pipelineGenerationExtensionPoint()
 }
 
