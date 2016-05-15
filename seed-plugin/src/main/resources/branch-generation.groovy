@@ -42,8 +42,8 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
             // Branch
             branch BRANCH
             // Jenkins-safe names
-            // TODO Project seed name
-            branchSeedName BRANCH_SEED_NAME
+            seedProject SEED_PROJECT
+            seedBranch SEED_BRANCH
         }
     }
 

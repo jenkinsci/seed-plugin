@@ -26,15 +26,17 @@ class PipelineGeneration {
     private final String scmUrl
     private final String scmCredentials
     private final String branch
-    private final String branchSeedName
+    private final String seedProject
+    private final String seedBranch
 
-    PipelineGeneration(String project, String scmType, String scmUrl, String scmCredentials, String branch, String branchSeedName) {
-        this.branchSeedName = branchSeedName
+    PipelineGeneration(String project, String scmType, String scmUrl, String scmCredentials, String branch, String seedProject, String seedBranch) {
         this.branch = branch
         this.scmCredentials = scmCredentials
         this.scmUrl = scmUrl
         this.scmType = scmType
         this.project = project
+        this.seedProject = seedProject
+        this.seedBranch = seedBranch
     }
 
     boolean perform(AbstractBuild build, BuildListener listener) {
@@ -72,10 +74,6 @@ class PipelineGeneration {
         String repositoryUrl = properties[SEED_DSL_REPOSITORY]
         String repository = generateRepositoryGradle(repositoryUrl, properties, listener)
 
-        // Computation of seed names
-        String seedProjectName = project // FIXME Project seed name must be injected as well
-        String seedBranchName = branchSeedName
-
         // Is the script extraction step needed?
         boolean scriptExtraction = StringUtils.isNotBlank(dslBootstrapDependency) || !dependencies.empty
 
@@ -86,8 +84,8 @@ class PipelineGeneration {
 
         // Injects the environment variables
         build.addAction(new ParametersAction(
-                new StringParameterValue(ENV_SEED_PROJECT, seedProjectName),
-                new StringParameterValue(ENV_SEED_BRANCH, seedBranchName),
+                new StringParameterValue(ENV_SEED_PROJECT, seedProject),
+                new StringParameterValue(ENV_SEED_BRANCH, seedBranch),
                 new StringParameterValue(ENV_SEED_GRADLE, scriptExtraction ? 'yes' : 'no'),
         ))
 

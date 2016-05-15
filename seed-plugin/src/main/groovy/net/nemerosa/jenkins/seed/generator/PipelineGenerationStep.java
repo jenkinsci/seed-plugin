@@ -7,7 +7,6 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import net.nemerosa.seed.generator.SeedPipelineGeneratorHelper;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -19,16 +18,18 @@ public class PipelineGenerationStep extends Builder {
     private final String projectScmUrl;
     private final String projectScmCredentials;
     private final String branch;
-    private final String branchSeedName;
+    private final String seedProject;
+    private final String seedBranch;
 
     @DataBoundConstructor
-    public PipelineGenerationStep(String project, String projectScmType, String projectScmUrl, String projectScmCredentials, String branch, String branchSeedName) {
+    public PipelineGenerationStep(String project, String projectScmType, String projectScmUrl, String projectScmCredentials, String branch, String seedProject, String seedBranch) {
         this.project = project;
         this.projectScmType = projectScmType;
         this.projectScmUrl = projectScmUrl;
         this.projectScmCredentials = projectScmCredentials;
         this.branch = branch;
-        this.branchSeedName = branchSeedName;
+        this.seedProject = seedProject;
+        this.seedBranch = seedBranch;
     }
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
@@ -38,7 +39,8 @@ public class PipelineGenerationStep extends Builder {
                 projectScmUrl,
                 projectScmCredentials,
                 branch,
-                branchSeedName
+                seedProject,
+                seedBranch
         ).perform(build, listener);
     }
 
@@ -76,7 +78,11 @@ public class PipelineGenerationStep extends Builder {
         return branch;
     }
 
-    public String getBranchSeedName() {
-        return branchSeedName;
+    public String getSeedProject() {
+        return seedProject;
+    }
+
+    public String getSeedBranch() {
+        return seedBranch;
     }
 }

@@ -49,6 +49,7 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
 
     protected void projectConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
         config.put("PROJECT_FOLDER_PATH", projectConfig.getPipelineConfig().getProjectFolder(parameters));
+        config.put("SEED_PROJECT", projectConfig.getPipelineConfig().getProjectFolder(parameters));
         config.put("PROJECT_SEED_NAME", projectConfig.getPipelineConfig().getProjectSeedJob(parameters));
         config.put("PROJECT_DESTRUCTOR_NAME", String.valueOf(projectConfig.getPipelineConfig().getProjectDestructorJob(parameters)));
     }
