@@ -289,6 +289,7 @@ classes:
                                 .withBranchFolderPath('${PROJECT}_*')
                                 .withBranchSeedName('${PROJECT}_*_GENERATOR')
                                 .withBranchStartName('${PROJECT}_*_010_BUILD')
+                                .withBranchName('${BRANCH}')
                                 // TODO Commit parameter? REVISION
                                 // TODO Branch name prefixes? branches/
                         )
