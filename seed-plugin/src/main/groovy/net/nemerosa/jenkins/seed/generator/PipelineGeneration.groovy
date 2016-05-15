@@ -18,7 +18,6 @@ class PipelineGeneration {
     static final String PROPERTY_PATH = 'seed/seed.properties'
 
     public static final String ENV_SEED_GRADLE = 'SEED_GRADLE'
-    public static final String ENV_SEED_DSL_SCRIPT_LOCATION = 'SEED_DSL_SCRIPT_LOCATION'
     public static final String ENV_SEED_PROJECT = 'SEED_PROJECT'
     public static final String ENV_SEED_BRANCH = 'SEED_BRANCH'
 
@@ -87,7 +86,6 @@ class PipelineGeneration {
 
         // Injects the environment variables
         build.addAction(new ParametersAction(
-                new StringParameterValue(ENV_SEED_DSL_SCRIPT_LOCATION, dslBootstrapLocation),
                 new StringParameterValue(ENV_SEED_PROJECT, seedProjectName),
                 new StringParameterValue(ENV_SEED_BRANCH, seedBranchName),
                 new StringParameterValue(ENV_SEED_GRADLE, scriptExtraction ? 'yes' : 'no'),

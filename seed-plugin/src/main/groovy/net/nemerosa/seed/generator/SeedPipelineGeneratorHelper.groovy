@@ -43,6 +43,8 @@ import static net.nemerosa.jenkins.seed.generator.SeedProperties.*
 @Deprecated
 class SeedPipelineGeneratorHelper {
 
+    public static final String ENV_SEED_DSL_SCRIPT_LOCATION = 'SEED_DSL_SCRIPT_LOCATION'
+
     private final String project
     private final String projectClass
     private final String projectScmType
