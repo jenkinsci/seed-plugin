@@ -89,12 +89,19 @@ class PipelineGeneration {
                 new StringParameterValue(ENV_SEED_GRADLE, scriptExtraction ? 'yes' : 'no'),
         ))
 
-        // Prepares the Gradle environment
-        def gradleDir = prepareGradleEnvironment(listener, build)
+        // Logging
+        listener.logger.println("Gradle script extraction needed: ${scriptExtraction}")
 
-        // Generates the build.gradle file
-        String gradle = generateGradle(listener, repository, dependencies, dslBootstrapDependency, dslBootstrapLocation)
-        gradleDir.child('build.gradle').write(gradle, 'UTF-8')
+        // Prepares the Gradle environment (only if script extraction is needed)
+        if (scriptExtraction) {
+            listener.logger.println("Preparing the Gradle environment...")
+            def gradleDir = prepareGradleEnvironment(listener, build)
+
+            // Generates the build.gradle file
+            listener.logger.println("Generating the build.gradle file...")
+            String gradle = generateGradle(listener, repository, dependencies, dslBootstrapDependency, dslBootstrapLocation)
+            gradleDir.child('build.gradle').write(gradle, 'UTF-8')
+        }
 
         // OK
         return true
