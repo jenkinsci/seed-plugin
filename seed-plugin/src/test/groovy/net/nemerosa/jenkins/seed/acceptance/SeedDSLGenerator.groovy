@@ -35,6 +35,7 @@ job('${jobName}') {
                         branchSeedName '${config.namingStrategy.branchSeedName ?: ''}'
                         branchStartName '${config.namingStrategy.branchStartName ?: ''}'
                         branchName '${config.namingStrategy.branchName ?: ''}'
+                        ignoredBranchPrefixes '${config.namingStrategy.ignoredBranchPrefixes ?: ''}'
                     }
                     eventStrategy {
                         delete ${config.eventStrategy.delete}

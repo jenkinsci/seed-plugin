@@ -125,18 +125,13 @@ public class PipelineConfig {
      * @return List of extra parameters (name : description)
      */
     public Map<String, String> getBranchParameters(ProjectParameters parameters) {
+        List<String> lines = LineParser.parseLines(branchParameters);
         Map<String, String> list = new LinkedHashMap<>();
-        if (StringUtils.isNotBlank(branchParameters)) {
-            String[] array = StringUtils.split(branchParameters, "\n");
-            for (String line : array) {
-                line = StringUtils.trim(line);
-                if (StringUtils.isNotBlank(line) && !StringUtils.startsWith(line, "#")) {
-                    String token = StringUtils.replace(line, "*", parameters.getProject());
-                    String[] attrs = StringUtils.split(token, ":");
-                    if (attrs.length == 2) {
-                        list.put(attrs[0].trim(), attrs[1].trim());
-                    }
-                }
+        for (String line : lines) {
+            String token = StringUtils.replace(line, "*", parameters.getProject());
+            String[] attrs = StringUtils.split(token, ":");
+            if (attrs.length == 2) {
+                list.put(attrs[0].trim(), attrs[1].trim());
             }
         }
         return list;

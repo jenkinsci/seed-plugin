@@ -16,6 +16,7 @@ class SeedDSLGeneratorTest {
         assert dsl.contains("branchSeedName ''")
         assert dsl.contains("branchStartName ''")
         assert dsl.contains("branchName ''")
+        assert dsl.contains("ignoredBranchPrefixes ''")
     }
 
 }

@@ -2,7 +2,10 @@ package net.nemerosa.jenkins.seed.config;
 
 import lombok.Data;
 import lombok.experimental.Wither;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
+
+import java.util.List;
 
 import static net.nemerosa.jenkins.seed.support.Evaluator.evaluate;
 
@@ -56,8 +59,14 @@ public class NamingStrategyConfig {
     @Wither
     private final String branchName;
 
+    /**
+     * Branch prefixes to ignore
+     */
+    @Wither
+    private final String ignoredBranchPrefixes;
+
     @DataBoundConstructor
-    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String projectDestructorName, String branchName) {
+    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String projectDestructorName, String branchName, String ignoredBranchPrefixes) {
         this.projectFolderPath = projectFolderPath;
         this.branchFolderPath = branchFolderPath;
         this.projectSeedName = projectSeedName;
@@ -65,6 +74,7 @@ public class NamingStrategyConfig {
         this.branchSeedName = branchSeedName;
         this.branchStartName = branchStartName;
         this.branchName = branchName;
+        this.ignoredBranchPrefixes = ignoredBranchPrefixes;
     }
 
     /**
@@ -72,6 +82,7 @@ public class NamingStrategyConfig {
      */
     public NamingStrategyConfig() {
         this(
+                null,
                 null,
                 null,
                 null,
@@ -95,10 +106,12 @@ public class NamingStrategyConfig {
 
     public String getBranchName(String branch) {
         String value = branch;
-        // TODO Removes branch prefixes
-//        for (String prefix : configuration.getBranchNamePrefixes()) {
-//            value = StringUtils.removeStart(value, prefix);
-//        }
+        // Gets the branch prefixes
+        List<String> prefixes = LineParser.parseLines(ignoredBranchPrefixes);
+        // Removes branch prefixes
+        for (String prefix : prefixes) {
+            value = StringUtils.removeStart(value, prefix);
+        }
         // Normalisation
         value = normalise(value);
         // Evaluation

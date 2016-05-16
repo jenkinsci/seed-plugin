@@ -60,6 +60,9 @@
                 <f:entry title="Branch name" field="branchName">
                     <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.branchName}"/>
                 </f:entry>
+                <f:entry title="Ignored branch prefixes" field="ignoredBranchPrefixes">
+                    <f:textarea value="${instance.projectConfig.pipelineConfig.namingStrategy.ignoredBranchPrefixes}"/>
+                </f:entry>
             </f:section>
             <f:section title="Event strategy" name="eventStrategy">
                 <f:entry title="Delete complete pipeline on branch deletion" field="delete">
