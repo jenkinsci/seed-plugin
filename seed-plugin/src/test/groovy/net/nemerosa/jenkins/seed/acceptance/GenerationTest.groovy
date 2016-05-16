@@ -290,8 +290,8 @@ classes:
                                 .withBranchSeedName('${PROJECT}_*_GENERATOR')
                                 .withBranchStartName('${PROJECT}_*_010_BUILD')
                                 .withBranchName('${BRANCH}')
+                                .withIgnoredBranchPrefixes('branches/')
                                 // TODO Commit parameter? REVISION
-                                // TODO Branch name prefixes? branches/
                         )
         )
         // @formatter:on
