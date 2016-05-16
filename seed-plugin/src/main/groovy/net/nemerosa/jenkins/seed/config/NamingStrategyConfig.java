@@ -66,7 +66,7 @@ public class NamingStrategyConfig {
     private final String ignoredBranchPrefixes;
 
     @DataBoundConstructor
-    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String branchSeedName, String branchStartName, String projectDestructorName, String branchName, String ignoredBranchPrefixes) {
+    public NamingStrategyConfig(String projectFolderPath, String branchFolderPath, String projectSeedName, String projectDestructorName, String branchSeedName, String branchStartName, String branchName, String ignoredBranchPrefixes) {
         this.projectFolderPath = projectFolderPath;
         this.branchFolderPath = branchFolderPath;
         this.projectSeedName = projectSeedName;
@@ -124,12 +124,12 @@ public class NamingStrategyConfig {
     }
 
     public String getBranchSeedName(ProjectParameters parameters, String branch) {
-        return evaluate(branchFolderPath, "${project}-*-seed", "project", parameters.getProject())
+        return evaluate(branchSeedName, "${project}-*-seed", "project", parameters.getProject())
                 .replace(BRANCH_PLACEHOLDER, getBranchName(branch));
     }
 
     public String getBranchStartName(ProjectParameters parameters, String branch) {
-        return evaluate(branchFolderPath, "${project}-*-build", "project", parameters.getProject())
+        return evaluate(branchStartName, "${project}-*-build", "project", parameters.getProject())
                 .replace(BRANCH_PLACEHOLDER, getBranchName(branch));
     }
 

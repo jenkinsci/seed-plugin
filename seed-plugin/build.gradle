@@ -51,7 +51,7 @@ sourceSets {
 
 dependencies {
     compile 'org.yaml:snakeyaml:1.15'
-    providedCompile 'org.projectlombok:lombok:1.14.4'
+    providedCompile 'org.projectlombok:lombok:1.16.8'
     // compile "org.codehaus.groovy:groovy-all:2.4.3"
 
     jenkinsPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26@jar'
