@@ -9,11 +9,7 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import net.nemerosa.jenkins.seed.triggering.SeedChannel;
-import net.nemerosa.jenkins.seed.triggering.SeedEvent;
-import net.nemerosa.jenkins.seed.triggering.SeedEventType;
-import net.nemerosa.jenkins.seed.triggering.SeedService;
-import net.nemerosa.seed.triggering.*;
+import net.nemerosa.jenkins.seed.triggering.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -32,10 +28,13 @@ public class BranchDestructionStep extends Builder {
         this.branch = branch;
     }
 
+    protected SeedService getSeedService() {
+        return Guice.createInjector(new SeedServiceModule()).getInstance(SeedService.class);
+    }
+
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-        // FIXME Extract method + uses V1 module
-        SeedService seedService = Guice.createInjector(new SeedServiceV0Module()).getInstance(SeedService.class);
+        SeedService seedService = getSeedService();
 
         // Environment for the DSL execution
         EnvVars env = build.getEnvironment(listener);
