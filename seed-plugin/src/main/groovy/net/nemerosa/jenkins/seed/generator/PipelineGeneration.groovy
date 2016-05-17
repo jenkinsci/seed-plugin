@@ -67,7 +67,7 @@ class PipelineGeneration {
         listener.logger.println("DSL script JAR: ${dslBootstrapDependency}")
 
         // Gets the location of the bootstrap script
-        String dslBootstrapLocation = properties[SEED_DSL_SCRIPT_LOCATION]
+        String dslBootstrapLocation = properties[SEED_DSL_SCRIPT_LOCATION] ?: 'seed.groovy'
         listener.logger.println("DSL script location: ${dslBootstrapLocation}")
 
         // Source repository
