@@ -5,7 +5,7 @@ import net.nemerosa.jenkins.seed.triggering.SeedService;
 import net.nemerosa.jenkins.seed.triggering.SeedChannel;
 import net.nemerosa.jenkins.seed.triggering.SeedEvent;
 import net.nemerosa.jenkins.seed.triggering.SeedEventType;
-import net.nemerosa.seed.triggering.SeedServiceImpl;
+import net.nemerosa.seed.triggering.SeedServiceV0Impl;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class ConfigurableBranchStrategyTest {
         ConfigurableBranchStrategiesLoader configurableBranchStrategiesLoader = new ConfigurableBranchStrategiesLoader();
         BranchStrategies branchStrategies = new ExplicitBranchStrategies(configurableBranchStrategiesLoader);
 
-        seedService = new SeedServiceImpl(
+        seedService = new SeedServiceV0Impl(
                 configurationLoader,
                 projectConfigurationCache,
                 launcher,

@@ -34,7 +34,8 @@ public class BranchDestructionStep extends Builder {
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-        SeedService seedService = Guice.createInjector(new SeedServiceModule()).getInstance(SeedService.class);
+        // FIXME Extract method + uses V1 module
+        SeedService seedService = Guice.createInjector(new SeedServiceV0Module()).getInstance(SeedService.class);
 
         // Environment for the DSL execution
         EnvVars env = build.getEnvironment(listener);

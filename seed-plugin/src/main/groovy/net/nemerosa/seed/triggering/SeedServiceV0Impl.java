@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Deprecated
-public class SeedServiceImpl implements SeedService {
+public class SeedServiceV0Impl implements SeedService {
 
     private static final Logger LOGGER = Logger.getLogger(SeedService.class.getName());
 
@@ -21,10 +21,10 @@ public class SeedServiceImpl implements SeedService {
     private final BranchStrategies branchStrategies;
 
     @Inject
-    public SeedServiceImpl(SeedConfigurationLoader configurationLoader,
-                           SeedProjectConfigurationCache projectConfigurationCache,
-                           SeedLauncher seedLauncher,
-                           BranchStrategies branchStrategies) {
+    public SeedServiceV0Impl(SeedConfigurationLoader configurationLoader,
+                             SeedProjectConfigurationCache projectConfigurationCache,
+                             SeedLauncher seedLauncher,
+                             BranchStrategies branchStrategies) {
         this.configurationLoader = configurationLoader;
         this.projectConfigurationCache = projectConfigurationCache;
         this.seedLauncher = seedLauncher;

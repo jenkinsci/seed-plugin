@@ -36,7 +36,7 @@ public class CustomBranchStrategyTest {
         BranchStrategies branchStrategies = mock(BranchStrategies.class);
         when(branchStrategies.get(eq("custom"), any(SeedConfiguration.class))).thenReturn(new CustomBranchStrategy());
 
-        seedService = new SeedServiceImpl(
+        seedService = new SeedServiceV0Impl(
                 configurationLoader,
                 projectConfigurationCache,
                 launcher,

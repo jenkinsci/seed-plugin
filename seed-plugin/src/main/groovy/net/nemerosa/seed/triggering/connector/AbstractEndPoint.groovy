@@ -7,7 +7,7 @@ import net.nemerosa.jenkins.seed.triggering.SeedEvent
 import net.nemerosa.jenkins.seed.triggering.SeedEventType
 import net.nemerosa.jenkins.seed.triggering.SeedService
 import net.nemerosa.jenkins.seed.triggering.connector.RequestNonAuthorizedException
-import net.nemerosa.seed.triggering.SeedServiceModule
+import net.nemerosa.seed.triggering.SeedServiceV0Module
 import net.sf.json.JSONSerializer
 import org.apache.commons.lang.StringUtils
 import org.kohsuke.stapler.StaplerRequest
@@ -29,7 +29,7 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
     }
 
     public AbstractEndPoint() {
-        this(Guice.createInjector(new SeedServiceModule()).getInstance(SeedService.class));
+        this(Guice.createInjector(new SeedServiceV0Module()).getInstance(SeedService.class));
     }
 
     @Override
