@@ -64,17 +64,17 @@ if (PIPELINE_DESTRUCTOR == "true") {
         description "Branch destructor for ${PROJECT} - deletes a branch folder."
         parameters {
             // Default seed parameters
-            stringParam('BRANCH', '', 'Path or name of the branch')
+            stringParam('BRANCH', '', 'ID of the branch to delete')
         }
         steps {
             buildDescription('', '${BRANCH}')
         }
-        // TODO BranchDestructionStep
-//        configure { node ->
-//            node / 'builders' / 'net.nemerosa.seed.generator.BranchDestructionBuilder' {
-//                'project' PROJECT
-//                'branch' '${BRANCH}'
-//            }
-//        }
+        // Destruction step
+        configure { node ->
+            node / 'builders' / 'net.nemerosa.jenkins.seed.generator.BranchDestructionStep' {
+                project PROJECT
+                branch '${BRANCH}'
+            }
+        }
     }
 }

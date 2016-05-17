@@ -521,7 +521,7 @@ projects:
     @Test
     void 'Destructor job with custom naming convention'() {
         // Project name
-        String project = uid('p')
+        String project = uid('P')
         // Default configuration
         def seed = jenkins.seed(
                 new PipelineConfig()
