@@ -87,7 +87,7 @@ public class SeedServiceImpl implements SeedService {
             );
             // Launching the job
             seedLauncher.launch(event.getChannel(), path, ImmutableMap.of(
-                    config.getCommitParameter(),
+                    config.getPipelineConfig().getEventStrategy().getCommit(),
                     commit
             ));
         } else {

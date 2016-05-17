@@ -90,6 +90,6 @@ fi
  * Firing the branch seed
  */
 
-if (EVENT_STRATEGY_AUTO == "yes") {
+if (EVENT_STRATEGY_AUTO == "true") {
     queue("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}")
 }

@@ -42,7 +42,6 @@ job('${jobName}') {
                         auto ${config.eventStrategy.auto}
                         trigger ${config.eventStrategy.trigger}
                         commit '${config.eventStrategy.commit ?: ''}'
-                        startAuto ${config.eventStrategy.startAuto}
                     }
                 }
                 project '\${PROJECT}'

@@ -43,7 +43,6 @@ job("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
                         auto EVENT_STRATEGY_AUTO
                         trigger EVENT_STRATEGY_TRIGGER
                         commit EVENT_STRATEGY_COMMIT
-                        startAuto EVENT_STRATEGY_START_AUTO
                     }
                 }
                 project PROJECT

@@ -74,12 +74,8 @@
                 <f:entry title="Triggers the pipeline start when commit received" field="trigger">
                     <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.trigger}" default="true"/>
                 </f:entry>
-                <f:entry title="Starts the pipeline upon (re)generation" field="startAuto">
-                    <f:checkbox checked="${instance.projectConfig.pipelineConfig.eventStrategy.startAuto}" default="true"/>
-                </f:entry>
                 <f:entry title="Event parameter which contains the commit" field="commit">
                     <f:textbox value="${instance.projectConfig.pipelineConfig.eventStrategy.commit}"/>
-                    <!-- TODO Depends on the end point - might not be needed at all -->
                 </f:entry>
             </f:section>
         </f:section>

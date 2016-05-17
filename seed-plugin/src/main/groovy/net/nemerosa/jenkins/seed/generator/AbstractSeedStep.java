@@ -88,7 +88,6 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         config.put("EVENT_STRATEGY_DELETE", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isDelete()));
         config.put("EVENT_STRATEGY_AUTO", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isAuto()));
         config.put("EVENT_STRATEGY_TRIGGER", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isTrigger()));
-        config.put("EVENT_STRATEGY_START_AUTO", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isStartAuto()));
         config.put("EVENT_STRATEGY_COMMIT", projectConfig.getPipelineConfig().getEventStrategy().getCommit());
     }
 

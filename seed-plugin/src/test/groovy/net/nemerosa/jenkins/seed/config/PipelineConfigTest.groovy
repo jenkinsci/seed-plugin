@@ -26,7 +26,6 @@ class PipelineConfigTest {
         assert eventStrategy.auto
         assert eventStrategy.delete
         assert eventStrategy.commit == null
-        assert eventStrategy.startAuto
     }
 
     @Test
