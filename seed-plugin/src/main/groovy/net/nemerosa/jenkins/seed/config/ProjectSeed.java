@@ -1,32 +1,19 @@
 package net.nemerosa.jenkins.seed.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Actual parameters for a project.
+ * Cached parameters for a project.
  */
 @Data
-public class ProjectParameters {
+@AllArgsConstructor
+public class ProjectSeed {
 
     /**
      * Name of the project
      */
     private final String project;
-
-    /**
-     * SCM type
-     */
-    private final String scmType;
-
-    /**
-     * SCM base (without any branch)
-     */
-    private final String scmUrl;
-
-    /**
-     * SCM credentials (ref. to Jenkins credentials)
-     */
-    private final String scmCredentials;
 
     /**
      * Type of trigger end point being enabled
@@ -38,4 +25,11 @@ public class ProjectParameters {
      */
     private final String triggerSecret;
 
+    public ProjectSeed(ProjectParameters parameters) {
+        this(
+                parameters.getProject(),
+                parameters.getTriggerType(),
+                parameters.getTriggerSecret()
+        );
+    }
 }

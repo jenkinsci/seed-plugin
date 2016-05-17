@@ -49,6 +49,8 @@ job("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
                 scmType PROJECT_SCM_TYPE
                 scmUrl PROJECT_SCM_URL
                 scmCredentials PROJECT_SCM_CREDENTIALS
+                triggerType PROJECT_TRIGGER_TYPE
+                triggerSecret PROJECT_TRIGGER_SECRET
             }
         }
     }

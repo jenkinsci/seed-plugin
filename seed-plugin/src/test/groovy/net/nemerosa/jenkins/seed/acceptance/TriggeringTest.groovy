@@ -1,5 +1,7 @@
 package net.nemerosa.jenkins.seed.acceptance
 
+import net.nemerosa.jenkins.seed.config.EventStrategyConfig
+import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
 import net.nemerosa.jenkins.seed.test.JenkinsAPIRefusedException
 import net.nemerosa.jenkins.seed.test.JenkinsAccessRule
@@ -34,6 +36,7 @@ class TriggeringTest {
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
                 PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_TRIGGER_TYPE: 'http',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job("${project}/${project}-seed")
@@ -133,47 +136,45 @@ projects:
     }
 
     @Test(expected = JenkinsAPIRefusedException)
-    @Ignore
     void 'Token not provided'() {
         // Project name
-        def project = uid('P')
+        def project = uid('p')
         // Configuration
-        jenkins.configureSeed """\
-http-secret-key: ABCDEF
-"""
+        def seed = jenkins.defaultSeed()
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
                 PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_TRIGGER_TYPE: 'http',
+                PROJECT_TRIGGER_SECRET: 'ABCDEF',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job("${project}/${project}-seed")
         // Fires the project seed for the `master` branch
-        jenkins.post("seed-http/create?project=${project}&branch=master")
+        jenkins.post("seed-http-api/create?project=${project}&branch=master")
     }
 
     @Test
-    @Ignore
     void 'Token provided'() {
         // Project name
-        def project = uid('P')
+        def project = uid('p')
         // Configuration
-        jenkins.configureSeed """\
-http-secret-key: ABCDEF
-"""
+        def seed = jenkins.defaultSeed()
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
                 PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_TRIGGER_TYPE: 'http',
+                PROJECT_TRIGGER_SECRET: 'ABCDEF',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job("${project}/${project}-seed")
         // Fires the project seed for the `master` branch
-        jenkins.post("seed-http/create?project=${project}&branch=master", { HttpURLConnection c ->
+        jenkins.post("seed-http-api/create?project=${project}&branch=master", { HttpURLConnection c ->
             c.setRequestProperty('X-Seed-Token', 'ABCDEF')
         })
         // Checks the result of the project seed
@@ -181,94 +182,32 @@ http-secret-key: ABCDEF
     }
 
     @Test
-    @Ignore
-    void 'No pipeline generation when pipeline-auto is set to false in a class'() {
+    void 'No pipeline generation when auto is set to false'() {
         // Project name
-        def project = uid('P')
+        def project = uid('p')
         // Configuration
-        jenkins.configureSeed """\
-classes:
-    - id: my-class
-      pipeline-auto: false
-projects:
-    - id: ${project}
-      project-class: my-class
-"""
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                    .withEventStrategy(new EventStrategyConfig().withAuto(false))
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
                 PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_TRIGGER_TYPE: 'http',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job("${project}/${project}-seed")
         // Fires the project seed for the `master` branch
-        jenkins.post("seed-http/create?project=${project}&branch=master")
+        jenkins.post("seed-http-api/create?project=${project}&branch=master")
         // Checks the result of the project seed
         jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
-        // Checks the branch seed is created - it's fired automatically
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
-        // Checks the result of the branch seed
-        jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1).checkSuccess()
-        // Checks the branch pipeline is there - it's fired automatically
-        jenkins.job("${project}/${project}-master/${project}-master-build")
-        jenkins.job("${project}/${project}-master/${project}-master-ci")
-        jenkins.job("${project}/${project}-master/${project}-master-publish")
-        // Triggers again the branch generator
-        jenkins.post("seed-http/seed?project=${project}&branch=master")
         // Checks that the master seed was NOT fired
         try {
             jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 2, 30).checkSuccess()
             fail "The master branch automatic generation is not enabled"
-        } catch (TimeoutException ignored) {
-            // OK
-        }
-    }
-
-    @Test
-    @Ignore
-    void 'No pipeline started when pipeline-trigger is set to false in a class'() {
-        // Project name
-        def project = uid('P')
-        // Configuration
-        jenkins.configureSeed """\
-classes:
-    - id: my-class
-      pipeline-trigger: no
-projects:
-    - id: ${project}
-      project-class: my-class
-"""
-        // Firing the seed job
-        jenkins.fireJob('seed', [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
-        // Fires the project seed for the `master` branch
-        jenkins.post("seed-http/create?project=${project}&branch=master")
-        // Checks the result of the project seed
-        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
-        // Checks the branch seed is created - it's fired automatically
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
-        // Checks the result of the branch seed
-        jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1).checkSuccess()
-        // Checks the branch pipeline is there - it's fired automatically
-        jenkins.job("${project}/${project}-master/${project}-master-build")
-        jenkins.job("${project}/${project}-master/${project}-master-ci")
-        jenkins.job("${project}/${project}-master/${project}-master-publish")
-        // Checks the first build - it's fired automatically on Seed generation
-        jenkins.getBuild("${project}/${project}-master/${project}-master-build", 1).checkSuccess()
-        // Triggers again the branch pipeline
-        jenkins.post("seed-http/commit?project=${project}&branch=master")
-        // Checks that the master pipeline was NOT fired
-        try {
-            jenkins.getBuild("${project}/${project}-master/${project}-master-build", 2, 30).checkSuccess()
-            fail "The master branch automatic startup is not enabled"
         } catch (TimeoutException ignored) {
             // OK
         }

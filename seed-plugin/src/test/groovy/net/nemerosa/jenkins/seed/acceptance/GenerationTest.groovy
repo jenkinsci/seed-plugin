@@ -363,7 +363,7 @@ projects:
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-ci',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job("${project}/${project}-seed")

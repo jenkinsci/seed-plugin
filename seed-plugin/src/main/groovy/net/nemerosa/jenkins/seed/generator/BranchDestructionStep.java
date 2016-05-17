@@ -50,7 +50,7 @@ public class BranchDestructionStep extends Builder {
                         theProject,
                         theBranch,
                         SeedEventType.DELETION,
-                        SeedChannel.of("destructor", "Destructor job")
+                        SeedChannel.SYSTEM
                 )
         );
 

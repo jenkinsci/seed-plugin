@@ -17,6 +17,8 @@ class SeedDSLGeneratorTest {
         assert dsl.contains("branchStartName ''")
         assert dsl.contains("branchName ''")
         assert dsl.contains("ignoredBranchPrefixes ''")
+        assert dsl.contains("triggerType '\${PROJECT_TRIGGER_TYPE}'")
+        assert dsl.contains("triggerSecret '\${PROJECT_TRIGGER_SECRET}'")
     }
 
 }

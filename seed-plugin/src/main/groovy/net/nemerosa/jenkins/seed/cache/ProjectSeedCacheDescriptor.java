@@ -7,6 +7,8 @@ import hudson.model.Item;
 import hudson.model.listeners.ItemListener;
 import jenkins.model.Jenkins;
 import net.nemerosa.jenkins.seed.config.PipelineConfig;
+import net.nemerosa.jenkins.seed.config.ProjectParameters;
+import net.nemerosa.jenkins.seed.config.ProjectSeed;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +22,7 @@ public class ProjectSeedCacheDescriptor extends Descriptor<ProjectSeedCacheDescr
     /**
      * Index of project configurations
      */
-    private Map<String, PipelineConfig> projectSeeds = new HashMap<>();
+    private Map<String, ProjectCachedConfig> projectSeeds = new HashMap<>();
 
     public ProjectSeedCacheDescriptor() {
         super(ProjectSeedCacheDescriptor.class);
@@ -37,23 +39,26 @@ public class ProjectSeedCacheDescriptor extends Descriptor<ProjectSeedCacheDescr
         return this;
     }
 
-    public void saveProjectConfiguration(String project, PipelineConfig config) {
+    public void saveProjectConfiguration(ProjectParameters parameters, PipelineConfig config) {
         projectSeeds.put(
-                project,
-                config
+                parameters.getProject(),
+                new ProjectCachedConfig(
+                        new ProjectSeed(parameters),
+                        config
+                )
         );
         save();
     }
 
     private static void removeProjectConfiguration(String name) {
         ProjectSeedCacheDescriptor descriptor = Jenkins.getInstance().getDescriptorByType(ProjectSeedCacheDescriptor.class);
-        PipelineConfig removed = descriptor.projectSeeds.remove(name);
+        ProjectCachedConfig removed = descriptor.projectSeeds.remove(name);
         if (removed != null) {
             descriptor.save();
         }
     }
 
-    public PipelineConfig getProjectSavedConfiguration(String projectName) {
+    public ProjectCachedConfig getProjectSavedConfiguration(String projectName) {
         return projectSeeds.get(projectName);
     }
 

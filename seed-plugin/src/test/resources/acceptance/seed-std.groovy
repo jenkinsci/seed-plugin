@@ -19,7 +19,7 @@ package acceptance
  * branch itself.
  */
 
-freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
+job("${SEED_PROJECT}-${SEED_BRANCH}-build") {
     parameters {
         stringParam('COMMIT', 'HEAD', 'Commit to build')
     }
@@ -36,7 +36,7 @@ echo "Commit: ${COMMIT}"
     }
 }
 
-freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-ci") {
+job("${SEED_PROJECT}-${SEED_BRANCH}-ci") {
     publishers {
         downstreamParameterized {
             trigger("${SEED_PROJECT}-${SEED_BRANCH}-publish", 'SUCCESS', true) {
@@ -45,6 +45,8 @@ freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-ci") {
     }
 }
 
-freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-publish") {
+job("${SEED_PROJECT}-${SEED_BRANCH}-publish") {
 
 }
+
+queue("${SEED_PROJECT}-${SEED_BRANCH}-build")

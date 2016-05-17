@@ -5,6 +5,8 @@ package net.nemerosa.jenkins.seed.triggering;
  */
 public class SeedChannel {
 
+    public static final SeedChannel SYSTEM = SeedChannel.of("system", "System");
+
     private final String id;
     private final String name;
 

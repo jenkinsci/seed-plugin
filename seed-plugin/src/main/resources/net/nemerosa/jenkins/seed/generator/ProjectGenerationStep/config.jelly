@@ -17,6 +17,12 @@
         <f:entry title="Project SCM credentials" field="scmCredentials">
             <f:textbox value="${instance.projectConfig.scmCredentials}"/>
         </f:entry>
+        <f:entry title="Type of trigger authorised" field="triggerType">
+            <f:textbox value="${instance.projectConfig.triggerType}"/>
+        </f:entry>
+        <f:entry title="Secret token for trigger authorisation" field="triggerSecret">
+            <f:password value="${instance.projectConfig.triggerSecret}"/>
+        </f:entry>
         <f:section title="Pipeline configuration" name="pipelineConfig">
             <f:entry title="Project branch destructor" field="destructor">
                 <f:checkbox checked="${instance.projectConfig.pipelineConfig.destructor}" default="false"/>

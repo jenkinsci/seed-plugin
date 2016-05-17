@@ -13,6 +13,8 @@ job('${jobName}') {
         choiceParam('PROJECT_SCM_TYPE', ['svn', 'git'])
         stringParam('PROJECT_SCM_URL', '', 'URL to the project SCM location, without any branch location')
         stringParam('PROJECT_SCM_CREDENTIALS', '', 'UUID of the SCM credentials')
+        choiceParam('PROJECT_TRIGGER_TYPE', ['', 'github', 'bitbucket', 'http'], 'Trigger type being enabled')
+        stringParam('PROJECT_TRIGGER_SECRET', '', 'Trigger secret')
     }
     steps {
         buildDescription('', '\${PROJECT}')
@@ -48,6 +50,8 @@ job('${jobName}') {
                 scmType '\${PROJECT_SCM_TYPE}'
                 scmUrl '\${PROJECT_SCM_URL}'
                 scmCredentials '\${PROJECT_SCM_CREDENTIALS}'
+                triggerType '\${PROJECT_TRIGGER_TYPE}'
+                triggerSecret '\${PROJECT_TRIGGER_SECRET}'
             }
         }
     }

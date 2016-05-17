@@ -82,6 +82,8 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         config.put("PROJECT_SCM_TYPE", parameters.getScmType());
         config.put("PROJECT_SCM_URL", parameters.getScmUrl());
         config.put("PROJECT_SCM_CREDENTIALS", parameters.getScmCredentials());
+        config.put("PROJECT_TRIGGER_TYPE", parameters.getTriggerType());
+        config.put("PROJECT_TRIGGER_SECRET", parameters.getTriggerSecret());
     }
 
     protected void eventConfiguration(ProjectPipelineConfig projectConfig, @SuppressWarnings("UnusedParameters") ProjectParameters parameters, Map<String, String> config) {

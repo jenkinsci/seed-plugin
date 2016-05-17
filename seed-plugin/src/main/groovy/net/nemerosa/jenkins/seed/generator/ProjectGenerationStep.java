@@ -60,7 +60,7 @@ public class ProjectGenerationStep extends AbstractSeedStep {
     protected void postProcessing(ProjectPipelineConfig projectConfig, ProjectParameters parameters, AbstractBuild<?, ?> build, BuildListener listener, EnvVars env) {
         ProjectSeedCacheDescriptor descriptor = Jenkins.getInstance().getDescriptorByType(ProjectSeedCacheDescriptor.class);
         descriptor.saveProjectConfiguration(
-                parameters.getProject(),
+                parameters,
                 projectConfig.getPipelineConfig()
         );
     }

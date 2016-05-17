@@ -161,6 +161,11 @@ public class SeedServiceImpl implements SeedService {
     }
 
     protected void checkChannel(SeedEvent event, ProjectCachedConfig config) {
+        // System channel?
+        if (StringUtils.equals(SeedChannel.SYSTEM.getId(), event.getChannel().getId())) {
+            // OK
+            return;
+        }
         // Enabled?
         boolean enabled = config.isChannelEnabled(event.getChannel());
         // Check
@@ -174,7 +179,7 @@ public class SeedServiceImpl implements SeedService {
         // Gets the project's configuration
         ProjectCachedConfig config = getProjectCachedConfig(project);
         // Gets the secret key for this context
-        return config.getSecretKey(context);
+        return config.getSecretKey();
     }
 
 }
