@@ -48,7 +48,7 @@ public class GitHubEndPoint extends AbstractEndPoint {
 
     @Override
     public String getUrlName() {
-        return "seed/github";
+        return "seed-github-api";
     }
 
     @Override

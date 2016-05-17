@@ -150,7 +150,7 @@ public class BitBucketEndPoint extends AbstractEndPoint {
 
     @Override
     public String getUrlName() {
-        return "seed/bitbucket";
+        return "seed-bitbucket-api";
     }
 
     private String getProject(JSONObject json) {

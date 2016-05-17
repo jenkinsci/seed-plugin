@@ -35,7 +35,7 @@ public class HttpEndPoint extends AbstractEndPoint implements UnprotectedRootAct
 
     @Override
     public String getUrlName() {
-        return "seed/http";
+        return "seed-http-api";
     }
 
     @Override

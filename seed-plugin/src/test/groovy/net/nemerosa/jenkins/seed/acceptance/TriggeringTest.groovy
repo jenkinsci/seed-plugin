@@ -38,7 +38,7 @@ class TriggeringTest {
         // Checks the project seed is created
         jenkins.job("${project}/${project}-seed")
         // Fires the project seed for the `master` branch
-        jenkins.post("seed/http/create?project=${project}&branch=master")
+        jenkins.post("seed-http-api/create?project=${project}&branch=master")
         // Checks the result of the project seed
         jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
         // Checks the branch seed is created
@@ -52,7 +52,7 @@ class TriggeringTest {
         jenkins.job("${project}/${project}-master/${project}-master-ci")
         jenkins.job("${project}/${project}-master/${project}-master-publish")
         // Fires the branch pipeline start
-        jenkins.post("seed/http/commit?project=${project}&branch=master")
+        jenkins.post("seed-http-api/commit?project=${project}&branch=master")
         // Checks the result of the pipeline (ci & publish must have been fired)
         jenkins.getBuild("${project}/${project}-master/${project}-master-build", 1).checkSuccess()
         jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1).checkSuccess()
