@@ -1,4 +1,4 @@
-package net.nemerosa.seed.triggering.connector.github;
+package net.nemerosa.jenkins.seed.triggering.connector.github;
 
 public class CommitContext {
 

@@ -1,11 +1,11 @@
-package net.nemerosa.seed.triggering.connector.bitbucket;
+package net.nemerosa.jenkins.seed.triggering.connector.bitbucket;
 
 import hudson.Extension;
 import net.nemerosa.jenkins.seed.triggering.SeedChannel;
 import net.nemerosa.jenkins.seed.triggering.SeedEvent;
 import net.nemerosa.jenkins.seed.triggering.SeedEventType;
 import net.nemerosa.jenkins.seed.triggering.SeedService;
-import net.nemerosa.seed.triggering.connector.AbstractEndPoint;
+import net.nemerosa.jenkins.seed.triggering.connector.AbstractEndPoint;
 import net.nemerosa.jenkins.seed.triggering.connector.RequestFormatException;
 import net.nemerosa.jenkins.seed.triggering.connector.UnknownRequestException;
 import net.sf.json.JSONArray;
@@ -17,7 +17,6 @@ import org.kohsuke.stapler.StaplerRequest;
 import java.io.IOException;
 
 @Extension
-@Deprecated
 public class BitBucketEndPoint extends AbstractEndPoint {
 
     private static final String X_EVENT_KEY = "X-Event-Key";
@@ -25,13 +24,18 @@ public class BitBucketEndPoint extends AbstractEndPoint {
 
     private static final SeedChannel SEED_CHANNEL = SeedChannel.of("bitbucket", "Seed BitBucket end point");
 
-    BitBucketEndPoint(SeedService seedService) {
+    public BitBucketEndPoint(SeedService seedService) {
         super(seedService);
     }
 
     @SuppressWarnings("unused")
     public BitBucketEndPoint() {
         super();
+    }
+
+    @Deprecated
+    public BitBucketEndPoint(boolean v0) {
+        super(v0);
     }
 
     @Override
@@ -146,7 +150,7 @@ public class BitBucketEndPoint extends AbstractEndPoint {
 
     @Override
     public String getUrlName() {
-        return "seed-bitbucket";
+        return "seed/bitbucket";
     }
 
     private String getProject(JSONObject json) {

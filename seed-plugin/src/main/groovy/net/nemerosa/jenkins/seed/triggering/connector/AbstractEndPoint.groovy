@@ -1,12 +1,13 @@
-package net.nemerosa.seed.triggering.connector
+package net.nemerosa.jenkins.seed.triggering.connector
 
 import com.google.inject.Guice
+import com.google.inject.Module
 import hudson.model.UnprotectedRootAction
 import net.nemerosa.jenkins.seed.generator.MissingParameterException
 import net.nemerosa.jenkins.seed.triggering.SeedEvent
 import net.nemerosa.jenkins.seed.triggering.SeedEventType
 import net.nemerosa.jenkins.seed.triggering.SeedService
-import net.nemerosa.jenkins.seed.triggering.connector.RequestNonAuthorizedException
+import net.nemerosa.jenkins.seed.triggering.SeedServiceModule
 import net.nemerosa.seed.triggering.SeedServiceV0Module
 import net.sf.json.JSONSerializer
 import org.apache.commons.lang.StringUtils
@@ -17,7 +18,6 @@ import org.kohsuke.stapler.interceptor.RequirePOST
 import java.util.logging.Level
 import java.util.logging.Logger
 
-@Deprecated
 public abstract class AbstractEndPoint implements UnprotectedRootAction {
 
     private static final Logger LOGGER = Logger.getLogger(AbstractEndPoint.class.getName());
@@ -29,7 +29,16 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
     }
 
     public AbstractEndPoint() {
-        this(Guice.createInjector(new SeedServiceV0Module()).getInstance(SeedService.class));
+        this(Guice.createInjector(new SeedServiceModule()).getInstance(SeedService.class));
+    }
+
+    public AbstractEndPoint(Module module) {
+        this(Guice.createInjector(module).getInstance(SeedService.class));
+    }
+
+    @Deprecated
+    public AbstractEndPoint(boolean v0) {
+        this(v0 ? new SeedServiceV0Module() : new SeedServiceModule());
     }
 
     @Override
@@ -83,11 +92,11 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
         }
     }
 
-    protected static String extractParameter(StaplerRequest req, String name) {
+    public static String extractParameter(StaplerRequest req, String name) {
         return extractParameter(req, name, true);
     }
 
-    protected static String extractParameter(StaplerRequest req, String name, boolean required) {
+    public static String extractParameter(StaplerRequest req, String name, boolean required) {
         String value = req.getParameter(name);
         if (StringUtils.isNotBlank(value)) {
             return value;

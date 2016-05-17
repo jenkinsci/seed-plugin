@@ -1,9 +1,10 @@
-package net.nemerosa.seed.triggering.connector.github;
+package net.nemerosa.jenkins.seed.triggering.connector.github;
 
 import net.nemerosa.jenkins.seed.triggering.SeedChannel;
 import net.nemerosa.jenkins.seed.triggering.SeedEvent;
 import net.nemerosa.jenkins.seed.triggering.SeedEventType;
 import net.nemerosa.jenkins.seed.triggering.SeedService;
+import net.nemerosa.seed.triggering.connector.github.GitHubV0EndPoint;
 import org.junit.Test;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -12,7 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import static net.nemerosa.seed.triggering.connector.EndPointTestSupport.mockStaplerResponse;
+import static net.nemerosa.jenkins.seed.triggering.connector.EndPointTestSupport.mockStaplerResponse;
 import static org.mockito.Mockito.*;
 
 public class GitHubEndPointTest {
@@ -27,10 +28,14 @@ public class GitHubEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new GitHubEndPoint(seedService).doDynamic(request, response);
+        getEndPoints(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, never()).post(any(SeedEvent.class));
         verify(response, times(1)).setStatus(202);
+    }
+
+    protected GitHubEndPoint getEndPoints(SeedService seedService) {
+        return new GitHubEndPoint(seedService);
     }
 
     @Test
@@ -41,7 +46,7 @@ public class GitHubEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new GitHubEndPoint(seedService).doDynamic(request, response);
+        getEndPoints(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
@@ -63,7 +68,7 @@ public class GitHubEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new GitHubEndPoint(seedService).doDynamic(request, response);
+        getEndPoints(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, never()).post(any(SeedEvent.class));
     }
@@ -76,7 +81,7 @@ public class GitHubEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new GitHubEndPoint(seedService).doDynamic(request, response);
+        getEndPoints(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
@@ -98,7 +103,7 @@ public class GitHubEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new GitHubEndPoint(seedService).doDynamic(request, response);
+        getEndPoints(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, never()).post(any(SeedEvent.class));
     }
@@ -111,7 +116,7 @@ public class GitHubEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new GitHubEndPoint(seedService).doDynamic(request, response);
+        getEndPoints(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
@@ -130,7 +135,7 @@ public class GitHubEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new GitHubEndPoint(seedService).doDynamic(request, response);
+        getEndPoints(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
@@ -149,7 +154,7 @@ public class GitHubEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new GitHubEndPoint(seedService).doDynamic(request, response);
+        getEndPoints(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
@@ -171,7 +176,7 @@ public class GitHubEndPointTest {
         SeedService seedService = mock(SeedService.class);
         when(seedService.getSecretKey("nemerosa/seed-demo", "github")).thenReturn("ABCDEF123456");
         // Call
-        new GitHubEndPoint(seedService).doDynamic(request, response);
+        getEndPoints(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(

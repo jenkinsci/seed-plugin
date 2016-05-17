@@ -1,11 +1,11 @@
-package net.nemerosa.seed.triggering.connector.http;
+package net.nemerosa.jenkins.seed.triggering.connector.http;
 
-import net.nemerosa.jenkins.seed.triggering.SeedService;
-import net.nemerosa.jenkins.seed.triggering.connector.UnknownRequestException;
 import net.nemerosa.jenkins.seed.generator.MissingParameterException;
 import net.nemerosa.jenkins.seed.triggering.SeedChannel;
 import net.nemerosa.jenkins.seed.triggering.SeedEvent;
 import net.nemerosa.jenkins.seed.triggering.SeedEventType;
+import net.nemerosa.jenkins.seed.triggering.SeedService;
+import net.nemerosa.jenkins.seed.triggering.connector.UnknownRequestException;
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.stapler.StaplerRequest;
@@ -13,7 +13,7 @@ import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.IOException;
 
-import static net.nemerosa.seed.triggering.connector.EndPointTestSupport.mockStaplerResponse;
+import static net.nemerosa.jenkins.seed.triggering.connector.EndPointTestSupport.mockStaplerResponse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
@@ -21,13 +21,17 @@ import static org.mockito.Mockito.*;
 public class HttpEndPointTest {
 
     public static final SeedChannel HTTP_CHANNEL = SeedChannel.of("http", "Seed HTTP end point");
-    private SeedService seedService;
+    protected SeedService seedService;
     private HttpEndPoint endPoint;
 
     @Before
     public void before() {
         seedService = mock(SeedService.class);
-        endPoint = new HttpEndPoint(seedService);
+        endPoint = getEndPoint();
+    }
+
+    public HttpEndPoint getEndPoint() {
+        return new HttpEndPoint(seedService);
     }
 
     @Test(expected = UnknownRequestException.class)

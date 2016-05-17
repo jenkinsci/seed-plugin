@@ -1,4 +1,4 @@
-package net.nemerosa.seed.triggering.connector.bitbucket;
+package net.nemerosa.jenkins.seed.triggering.connector.bitbucket;
 
 import net.nemerosa.jenkins.seed.triggering.SeedChannel;
 import net.nemerosa.jenkins.seed.triggering.SeedEvent;
@@ -12,7 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import static net.nemerosa.seed.triggering.connector.EndPointTestSupport.mockStaplerResponse;
+import static net.nemerosa.jenkins.seed.triggering.connector.EndPointTestSupport.mockStaplerResponse;
 import static org.mockito.Mockito.*;
 
 public class BitBucketEndPointTest {
@@ -27,7 +27,7 @@ public class BitBucketEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new BitBucketEndPoint(seedService).doDynamic(request, response);
+        getEndPoint(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
@@ -39,6 +39,10 @@ public class BitBucketEndPointTest {
         );
     }
 
+    protected BitBucketEndPoint getEndPoint(SeedService seedService) {
+        return new BitBucketEndPoint(seedService);
+    }
+
     @Test
     public void seed_event() throws IOException {
         StaplerResponse response = mockStaplerResponse();
@@ -47,7 +51,7 @@ public class BitBucketEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new BitBucketEndPoint(seedService).doDynamic(request, response);
+        getEndPoint(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
@@ -66,7 +70,7 @@ public class BitBucketEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new BitBucketEndPoint(seedService).doDynamic(request, response);
+        getEndPoint(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
@@ -85,7 +89,7 @@ public class BitBucketEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new BitBucketEndPoint(seedService).doDynamic(request, response);
+        getEndPoint(seedService).doDynamic(request, response);
         // Verifying
         verify(seedService, times(1)).post(
                 new SeedEvent(
@@ -104,7 +108,7 @@ public class BitBucketEndPointTest {
         // Service mock
         SeedService seedService = mock(SeedService.class);
         // Call
-        new BitBucketEndPoint(seedService).doDynamic(request, response);
+        getEndPoint(seedService).doDynamic(request, response);
         // Verifying that the event is not accepted
         verify(seedService, times(0)).post(any(SeedEvent.class));
     }

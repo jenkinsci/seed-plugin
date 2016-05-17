@@ -1,7 +1,6 @@
-package net.nemerosa.seed.triggering.connector;
+package net.nemerosa.jenkins.seed.triggering.connector;
 
 import net.nemerosa.jenkins.seed.generator.MissingParameterException;
-import net.nemerosa.seed.triggering.connector.AbstractEndPoint;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kohsuke.stapler.StaplerRequest;

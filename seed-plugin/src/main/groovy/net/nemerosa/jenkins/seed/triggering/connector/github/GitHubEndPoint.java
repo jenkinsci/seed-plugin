@@ -1,11 +1,11 @@
-package net.nemerosa.seed.triggering.connector.github;
+package net.nemerosa.jenkins.seed.triggering.connector.github;
 
 import hudson.Extension;
 import net.nemerosa.jenkins.seed.triggering.SeedChannel;
 import net.nemerosa.jenkins.seed.triggering.SeedEvent;
 import net.nemerosa.jenkins.seed.triggering.SeedEventType;
 import net.nemerosa.jenkins.seed.triggering.SeedService;
-import net.nemerosa.seed.triggering.connector.AbstractEndPoint;
+import net.nemerosa.jenkins.seed.triggering.connector.AbstractEndPoint;
 import net.nemerosa.jenkins.seed.triggering.connector.CannotHandleRequestException;
 import net.nemerosa.jenkins.seed.triggering.connector.RequestNonAuthorizedException;
 import net.nemerosa.jenkins.seed.triggering.connector.UnknownRequestException;
@@ -25,7 +25,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
 @Extension
-@Deprecated
 public class GitHubEndPoint extends AbstractEndPoint {
 
     private static final String X_GIT_HUB_EVENT = "X-GitHub-Event";
@@ -42,9 +41,14 @@ public class GitHubEndPoint extends AbstractEndPoint {
         super();
     }
 
+    @Deprecated
+    public GitHubEndPoint(boolean v0) {
+        super(v0);
+    }
+
     @Override
     public String getUrlName() {
-        return "seed-github";
+        return "seed/github";
     }
 
     @Override
@@ -103,9 +107,7 @@ public class GitHubEndPoint extends AbstractEndPoint {
             if (!StringUtils.equals(hmac, ghSignature)) {
                 throw new RequestNonAuthorizedException();
             }
-        } catch (NoSuchAlgorithmException ex) {
-            throw new CannotHandleRequestException(ex);
-        } catch (InvalidKeyException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new CannotHandleRequestException(ex);
         }
     }
