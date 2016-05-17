@@ -60,9 +60,12 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
 #!/bin/bash
 if [ "\${SEED_GRADLE}" == "yes" ]
 then
+    echo "Running Gradle based library expansion."
     cd seed
     chmod u+x gradlew
-    ./gradlew prepare --refresh-dependencies
+    ./gradlew prepare --refresh-dependencies --info
+else
+    echo "No Gradle based library expansion."
 fi
 '''
     }
