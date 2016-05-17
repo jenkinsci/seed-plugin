@@ -2,9 +2,9 @@ package net.nemerosa.seed.config;
 
 import com.google.common.collect.ImmutableMap;
 import hudson.Extension;
-import net.nemerosa.seed.triggering.SeedEvent;
-import net.nemerosa.seed.triggering.SeedLauncher;
-import net.nemerosa.seed.triggering.UnsupportedSeedEventTypeException;
+import net.nemerosa.jenkins.seed.triggering.SeedEvent;
+import net.nemerosa.jenkins.seed.triggering.SeedLauncher;
+import net.nemerosa.jenkins.seed.triggering.UnsupportedSeedEventTypeException;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collections;

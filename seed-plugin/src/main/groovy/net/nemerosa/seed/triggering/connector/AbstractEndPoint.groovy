@@ -3,9 +3,10 @@ package net.nemerosa.seed.triggering.connector
 import com.google.inject.Guice
 import hudson.model.UnprotectedRootAction
 import net.nemerosa.jenkins.seed.generator.MissingParameterException
-import net.nemerosa.seed.triggering.SeedEvent
-import net.nemerosa.seed.triggering.SeedEventType
-import net.nemerosa.seed.triggering.SeedService
+import net.nemerosa.jenkins.seed.triggering.SeedEvent
+import net.nemerosa.jenkins.seed.triggering.SeedEventType
+import net.nemerosa.jenkins.seed.triggering.SeedService
+import net.nemerosa.jenkins.seed.triggering.connector.RequestNonAuthorizedException
 import net.nemerosa.seed.triggering.SeedServiceModule
 import net.sf.json.JSONSerializer
 import org.apache.commons.lang.StringUtils

@@ -1,4 +1,4 @@
-package net.nemerosa.seed.triggering;
+package net.nemerosa.jenkins.seed.triggering;
 
 import hudson.model.Cause;
 

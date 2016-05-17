@@ -1,5 +1,6 @@
 package net.nemerosa.seed.config;
 
+import net.nemerosa.jenkins.seed.triggering.*;
 import net.nemerosa.seed.triggering.*;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;

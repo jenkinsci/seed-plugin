@@ -1,11 +1,11 @@
 package net.nemerosa.seed.triggering.connector.http;
 
-import net.nemerosa.seed.triggering.SeedService;
-import net.nemerosa.seed.triggering.connector.UnknownRequestException;
+import net.nemerosa.jenkins.seed.triggering.SeedService;
+import net.nemerosa.jenkins.seed.triggering.connector.UnknownRequestException;
 import net.nemerosa.jenkins.seed.generator.MissingParameterException;
-import net.nemerosa.seed.triggering.SeedChannel;
-import net.nemerosa.seed.triggering.SeedEvent;
-import net.nemerosa.seed.triggering.SeedEventType;
+import net.nemerosa.jenkins.seed.triggering.SeedChannel;
+import net.nemerosa.jenkins.seed.triggering.SeedEvent;
+import net.nemerosa.jenkins.seed.triggering.SeedEventType;
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.stapler.StaplerRequest;

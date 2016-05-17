@@ -1,4 +1,4 @@
-package net.nemerosa.seed.triggering;
+package net.nemerosa.jenkins.seed.triggering;
 
 import hudson.model.*;
 import hudson.security.ACL;
@@ -30,7 +30,7 @@ public class JenkinsSeedLauncher implements SeedLauncher {
             if (parameters != null && !parameters.isEmpty()) {
                 if (job.isParameterized()) {
                     // List of parameters
-                    List<ParameterValue> parameterValues = new ArrayList<ParameterValue>();
+                    List<ParameterValue> parameterValues = new ArrayList<>();
                     for (Map.Entry<String, String> entry : parameters.entrySet()) {
                         parameterValues.add(
                                 new StringParameterValue(
@@ -84,9 +84,7 @@ public class JenkinsSeedLauncher implements SeedLauncher {
             } finally {
                 SecurityContextHolder.setContext(orig);
             }
-        } catch (IOException e) {
-            throw new CannotDeleteItemException(path, e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new CannotDeleteItemException(path, e);
         }
     }

@@ -1,4 +1,4 @@
-package net.nemerosa.seed.triggering;
+package net.nemerosa.jenkins.seed.triggering;
 
 import net.nemerosa.seed.config.Configuration;
 
@@ -11,7 +11,7 @@ public class SeedEvent {
     private final String branch;
     private final SeedEventType type;
     private final SeedChannel channel;
-    private final Map<String, Object> parameters = new LinkedHashMap<String, Object>();
+    private final Map<String, Object> parameters = new LinkedHashMap<>();
 
     public SeedEvent(String project, String branch, SeedEventType type, SeedChannel channel) {
         this.project = project;

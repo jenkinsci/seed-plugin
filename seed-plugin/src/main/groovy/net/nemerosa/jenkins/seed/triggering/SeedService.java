@@ -1,6 +1,4 @@
-package net.nemerosa.seed.triggering;
-
-import net.nemerosa.seed.triggering.SeedEvent;
+package net.nemerosa.jenkins.seed.triggering;
 
 public interface SeedService {
 

@@ -1,14 +1,14 @@
 package net.nemerosa.seed.triggering.connector.github;
 
 import hudson.Extension;
-import net.nemerosa.seed.triggering.SeedChannel;
-import net.nemerosa.seed.triggering.SeedEvent;
-import net.nemerosa.seed.triggering.SeedEventType;
-import net.nemerosa.seed.triggering.SeedService;
+import net.nemerosa.jenkins.seed.triggering.SeedChannel;
+import net.nemerosa.jenkins.seed.triggering.SeedEvent;
+import net.nemerosa.jenkins.seed.triggering.SeedEventType;
+import net.nemerosa.jenkins.seed.triggering.SeedService;
 import net.nemerosa.seed.triggering.connector.AbstractEndPoint;
-import net.nemerosa.seed.triggering.connector.CannotHandleRequestException;
-import net.nemerosa.seed.triggering.connector.RequestNonAuthorizedException;
-import net.nemerosa.seed.triggering.connector.UnknownRequestException;
+import net.nemerosa.jenkins.seed.triggering.connector.CannotHandleRequestException;
+import net.nemerosa.jenkins.seed.triggering.connector.RequestNonAuthorizedException;
+import net.nemerosa.jenkins.seed.triggering.connector.UnknownRequestException;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Hex;

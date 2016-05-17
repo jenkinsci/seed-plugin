@@ -1,6 +1,4 @@
-package net.nemerosa.seed.triggering;
-
-import net.nemerosa.seed.triggering.SeedChannel;
+package net.nemerosa.jenkins.seed.triggering;
 
 import java.util.Map;
 

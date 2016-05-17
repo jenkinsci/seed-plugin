@@ -1,7 +1,10 @@
 package net.nemerosa.seed.triggering;
 
+import net.nemerosa.jenkins.seed.triggering.SeedEvent;
+import net.nemerosa.jenkins.seed.triggering.SeedLauncher;
+import net.nemerosa.jenkins.seed.triggering.SeedService;
 import net.nemerosa.seed.config.*;
-import net.nemerosa.seed.triggering.connector.RequestNonAuthorizedException;
+import net.nemerosa.jenkins.seed.triggering.connector.RequestNonAuthorizedException;
 
 import javax.inject.Inject;
 import java.util.logging.Level;

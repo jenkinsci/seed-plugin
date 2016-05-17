@@ -9,6 +9,10 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import net.nemerosa.jenkins.seed.triggering.SeedChannel;
+import net.nemerosa.jenkins.seed.triggering.SeedEvent;
+import net.nemerosa.jenkins.seed.triggering.SeedEventType;
+import net.nemerosa.jenkins.seed.triggering.SeedService;
 import net.nemerosa.seed.triggering.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 

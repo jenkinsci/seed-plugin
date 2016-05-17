@@ -1,5 +1,9 @@
 package net.nemerosa.seed.config;
 
+import net.nemerosa.jenkins.seed.triggering.SeedChannel;
+import net.nemerosa.jenkins.seed.triggering.SeedEvent;
+import net.nemerosa.jenkins.seed.triggering.SeedEventType;
+import net.nemerosa.jenkins.seed.triggering.SeedLauncher;
 import net.nemerosa.seed.triggering.*;
 import org.junit.Test;
 
