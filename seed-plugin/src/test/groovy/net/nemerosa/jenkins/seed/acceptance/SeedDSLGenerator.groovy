@@ -25,8 +25,8 @@ job('${jobName}') {
                     commitParameter '${config.commitParameter ?: ''}'
                     authorisations '''${config.authorisations ?: ''}'''
                     branchSCMParameter ${config.branchSCMParameter ?: ''}
-                    branchParameters '${config.branchParameters ?: ''}'
-                    generationExtension '${config.generationExtension ?: ''}'
+                    branchParameters '''${config.branchParameters ?: ''}'''
+                    generationExtension '''${config.generationExtension ?: ''}'''
                     namingStrategy {
                         projectFolderPath '${config.namingStrategy.projectFolderPath ?: ''}'
                         branchFolderPath '${config.namingStrategy.branchFolderPath ?: ''}'

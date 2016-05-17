@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.acceptance
 
+import net.nemerosa.jenkins.seed.config.EventStrategyConfig
 import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
@@ -20,8 +21,6 @@ import static org.junit.Assert.fail
  */
 @RunWith(AcceptanceTestRunner)
 class GenerationTest {
-
-    public static final int JOB_TIMEOUT = 1 * 60
 
     @Rule
     public JenkinsAccessRule jenkins = new JenkinsAccessRule()
@@ -158,35 +157,6 @@ class GenerationTest {
         String project = uid('p')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
-pipeline-generator-script-allowed: no
-'''
-        // Firing the seed job
-        jenkins.fireJob('seed', [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
-        // Fires the project seed
-        jenkins.fireJob("${project}/${project}-seed", [
-                BRANCH: 'master'
-        ]).checkSuccess()
-        // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
-        // Fires the branch seed
-        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
-    }
-
-    // TODO Direct script execution?
-    @Test
-    @Ignore
-    void 'Direct script execution - not allowed at project level'() {
-        // Project name
-        String project = uid('p')
-        // Configuration of the Seed job
-        jenkins.configureSeed '''\
 classes:
     - id: my-class
       pipeline-generator-script-allowed: no
@@ -208,38 +178,6 @@ classes:
         jenkins.job("${project}/${project}-master/${project}-master-seed")
         // Fires the branch seed
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
-    }
-
-    // TODO Direct script execution?
-    @Test
-    @Ignore
-    void 'Direct script execution - allowed at project level'() {
-        // Project name
-        String project = uid('p')
-        // Configuration of the Seed job
-        jenkins.configureSeed '''\
-pipeline-generator-script-allowed: no
-classes:
-    - id: my-class
-      pipeline-generator-script-allowed: yes
-'''
-        // Firing the seed job
-        jenkins.fireJob('seed', [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
-        // Fires the project seed
-        jenkins.fireJob("${project}/${project}-seed", [
-                BRANCH: 'master'
-        ]).checkSuccess()
-        // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
-        // Fires the branch seed
-        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
     }
 
     @Test
@@ -325,14 +263,18 @@ classes:
     }
 
     @Test
-    @Ignore
     void 'Repository credentials'() {
         // Project name
         String project = uid('p')
         // Configuration (default)
-        jenkins.configureSeed ""
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                    .withEventStrategy(
+                        new EventStrategyConfig().withAuto(false)
+                    )
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in local-acceptance.gradle
@@ -346,10 +288,6 @@ classes:
         ]).checkSuccess()
         // Checks the branch seed is created
         jenkins.job("${project}/${project}-master/${project}-master-seed")
-        // Fires the branch seed
-        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
-        // Checks the branch pipeline is there
-        jenkins.job("${project}/${project}-master/${project}-master-build")
         // Checks some parameters of the master seed
         def xml = jenkins.jobConfig("${project}/${project}-master/${project}-master-seed")
         // Injection of passwords is enabled?
@@ -371,9 +309,7 @@ repositories {
 configurations {
     dslLibrary
 }
-dependencies {
 
-}
 task clean {
     delete 'lib'
 }
@@ -440,31 +376,21 @@ projects:
     }
 
     @Test
-    @Ignore
     void 'Project pipeline extensions'() {
         // Project name
         String project = uid('p')
         // Configuration
-        jenkins.configureSeed """\
-extensions:
-    - id: extension1
-      dsl: |
-        steps {
-            shell "echo Extension 1"
-        }
-    - id: extension2
-      dsl: |
-        steps {
-            shell "echo Extension 2"
-        }
-projects:
-    - id: "${project}"
-      project-seed-extensions:
-        - extension1
-        - extension2
-"""
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                    .withGenerationExtension('''\
+                        steps {
+                            shell "echo Extension 1"
+                            shell "echo Extension 2"
+                        }
+                        ''')
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
@@ -486,14 +412,13 @@ projects:
     }
 
     @Test
-    @Ignore
     void 'Pipeline is fired by default after regeneration'() {
         // Project name
         String project = uid('p')
         // Default configuration
-        jenkins.configureSeed ''
+        def seed = jenkins.defaultSeed()
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
@@ -518,18 +443,17 @@ projects:
     }
 
     @Test
-    @Ignore
     void 'Pipeline is not fired after regeneration when pipeline-start-auto is disabled'() {
         // Project name
         String project = uid('p')
         // Default configuration
-        jenkins.configureSeed """
-projects:
-    - id: ${project}
-      pipeline-start-auto: no
-"""
+        def seed = jenkins.seed(
+                new PipelineConfig().withEventStrategy(
+                        new EventStrategyConfig().withStartAuto(false)
+                )
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
@@ -559,18 +483,15 @@ projects:
     }
 
     @Test
-    @Ignore
     void 'Destructor job'() {
         // Project name
         String project = uid('p')
         // Default configuration
-        jenkins.configureSeed """
-projects:
-    - id: ${project}
-      project-destructor: yes
-"""
+        def seed = jenkins.seed(
+                new PipelineConfig().withDestructor(true)
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
@@ -598,29 +519,27 @@ projects:
     }
 
     @Test
-    @Ignore
     void 'Destructor job with custom naming convention'() {
         // Project name
         String project = uid('p')
         // Default configuration
-        jenkins.configureSeed """
-strategies:
-  - id: custom
-    seed-expression: "\${PROJECT}/\${PROJECT}_GENERATOR"
-    destructor-expression: "\${PROJECT}/\${PROJECT}_DESTRUCTOR"
-    branch-seed-expression: "\${PROJECT}/\${PROJECT}_*/\${PROJECT}_*_GENERATOR"
-    branch-start-expression: "\${PROJECT}/\${PROJECT}_*/\${PROJECT}_*_010_BUILD"
-    branch-name-expression: "\${BRANCH}"
-    branch-name-prefixes:
-      - "branches/"
-    commit-parameter: "REVISION"
-projects:
-    - id: ${project}
-      branch-strategy: custom
-      project-destructor: yes
-"""
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                    .withDestructor(true)
+                    .withNamingStrategy(
+                        new NamingStrategyConfig()
+                            .withProjectFolderPath('${PROJECT}')
+                            .withProjectSeedName('${PROJECT}_GENERATOR')
+                            .withProjectDestructorName('${PROJECT}_DESTRUCTOR')
+                            .withBranchFolderPath('${PROJECT}_*')
+                            .withBranchSeedName('${PROJECT}_*_GENERATOR')
+                            .withBranchStartName('${PROJECT}_*_010_BUILD')
+                            .withBranchName('${BRANCH}')
+                            .withIgnoredBranchPrefixes('branches/')
+                )
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
