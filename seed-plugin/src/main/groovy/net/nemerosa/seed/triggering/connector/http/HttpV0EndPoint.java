@@ -17,4 +17,8 @@ public class HttpV0EndPoint extends HttpEndPoint implements UnprotectedRootActio
         super(true);
     }
 
+    @Override
+    public String getUrlName() {
+        return "seed-http";
+    }
 }
