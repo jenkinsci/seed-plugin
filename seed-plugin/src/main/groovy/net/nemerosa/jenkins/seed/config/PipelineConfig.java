@@ -91,16 +91,16 @@ public class PipelineConfig {
         this.eventStrategy = eventStrategy;
     }
 
-    public String getProjectFolder(ProjectParameters parameters) {
-        return namingStrategy.getProjectFolder(parameters);
+    public String getProjectFolder(String project) {
+        return namingStrategy.getProjectFolder(project);
     }
 
-    public String getProjectSeedJob(ProjectParameters parameters) {
-        return namingStrategy.getProjectSeedJob(parameters);
+    public String getProjectSeedJob(String project) {
+        return namingStrategy.getProjectSeedJob(project);
     }
 
-    public String getProjectDestructorJob(ProjectParameters parameters) {
-        return namingStrategy.getProjectDestructorJob(parameters);
+    public String getProjectDestructorJob(String project) {
+        return namingStrategy.getProjectDestructorJob(project);
     }
 
     public List<String> getProjectAuthorisations(ProjectParameters parameters) {
@@ -144,16 +144,16 @@ public class PipelineConfig {
         return new PipelineConfig();
     }
 
-    public String getBranchFolderPath(ProjectParameters parameters, String branch) {
-        return namingStrategy.getBranchFolderPath(parameters, branch);
+    public String getBranchFolderPath(String project, String branch) {
+        return namingStrategy.getBranchFolderPath(project, branch);
     }
 
-    public String getBranchSeedName(ProjectParameters parameters, String branch) {
-        return namingStrategy.getBranchSeedName(parameters, branch);
+    public String getBranchSeedName(String project, String branch) {
+        return namingStrategy.getBranchSeedName(project, branch);
     }
 
-    public String getBranchStartName(ProjectParameters parameters, String branch) {
-        return namingStrategy.getBranchStartName(parameters, branch);
+    public String getBranchStartName(String project, String branch) {
+        return namingStrategy.getBranchStartName(project, branch);
     }
 
     public String getBranchName(String branch) {

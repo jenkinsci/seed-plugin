@@ -2,7 +2,6 @@ package net.nemerosa.jenkins.seed.cache;
 
 import lombok.Data;
 import net.nemerosa.jenkins.seed.config.PipelineConfig;
-import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.triggering.SeedChannel;
 
 import static java.lang.String.format;
@@ -10,22 +9,17 @@ import static java.lang.String.format;
 @Data
 public class ProjectCachedConfig {
 
+    private final String project;
     private final PipelineConfig pipelineConfig;
-    private final ProjectParameters projectParameters;
 
     public ProjectCachedConfig(String project) {
+        this.project = project;
         this.pipelineConfig = new PipelineConfig();
-        this.projectParameters = new ProjectParameters(
-                project,
-                "",
-                "",
-                ""
-        );
     }
 
-    public ProjectCachedConfig(PipelineConfig pipelineConfig, ProjectParameters projectParameters) {
+    public ProjectCachedConfig(String project, PipelineConfig pipelineConfig) {
+        this.project = project;
         this.pipelineConfig = pipelineConfig;
-        this.projectParameters = projectParameters;
     }
 
     public boolean isChannelEnabled(SeedChannel channel) {
@@ -41,17 +35,17 @@ public class ProjectCachedConfig {
     public String getProjectSeedJob() {
         return format(
                 "%s/%s",
-                pipelineConfig.getProjectFolder(projectParameters),
-                pipelineConfig.getProjectSeedJob(projectParameters)
+                pipelineConfig.getProjectFolder(project),
+                pipelineConfig.getProjectSeedJob(project)
         );
     }
 
     public String getBranchSeedJob(String branch) {
         return format(
                 "%s/%s/%s",
-                pipelineConfig.getProjectFolder(projectParameters),
-                pipelineConfig.getBranchFolderPath(projectParameters, branch),
-                pipelineConfig.getBranchSeedName(projectParameters, branch)
+                pipelineConfig.getProjectFolder(project),
+                pipelineConfig.getBranchFolderPath(project, branch),
+                pipelineConfig.getBranchSeedName(project, branch)
         );
     }
 
@@ -70,9 +64,9 @@ public class ProjectCachedConfig {
     public String getBranchStartJob(String branch) {
         return format(
                 "%s/%s/%s",
-                pipelineConfig.getProjectFolder(projectParameters),
-                pipelineConfig.getBranchFolderPath(projectParameters, branch),
-                pipelineConfig.getBranchStartName(projectParameters, branch)
+                pipelineConfig.getProjectFolder(project),
+                pipelineConfig.getBranchFolderPath(project, branch),
+                pipelineConfig.getBranchStartName(project, branch)
         );
     }
 

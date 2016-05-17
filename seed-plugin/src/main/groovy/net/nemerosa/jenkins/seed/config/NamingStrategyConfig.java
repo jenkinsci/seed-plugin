@@ -92,16 +92,16 @@ public class NamingStrategyConfig {
                 null);
     }
 
-    public String getProjectFolder(ProjectParameters parameters) {
-        return evaluate(projectFolderPath, "${project}", "project", parameters.getProject());
+    public String getProjectFolder(String project) {
+        return evaluate(projectFolderPath, "${project}", "project", project);
     }
 
-    public String getProjectSeedJob(ProjectParameters parameters) {
-        return evaluate(projectSeedName, "${project}-seed", "project", parameters.getProject());
+    public String getProjectSeedJob(String project) {
+        return evaluate(projectSeedName, "${project}-seed", "project", project);
     }
 
-    public String getProjectDestructorJob(ProjectParameters parameters) {
-        return evaluate(projectDestructorName, "${project}-destructor", "project", parameters.getProject());
+    public String getProjectDestructorJob(String project) {
+        return evaluate(projectDestructorName, "${project}-destructor", "project", project);
     }
 
     public String getBranchName(String branch) {
@@ -118,18 +118,18 @@ public class NamingStrategyConfig {
         return evaluate(branchName, "${branch}", "branch", value);
     }
 
-    public String getBranchFolderPath(ProjectParameters parameters, String branch) {
-        return evaluate(branchFolderPath, "${project}-*", "project", parameters.getProject())
+    public String getBranchFolderPath(String project, String branch) {
+        return evaluate(branchFolderPath, "${project}-*", "project", project)
                 .replace(BRANCH_PLACEHOLDER, getBranchName(branch));
     }
 
-    public String getBranchSeedName(ProjectParameters parameters, String branch) {
-        return evaluate(branchSeedName, "${project}-*-seed", "project", parameters.getProject())
+    public String getBranchSeedName(String project, String branch) {
+        return evaluate(branchSeedName, "${project}-*-seed", "project", project)
                 .replace(BRANCH_PLACEHOLDER, getBranchName(branch));
     }
 
-    public String getBranchStartName(ProjectParameters parameters, String branch) {
-        return evaluate(branchStartName, "${project}-*-build", "project", parameters.getProject())
+    public String getBranchStartName(String project, String branch) {
+        return evaluate(branchStartName, "${project}-*-build", "project", project)
                 .replace(BRANCH_PLACEHOLDER, getBranchName(branch));
     }
 
