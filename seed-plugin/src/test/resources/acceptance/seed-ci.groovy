@@ -29,3 +29,5 @@ echo "Commit: ${SVN_REVISION}"
 '''
     }
 }
+
+queue("${SEED_PROJECT}-${SEED_BRANCH}-ci")

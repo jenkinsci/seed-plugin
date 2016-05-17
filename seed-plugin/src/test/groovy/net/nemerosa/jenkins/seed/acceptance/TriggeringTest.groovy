@@ -1,6 +1,7 @@
 package net.nemerosa.jenkins.seed.acceptance
 
 import net.nemerosa.jenkins.seed.config.EventStrategyConfig
+import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
 import net.nemerosa.jenkins.seed.test.JenkinsAPIRefusedException
@@ -214,32 +215,28 @@ projects:
     }
 
     @Test
-    @Ignore
     void 'Commit event with a custom naming strategy'() {
         // Project name
         def project = uid('p')
         // Configuration
-        jenkins.configureSeed """\
-strategies:
-  - id: ci
-    branch-start-expression: "\${project}/\${project}-*/\${project}-*-ci"
-    commit-parameter: SVN_REVISION
-classes:
-    - id: my-class
-      branch-strategy: ci
-"""
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                    .withNamingStrategy(new NamingStrategyConfig().withBranchStartName('${project}-*-ci'))
+                    .withEventStrategy(new EventStrategyConfig().withCommit('SVN_REVISION'))
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 PROJECT_CLASS   : 'my-class',
                 // Path to the prepared Git repository in docker.gradle
                 PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-ci',
+                PROJECT_TRIGGER_TYPE: 'http',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job("${project}/${project}-seed")
         // Fires the project seed for the `master` branch
-        jenkins.post("seed-http/create?project=${project}&branch=master")
+        jenkins.post("seed-http-api/create?project=${project}&branch=master")
         // Checks the result of the project seed
         jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
         // Checks the branch seed is created - it's fired automatically
@@ -251,7 +248,7 @@ classes:
         // Checks the first build - it's fired automatically on Seed generation
         jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1).checkSuccess()
         // Triggers again the branch pipeline
-        jenkins.post("seed-http/commit?project=${project}&branch=master&commit=100")
+        jenkins.post("seed-http-api/commit?project=${project}&branch=master&commit=100")
         // Checks that the master pipeline is fired
         def build = jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 2)
         build.checkSuccess()
