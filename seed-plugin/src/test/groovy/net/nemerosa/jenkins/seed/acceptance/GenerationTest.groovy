@@ -263,65 +263,6 @@ classes:
     }
 
     @Test
-    void 'Repository credentials'() {
-        // Project name
-        String project = uid('p')
-        // Configuration (default)
-        def seed = jenkins.seed(
-                new PipelineConfig()
-                    .withEventStrategy(
-                        new EventStrategyConfig().withAuto(false)
-                    )
-        )
-        // Firing the seed job
-        jenkins.fireJob(seed, [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in local-acceptance.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-cred',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
-        // Fires the project seed
-        jenkins.fireJob("${project}/${project}-seed", [
-                BRANCH: 'master'
-        ]).checkSuccess()
-        // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
-        // Checks some parameters of the master seed
-        def xml = jenkins.jobConfig("${project}/${project}-master/${project}-master-seed")
-        // Injection of passwords is enabled?
-        assert xml?.buildWrappers?.EnvInjectPasswordWrapper?.injectGlobalPasswords?.text() == 'true'
-        // Gets the build.gradle file from the workspace
-        def buildGradle = jenkins.getWorkspaceFile("${project}/${project}-master/${project}-master-seed", "seed/build.gradle")
-        // Careful: there are four spaces in the dependencies section
-        Assert.assertEquals """\
-repositories {
-    maven {
-    url 'https://artifactory.nemerosa.net'
-    credentials {
-        username System.getenv('ARTIFACTORY_USER')
-        password System.getenv('ARTIFACTORY_PASSWORD')
-    }
-}
-
-}
-configurations {
-    dslLibrary
-}
-
-task clean {
-    delete 'lib'
-}
-task copyLibraries(type: Copy, dependsOn: clean) {
-    into 'lib'
-    from configurations.dslLibrary
-}
-task prepare(dependsOn: copyLibraries)
-""", buildGradle
-    }
-
-    @Test
     @Ignore
     void 'Branch pipeline extensions'() {
         // Project name
