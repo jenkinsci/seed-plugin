@@ -344,9 +344,7 @@ repositories {
 configurations {
     dslLibrary
 }
-dependencies {
 
-}
 task clean {
     delete 'lib'
 }

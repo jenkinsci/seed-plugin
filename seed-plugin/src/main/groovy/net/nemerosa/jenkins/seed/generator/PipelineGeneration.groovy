@@ -157,8 +157,15 @@ repositories {
 configurations {
     dslLibrary
 }
+${
+    if (dependencies) {
+        """\
 dependencies {
     ${dependencies.collect { "dslLibrary '${it}'" }.join('\n    ')}
+}"""
+    } else {
+        ''
+    }
 }
 task clean {
     delete 'lib'
