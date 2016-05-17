@@ -441,7 +441,7 @@ projects:
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-cinoqueue',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.job("${project}/${project}-seed")
@@ -454,12 +454,10 @@ projects:
         // Fires the branch seed
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job("${project}/${project}-master/${project}-master-build")
         jenkins.job("${project}/${project}-master/${project}-master-ci")
-        jenkins.job("${project}/${project}-master/${project}-master-publish")
-        // Checks the result of the pipeline (build must have been fired automatically)
+        // Checks the result of the pipeline (build must NOT have been fired automatically)
         try {
-            jenkins.getBuild("${project}/${project}-master/${project}-master-build", 1, 30).checkSuccess()
+            jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1, 30).checkSuccess()
             fail "The pipeline should not have been fired"
         } catch (TimeoutException ignored) {
             // OK

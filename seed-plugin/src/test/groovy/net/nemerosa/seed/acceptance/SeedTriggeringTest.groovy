@@ -31,7 +31,7 @@ class SeedTriggeringTest {
     @Test
     void 'Default seed tree'() {
         // Project name
-        def project = uid('P')
+        def project = uid('p')
         // Configuration
         jenkins.configureSeed ''
         // Firing the seed job
@@ -138,7 +138,7 @@ projects:
     @Test(expected = JenkinsAPIRefusedException)
     void 'Token not provided'() {
         // Project name
-        def project = uid('P')
+        def project = uid('p')
         // Configuration
         jenkins.configureSeed """\
 http-secret-key: ABCDEF
@@ -159,7 +159,7 @@ http-secret-key: ABCDEF
     @Test
     void 'Token provided'() {
         // Project name
-        def project = uid('P')
+        def project = uid('p')
         // Configuration
         jenkins.configureSeed """\
 http-secret-key: ABCDEF
