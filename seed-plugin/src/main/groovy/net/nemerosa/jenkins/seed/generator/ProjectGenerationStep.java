@@ -63,11 +63,6 @@ public class ProjectGenerationStep extends AbstractSeedStep {
                 parameters.getProject(),
                 projectConfig.getPipelineConfig()
         );
-        build.getProject().addAction(
-                new PipelineConfigAction(
-                        projectConfig.getPipelineConfig()
-                )
-        );
     }
 
     @Extension

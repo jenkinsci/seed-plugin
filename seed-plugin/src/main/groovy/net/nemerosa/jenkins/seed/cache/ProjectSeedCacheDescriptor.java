@@ -6,7 +6,6 @@ import hudson.model.Descriptor;
 import hudson.model.Item;
 import hudson.model.listeners.ItemListener;
 import jenkins.model.Jenkins;
-import lombok.Data;
 import net.nemerosa.jenkins.seed.config.PipelineConfig;
 
 import java.util.HashMap;
@@ -19,18 +18,9 @@ import java.util.Map;
 public class ProjectSeedCacheDescriptor extends Descriptor<ProjectSeedCacheDescriptor> implements Describable<ProjectSeedCacheDescriptor> {
 
     /**
-     * Indexed data
-     */
-    @Data
-    public static class ProjectSeed {
-        private final String folderPath;
-        private final String seedJob;
-    }
-
-    /**
      * Index of project configurations
      */
-    private Map<String, ProjectSeed> projectSeeds = new HashMap<>();
+    private Map<String, PipelineConfig> projectSeeds = new HashMap<>();
 
     public ProjectSeedCacheDescriptor() {
         super(ProjectSeedCacheDescriptor.class);
@@ -50,28 +40,25 @@ public class ProjectSeedCacheDescriptor extends Descriptor<ProjectSeedCacheDescr
     public void saveProjectConfiguration(String project, PipelineConfig config) {
         projectSeeds.put(
                 project,
-                new ProjectSeed(
-                        config.getProjectFolder(project),
-                        config.getProjectSeedJob(project)
-                )
+                config
         );
         save();
     }
 
     private static void removeProjectConfiguration(String name) {
         ProjectSeedCacheDescriptor descriptor = Jenkins.getInstance().getDescriptorByType(ProjectSeedCacheDescriptor.class);
-        ProjectSeed removed = descriptor.projectSeeds.remove(name);
+        PipelineConfig removed = descriptor.projectSeeds.remove(name);
         if (removed != null) {
             descriptor.save();
         }
     }
 
-    public ProjectSeed getProjectSavedConfiguration(String projectName) {
+    public PipelineConfig getProjectSavedConfiguration(String projectName) {
         return projectSeeds.get(projectName);
     }
 
     @Extension
-    public static class GeneratedJobMapItemListener extends ItemListener {
+    public static class ProjectSeedCacheDescriptorItemListener extends ItemListener {
 
         @Override
         public void onDeleted(Item item) {
