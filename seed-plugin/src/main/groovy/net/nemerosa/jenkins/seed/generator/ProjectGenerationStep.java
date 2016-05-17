@@ -3,9 +3,13 @@ package net.nemerosa.jenkins.seed.generator;
 import com.google.common.collect.ImmutableMap;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import jenkins.model.Jenkins;
+import net.nemerosa.jenkins.seed.cache.ProjectSeedCacheDescriptor;
 import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -49,6 +53,20 @@ public class ProjectGenerationStep extends AbstractSeedStep {
         return ImmutableMap.<String, GenerationExtension>of(
                 "projectAuthorisations", new ProjectAuthorisationsGenerationExtension(projectConfig.getPipelineConfig(), parameters),
                 "projectGeneration", new ProjectGenerationGenerationExtension(projectConfig, parameters)
+        );
+    }
+
+    @Override
+    protected void postProcessing(ProjectPipelineConfig projectConfig, ProjectParameters parameters, AbstractBuild<?, ?> build, BuildListener listener, EnvVars env) {
+        ProjectSeedCacheDescriptor descriptor = Jenkins.getInstance().getDescriptorByType(ProjectSeedCacheDescriptor.class);
+        descriptor.saveProjectConfiguration(
+                parameters.getProject(),
+                projectConfig.getPipelineConfig()
+        );
+        build.getProject().addAction(
+                new PipelineConfigAction(
+                        projectConfig.getPipelineConfig()
+                )
         );
     }
 

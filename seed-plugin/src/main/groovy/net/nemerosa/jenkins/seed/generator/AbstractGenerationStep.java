@@ -57,6 +57,9 @@ public abstract class AbstractGenerationStep extends Builder {
         // Runs the script
         DSLHelper.launchGenerationScript(build, listener, env, script);
 
+        // Post processing
+        context.postProcessing(build, listener, env);
+
         // OK
         return true;
     }

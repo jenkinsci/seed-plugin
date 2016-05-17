@@ -16,6 +16,7 @@ import java.util.Map;
  * Descriptor used to hold the index of all projects and their associated configuration.
  */
 @Extension
+@Deprecated
 public class SeedDescriptor extends Descriptor<SeedDescriptor> implements Describable<SeedDescriptor> {
 
     /**

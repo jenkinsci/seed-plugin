@@ -2,6 +2,8 @@ package net.nemerosa.jenkins.seed.generator;
 
 import com.google.common.base.Function;
 import hudson.EnvVars;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
 import net.nemerosa.jenkins.seed.config.ProjectParameters;
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
 
@@ -17,9 +19,9 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         // Environment variables
         Map<String, String> config = new LinkedHashMap<>();
         // Project pipeline
-        ProjectPipelineConfig projectConfig = getProjectConfig();
+        final ProjectPipelineConfig projectConfig = getProjectConfig();
         // Project actual parameters
-        ProjectParameters parameters = projectConfig.getProjectParameters(expandFn);
+        final ProjectParameters parameters = projectConfig.getProjectParameters(expandFn);
         // Environment variables
         configuration(projectConfig, parameters, config, env);
         // Script replacements
@@ -27,8 +29,20 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         // OK
         return new GenerationContext(
                 config,
-                extensions
+                extensions,
+                new GenerationPostProcessing() {
+                    @Override
+                    public void run(AbstractBuild<?, ?> build, BuildListener listener, EnvVars env) {
+                        postProcessing(projectConfig, parameters, build, listener, env);
+                    }
+                }
         );
+    }
+
+    /**
+     * Does nothing by default
+     */
+    protected void postProcessing(ProjectPipelineConfig projectConfig, ProjectParameters parameters, AbstractBuild<?, ?> build, BuildListener listener, EnvVars env) {
     }
 
     protected void configuration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config, EnvVars env) {
