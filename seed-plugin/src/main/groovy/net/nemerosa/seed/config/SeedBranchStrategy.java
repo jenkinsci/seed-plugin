@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import static java.lang.String.format;
 
 @Extension
+@Deprecated
 public class SeedBranchStrategy extends AbstractBranchStrategy {
 
     private static final Logger LOGGER = Logger.getLogger(SeedBranchStrategy.class.getName());
