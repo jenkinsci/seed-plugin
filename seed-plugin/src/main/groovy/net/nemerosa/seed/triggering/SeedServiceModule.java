@@ -6,6 +6,7 @@ import net.nemerosa.jenkins.seed.triggering.SeedLauncher;
 import net.nemerosa.jenkins.seed.triggering.SeedService;
 import net.nemerosa.seed.config.*;
 
+@Deprecated
 public class SeedServiceModule extends AbstractModule {
 
     @Override

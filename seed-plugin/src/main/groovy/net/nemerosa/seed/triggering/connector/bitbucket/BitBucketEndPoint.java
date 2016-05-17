@@ -17,6 +17,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import java.io.IOException;
 
 @Extension
+@Deprecated
 public class BitBucketEndPoint extends AbstractEndPoint {
 
     private static final String X_EVENT_KEY = "X-Event-Key";

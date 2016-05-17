@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 
 @Extension
+@Deprecated
 public class GitHubEndPoint extends AbstractEndPoint {
 
     private static final String X_GIT_HUB_EVENT = "X-GitHub-Event";

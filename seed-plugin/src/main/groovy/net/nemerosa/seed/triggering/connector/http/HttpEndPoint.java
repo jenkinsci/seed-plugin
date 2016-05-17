@@ -15,6 +15,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import java.util.logging.Logger;
 
 @Extension
+@Deprecated
 public class HttpEndPoint extends AbstractEndPoint implements UnprotectedRootAction {
 
     private static final Logger LOGGER = Logger.getLogger(HttpEndPoint.class.getName());

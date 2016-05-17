@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Deprecated
 public class SeedServiceImpl implements SeedService {
 
     private static final Logger LOGGER = Logger.getLogger(SeedService.class.getName());

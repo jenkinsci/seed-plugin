@@ -17,6 +17,7 @@ import org.kohsuke.stapler.interceptor.RequirePOST
 import java.util.logging.Level
 import java.util.logging.Logger
 
+@Deprecated
 public abstract class AbstractEndPoint implements UnprotectedRootAction {
 
     private static final Logger LOGGER = Logger.getLogger(AbstractEndPoint.class.getName());
