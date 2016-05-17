@@ -2,7 +2,6 @@ package net.nemerosa.seed.acceptance
 
 import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
 import net.nemerosa.jenkins.seed.test.JenkinsAccessRule
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -296,64 +295,6 @@ classes:
         // Checks the result of the pipeline (ci & publish must have been fired)
         jenkins.getBuild('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_020_CI', 1).checkSuccess()
         jenkins.getBuild('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_030_PUBLISH', 1).checkSuccess()
-    }
-
-    @Test
-    void 'Repository credentials'() {
-        // Project name
-        String project = uid('P')
-        // Configuration (default)
-        jenkins.configureSeed ""
-        // Firing the seed job
-        jenkins.fireJob('seed', [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in local-acceptance.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-cred',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
-        // Fires the project seed
-        jenkins.fireJob("${project}/${project}-seed", [
-                BRANCH: 'master'
-        ]).checkSuccess()
-        // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
-        // Fires the branch seed
-        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
-        // Checks the branch pipeline is there
-        jenkins.job("${project}/${project}-master/${project}-master-build")
-        // Checks some parameters of the master seed
-        def xml = jenkins.jobConfig("${project}/${project}-master/${project}-master-seed")
-        // Injection of passwords is enabled?
-        assert xml?.buildWrappers?.EnvInjectPasswordWrapper?.injectGlobalPasswords?.text() == 'true'
-        // Gets the build.gradle file from the workspace
-        def buildGradle = jenkins.getWorkspaceFile("${project}/${project}-master/${project}-master-seed", "seed/build.gradle")
-        // Careful: there are four spaces in the dependencies section
-        Assert.assertEquals """\
-repositories {
-    maven {
-    url 'https://artifactory.nemerosa.net'
-    credentials {
-        username System.getenv('ARTIFACTORY_USER')
-        password System.getenv('ARTIFACTORY_PASSWORD')
-    }
-}
-
-}
-configurations {
-    dslLibrary
-}
-
-task clean {
-    delete 'lib'
-}
-task copyLibraries(type: Copy, dependsOn: clean) {
-    into 'lib'
-    from configurations.dslLibrary
-}
-task prepare(dependsOn: copyLibraries)
-""", buildGradle
     }
 
     @Test
