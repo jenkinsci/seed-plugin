@@ -22,9 +22,11 @@ task acceptanceTest(type: Test) {
         systemProperty 'jenkinsUrl', jenkinsUrl
     }
     include 'net/nemerosa/seed/acceptance/**'
+    include 'net/nemerosa/jenkins/seed/acceptance/**'
 }
 
 // Exclude the acceptance tests from the default tests
 test {
     exclude 'net/nemerosa/seed/acceptance/**'
+    exclude 'net/nemerosa/jenkins/seed/acceptance/**'
 }

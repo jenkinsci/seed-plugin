@@ -1,4 +1,4 @@
-package net.nemerosa.jenkins.seed.acceptance
+package net.nemerosa.jenkins.seed.support
 
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import org.junit.Test

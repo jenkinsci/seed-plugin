@@ -1,7 +1,7 @@
 package net.nemerosa.jenkins.seed.test
 
 import groovy.json.JsonSlurper
-import net.nemerosa.jenkins.seed.acceptance.SeedDSLGenerator
+import net.nemerosa.jenkins.seed.support.SeedDSLGenerator
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.methods.PostMethod
