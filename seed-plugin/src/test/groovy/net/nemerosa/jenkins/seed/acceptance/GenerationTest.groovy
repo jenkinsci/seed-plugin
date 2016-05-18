@@ -1,11 +1,9 @@
 package net.nemerosa.jenkins.seed.acceptance
 
-import net.nemerosa.jenkins.seed.config.EventStrategyConfig
 import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
 import net.nemerosa.jenkins.seed.test.JenkinsAccessRule
-import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
