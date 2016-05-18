@@ -6,6 +6,7 @@ import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
 import net.nemerosa.jenkins.seed.test.JenkinsAPIRefusedException
 import net.nemerosa.jenkins.seed.test.JenkinsAccessRule
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -24,6 +25,11 @@ class TriggeringTest {
 
     @Rule
     public JenkinsAccessRule jenkins = new JenkinsAccessRule()
+
+    @Before
+    void 'Seed generator created'() {
+        jenkins.job('seed-generator')
+    }
 
     @Test
     void 'Default seed tree'() {
