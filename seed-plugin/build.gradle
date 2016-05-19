@@ -68,6 +68,9 @@ dependencies {
     jenkinsPlugins "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     jenkinsTest "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     providedCompile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}@jar"
+    // Testing
+    jenkinsTest 'org.jenkins-ci.plugins:git:2.3.5@jar'
+    jenkinsTest 'org.jenkins-ci.plugins:subversion:2.5@jar'
 
     testCompile 'org.mockito:mockito-core:1.9.5'
 }
