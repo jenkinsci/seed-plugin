@@ -9,6 +9,7 @@ import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class AbstractSeedStep extends AbstractGenerationStep {
 
@@ -55,42 +56,42 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
 
     protected void pipelineConfiguration(ProjectPipelineConfig projectConfig, @SuppressWarnings("UnusedParameters") ProjectParameters parameters, Map<String, String> config) {
         config.put("PIPELINE_DESTRUCTOR", String.valueOf(projectConfig.getPipelineConfig().isDestructor()));
-        config.put("PIPELINE_COMMIT_PARAMETER", projectConfig.getPipelineConfig().getCommitParameter());
-        config.put("PIPELINE_AUTHORISATIONS", projectConfig.getPipelineConfig().getAuthorisations());
+        config.put("PIPELINE_COMMIT_PARAMETER", Objects.toString(projectConfig.getPipelineConfig().getCommitParameter(), ""));
+        config.put("PIPELINE_AUTHORISATIONS", Objects.toString(projectConfig.getPipelineConfig().getAuthorisations(), ""));
         config.put("PIPELINE_BRANCH_SCM_PARAMETER", String.valueOf(projectConfig.getPipelineConfig().isBranchSCMParameter()));
-        config.put("PIPELINE_BRANCH_PARAMETERS", projectConfig.getPipelineConfig().getBranchParameters());
-        config.put("PIPELINE_GENERATION_EXTENSION", projectConfig.getPipelineConfig().getGenerationExtension());
-        config.put("IGNORED_BRANCH_PREFIXES", projectConfig.getPipelineConfig().getNamingStrategy().getIgnoredBranchPrefixes());
+        config.put("PIPELINE_BRANCH_PARAMETERS", Objects.toString(projectConfig.getPipelineConfig().getBranchParameters(), ""));
+        config.put("PIPELINE_GENERATION_EXTENSION", Objects.toString(projectConfig.getPipelineConfig().getGenerationExtension(), ""));
+        config.put("IGNORED_BRANCH_PREFIXES", Objects.toString(projectConfig.getPipelineConfig().getNamingStrategy().getIgnoredBranchPrefixes(), ""));
     }
 
     protected void projectConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config) {
-        config.put("PROJECT_FOLDER_PATH", projectConfig.getPipelineConfig().getProjectFolder(parameters.getProject()));
-        config.put("SEED_PROJECT", projectConfig.getPipelineConfig().getProjectFolder(parameters.getProject()));
-        config.put("PROJECT_SEED_NAME", projectConfig.getPipelineConfig().getProjectSeedJob(parameters.getProject()));
+        config.put("PROJECT_FOLDER_PATH", Objects.toString(projectConfig.getPipelineConfig().getProjectFolder(parameters.getProject()), ""));
+        config.put("SEED_PROJECT", Objects.toString(projectConfig.getPipelineConfig().getProjectFolder(parameters.getProject()), ""));
+        config.put("PROJECT_SEED_NAME", Objects.toString(projectConfig.getPipelineConfig().getProjectSeedJob(parameters.getProject()), ""));
         config.put("PROJECT_DESTRUCTOR_NAME", String.valueOf(projectConfig.getPipelineConfig().getProjectDestructorJob(parameters.getProject())));
     }
 
     protected void branchConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config, EnvVars env) {
-        config.put("BRANCH_FOLDER_PATH", projectConfig.getPipelineConfig().getNamingStrategy().getBranchFolderPath());
-        config.put("BRANCH_SEED_NAME", projectConfig.getPipelineConfig().getNamingStrategy().getBranchSeedName());
+        config.put("BRANCH_FOLDER_PATH", Objects.toString(projectConfig.getPipelineConfig().getNamingStrategy().getBranchFolderPath(), ""));
+        config.put("BRANCH_SEED_NAME", Objects.toString(projectConfig.getPipelineConfig().getNamingStrategy().getBranchSeedName(), ""));
         config.put("BRANCH_START_NAME", String.valueOf(projectConfig.getPipelineConfig().getNamingStrategy().getBranchStartName()));
         config.put("BRANCH_NAME", String.valueOf(projectConfig.getPipelineConfig().getNamingStrategy().getBranchName()));
     }
 
     protected void generalConfiguration(ProjectParameters parameters, Map<String, String> config) {
-        config.put("PROJECT", parameters.getProject());
-        config.put("PROJECT_SCM_TYPE", parameters.getScmType());
-        config.put("PROJECT_SCM_URL", parameters.getScmUrl());
-        config.put("PROJECT_SCM_CREDENTIALS", parameters.getScmCredentials());
-        config.put("PROJECT_TRIGGER_TYPE", parameters.getTriggerType());
-        config.put("PROJECT_TRIGGER_SECRET", parameters.getTriggerSecret());
+        config.put("PROJECT", Objects.toString(parameters.getProject(), ""));
+        config.put("PROJECT_SCM_TYPE", Objects.toString(parameters.getScmType(), ""));
+        config.put("PROJECT_SCM_URL", Objects.toString(parameters.getScmUrl(), ""));
+        config.put("PROJECT_SCM_CREDENTIALS", Objects.toString(parameters.getScmCredentials(), ""));
+        config.put("PROJECT_TRIGGER_TYPE", Objects.toString(parameters.getTriggerType(), ""));
+        config.put("PROJECT_TRIGGER_SECRET", Objects.toString(parameters.getTriggerSecret(), ""));
     }
 
     protected void eventConfiguration(ProjectPipelineConfig projectConfig, @SuppressWarnings("UnusedParameters") ProjectParameters parameters, Map<String, String> config) {
         config.put("EVENT_STRATEGY_DELETE", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isDelete()));
         config.put("EVENT_STRATEGY_AUTO", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isAuto()));
         config.put("EVENT_STRATEGY_TRIGGER", String.valueOf(projectConfig.getPipelineConfig().getEventStrategy().isTrigger()));
-        config.put("EVENT_STRATEGY_COMMIT", projectConfig.getPipelineConfig().getEventStrategy().getCommit());
+        config.put("EVENT_STRATEGY_COMMIT", Objects.toString(projectConfig.getPipelineConfig().getEventStrategy().getCommit(), ""));
     }
 
     protected abstract Map<String, GenerationExtension> getExtensionPoints(EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters);
