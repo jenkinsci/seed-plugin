@@ -25,8 +25,16 @@ task acceptanceTest(type: Test) {
     include 'net/nemerosa/jenkins/seed/acceptance/**'
 }
 
+task integrationTest(type: Test) {
+    include 'net/nemerosa/jenkins/seed/integration/**'
+}
+
 // Exclude the acceptance tests from the default tests
 test {
     exclude 'net/nemerosa/seed/acceptance/**'
     exclude 'net/nemerosa/jenkins/seed/acceptance/**'
+    exclude 'net/nemerosa/jenkins/seed/integration/**'
 }
+
+build.dependsOn integrationTest
+integrationTest.mustRunAfter test
