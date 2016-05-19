@@ -7,3 +7,7 @@ allprojects {
     version = versioning.info.display
 }
 description = "Seed Jenkins plug-in"
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
+}

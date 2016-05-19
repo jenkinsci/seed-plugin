@@ -1,13 +1,6 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.11.1'
-    }
+plugins {
+    id 'org.jenkins-ci.jpi' version '0.18.0'
 }
-
-apply plugin: 'org.jenkins-ci.jpi'
 
 description = "Seed Jenkins plug-in"
 
@@ -16,7 +9,7 @@ ext {
 }
 
 jenkinsPlugin {
-    coreVersion = '1.609'                                            // Version of Jenkins core this plugin depends on.
+    coreVersion = '1.609.3'                                            // Version of Jenkins core this plugin depends on.
     displayName = 'Seed Jenkins plug-in'                             // Human-readable name of plugin.
     url = 'http://wiki.jenkins-ci.org/display/JENKINS/Seed+Plugin'   // URL for plugin on Jenkins wiki or elsewhere.
     gitHubUrl = 'https://github.com/jenkinsci/seed-plugin'           // Plugin URL on GitHub. Optional.
@@ -68,7 +61,9 @@ dependencies {
     jenkinsPlugins "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     jenkinsTest "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     providedCompile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}@jar"
+
     // Testing
+    jenkinsTest 'org.jenkins-ci.main:jenkins-test-harness:2.7@jar'
     jenkinsTest 'org.jenkins-ci.plugins:git:2.3.5@jar'
     jenkinsTest 'org.jenkins-ci.plugins:subversion:2.5@jar'
 
