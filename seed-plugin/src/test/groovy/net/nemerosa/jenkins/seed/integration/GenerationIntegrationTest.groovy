@@ -5,6 +5,15 @@ import org.junit.Test
 
 import static net.nemerosa.jenkins.seed.test.TestUtils.uid
 
+/**
+ * Before launching the tests in the IDE, make to run, at least once:
+ *
+ * ./gradlew resolveTestDependencies
+ *
+ * This will make sure the plugin dependencies are correctly setup in the test Jenkins working copy.
+ *
+ * In the regular Gradle build, no need to do anything.
+ */
 class GenerationIntegrationTest {
 
     @Rule
