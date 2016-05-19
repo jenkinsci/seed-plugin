@@ -25,16 +25,13 @@ class GenerationIntegrationTest {
         def projectName = uid('p')
         // Creates a seed job
         def seed = jenkins.defaultSeed()
-        // TODO Uses a GitRepoRule to have a configured repository
         // Fires the seed job
         jenkins.fireJob(seed, [
                 PROJECT         : projectName,
                 PROJECT_SCM_TYPE: 'git',
-                // TODO Path to the Git repo created by the GitRepoRule
-                // PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : '',
         ]).checkSuccess()
-        // TODO Checks the project seed is created
-//        // Checks the project seed is created
-//        jenkins.job("${projectName}/${projectName}-seed")
+        // Checks the project seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-seed")
     }
 }

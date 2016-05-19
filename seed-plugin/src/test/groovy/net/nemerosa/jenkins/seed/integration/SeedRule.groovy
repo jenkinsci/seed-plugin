@@ -8,11 +8,12 @@ import net.nemerosa.jenkins.seed.generator.ProjectGenerationStep
 import net.nemerosa.jenkins.seed.integration.SeedRule.Build
 import net.nemerosa.jenkins.seed.test.TestUtils
 import org.apache.commons.lang.StringUtils
-import org.junit.Assert
 import org.jvnet.hudson.test.JenkinsRule
 
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+
+import static org.junit.Assert.fail
 
 class SeedRule extends JenkinsRule {
 
@@ -99,6 +100,12 @@ class SeedRule extends JenkinsRule {
         }
     }
 
+    void checkJobExists(String path) {
+        if (!jenkins.getItemByFullName(path)) {
+            fail "Cannot find job at ${path}"
+        }
+    }
+
     interface Build {
 
         void checkSuccess()
@@ -131,7 +138,7 @@ class SeedRule extends JenkinsRule {
                     build = future.get(timeoutSeconds, TimeUnit.SECONDS)
                     return build
                 } catch (TimeoutException ex) {
-                    Assert.fail("Could not build ${path} in less than ${timeoutSeconds} seconds.")
+                    fail("Could not build ${path} in less than ${timeoutSeconds} seconds.")
                     throw new RuntimeException(ex)
                 }
             }
@@ -143,7 +150,7 @@ class SeedRule extends JenkinsRule {
             if (!build.result.isBetterOrEqualTo(Result.SUCCESS)) {
                 println "Output for ${path}#${build.number}:"
                 println build.logReader.text
-                Assert.fail("${path} resulted in ${build.result}")
+                fail("${path} resulted in ${build.result}")
             }
         }
 
@@ -151,7 +158,7 @@ class SeedRule extends JenkinsRule {
         void checkFailure() {
             def build = waitForBuild()
             if (build.result.isBetterThan(Result.FAILURE)) {
-                Assert.fail("${path} was expected to fail but was ${build.result}")
+                fail("${path} was expected to fail but was ${build.result}")
             }
         }
 
