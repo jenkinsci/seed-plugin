@@ -35,40 +35,6 @@ class GenerationTest {
     }
 
     @Test
-    void 'Creating a complete seed tree'() {
-        // Default seed
-        String seed = jenkins.defaultSeed()
-        // Project name
-        def projectName = uid('p')
-        // Firing the seed job
-        jenkins.fireJob(seed, [
-                PROJECT         : projectName,
-                PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${projectName}/${projectName}-seed")
-        // Fires the project seed
-        jenkins.fireJob("${projectName}/${projectName}-seed", [
-                BRANCH: 'master'
-        ]).checkSuccess()
-        // Checks the branch seed is created
-        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-seed")
-        // Fires the branch seed
-        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess()
-        // Checks the branch pipeline is there
-        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-build")
-        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-ci")
-        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-publish")
-        // Fires the branch pipeline start
-        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-build", [COMMIT: 'HEAD']).checkSuccess()
-        // Checks the result of the pipeline (ci & publish must have been fired)
-        jenkins.getBuild("${projectName}/${projectName}-master/${projectName}-master-ci", 1).checkSuccess()
-        jenkins.getBuild("${projectName}/${projectName}-master/${projectName}-master-publish", 1).checkSuccess()
-    }
-
-    @Test
     void 'Custom environment variable'() {
         // Project name
         def projectName = uid('p')
