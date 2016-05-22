@@ -11,15 +11,15 @@ class GitRepo {
      */
     static String prepare(String id) {
         Map<String, String> resources = [:]
-        loadResource(resources, "seed-${id}.properties")
-        loadResource(resources, "seed-${id}.groovy")
+        loadResource(resources, "seed-${id}.properties", "seed/seed.properties")
+        loadResource(resources, "seed-${id}.groovy", "seed/seed.groovy")
         return prepare(id, resources)
     }
 
-    static def loadResource(Map<String, String> resources, String name) {
+    static def loadResource(Map<String, String> resources, String name, String targetName) {
         def url = GitRepo.class.getResource("/acceptance/${name}")
         if (url) {
-            resources.put name, url.text
+            resources.put targetName, url.text
         }
     }
 
@@ -36,7 +36,9 @@ class GitRepo {
 
         // Adding the resources
         resources.each { name, content ->
-            new File(dir, name).text = content
+            def file = new File(dir, name)
+            file.parentFile.mkdirs()
+            file.text = content
             git.add().addFilepattern(name).call()
         }
 

@@ -44,6 +44,6 @@ public class EventStrategyConfig {
     }
 
     public EventStrategyConfig() {
-        this(true, true, true, null);
+        this(true, true, true, "");
     }
 }

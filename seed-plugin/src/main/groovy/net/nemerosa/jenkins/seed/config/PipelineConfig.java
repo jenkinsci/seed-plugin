@@ -64,11 +64,11 @@ public class PipelineConfig {
     public PipelineConfig() {
         this(
                 false, // No destructor by default
-                null,
-                null, // No authorisations
+                "",
+                "", // No authorisations
                 false, // No branch SCM parameter
-                null, // No extra parameter
-                null, // No extra DSL
+                "", // No extra parameter
+                "", // No extra DSL
                 new NamingStrategyConfig(), // Default values
                 new EventStrategyConfig() // Default values
         );

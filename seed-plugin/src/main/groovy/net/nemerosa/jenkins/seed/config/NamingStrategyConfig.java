@@ -82,14 +82,14 @@ public class NamingStrategyConfig {
      */
     public NamingStrategyConfig() {
         this(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "");
     }
 
     public String getProjectFolder(String project) {
