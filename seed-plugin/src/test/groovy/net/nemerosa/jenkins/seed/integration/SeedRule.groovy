@@ -108,7 +108,7 @@ class SeedRule extends JenkinsRule {
 
     interface Build {
 
-        void checkSuccess()
+        Build checkSuccess()
 
         void checkFailure()
 
@@ -145,13 +145,14 @@ class SeedRule extends JenkinsRule {
         }
 
         @Override
-        void checkSuccess() {
+        Build checkSuccess() {
             def build = waitForBuild()
             if (!build.result.isBetterOrEqualTo(Result.SUCCESS)) {
                 println "Output for ${path}#${build.number}:"
                 println build.logReader.text
                 fail("${path} resulted in ${build.result}")
             }
+            return this
         }
 
         @Override

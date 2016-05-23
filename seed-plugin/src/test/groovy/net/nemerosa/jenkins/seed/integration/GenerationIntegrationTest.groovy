@@ -59,7 +59,8 @@ class GenerationIntegrationTest {
         // Checks the branch seed is created
         jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-seed")
         // Fires the branch seed
-        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess()
+        def output = jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess().output
+        println "${projectName}-master-seed:\n${output}"
         // Checks the branch pipeline is there
         jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-build")
         jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-ci")
