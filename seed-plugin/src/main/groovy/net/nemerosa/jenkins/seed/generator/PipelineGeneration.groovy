@@ -42,11 +42,13 @@ class PipelineGeneration {
     boolean perform(AbstractBuild build, BuildListener listener) {
 
         // Reads the property file (if it exists)
-        listener.logger.println("Reading properties from ${PROPERTY_PATH}...")
         Properties properties = new Properties()
         def propertyFile = build.workspace.child(PROPERTY_PATH)
         if (propertyFile.exists()) {
+            listener.logger.println("[seed] Reading properties from ${PROPERTY_PATH}...")
             propertyFile.read().withStream { properties.load(it) }
+        } else {
+            listener.logger.println("[seed] No property file at ${PROPERTY_PATH}.")
         }
 
         // Gets the list of dependencies from the property file
@@ -57,18 +59,18 @@ class PipelineGeneration {
         }
 
         // Logging
-        listener.logger.println('List of DSL dependencies:')
+        listener.logger.println('[seed] List of DSL dependencies:')
         dependencies.each {
-            listener.logger.println("* ${it}")
+            listener.logger.println("[seed] * ${it}")
         }
 
         // Gets the dependency source for the bootstrap script
         String dslBootstrapDependency = properties[SEED_DSL_SCRIPT_JAR]
-        listener.logger.println("DSL script JAR: ${dslBootstrapDependency}")
+        listener.logger.println("[seed] DSL script JAR: ${dslBootstrapDependency}")
 
         // Gets the location of the bootstrap script
         String dslBootstrapLocation = properties[SEED_DSL_SCRIPT_LOCATION] ?: 'seed.groovy'
-        listener.logger.println("DSL script location: ${dslBootstrapLocation}")
+        listener.logger.println("[seed] DSL script location: ${dslBootstrapLocation}")
 
         // Source repository
         String repositoryUrl = properties[SEED_DSL_REPOSITORY]
@@ -90,15 +92,15 @@ class PipelineGeneration {
         ))
 
         // Logging
-        listener.logger.println("Gradle script extraction needed: ${scriptExtraction}")
+        listener.logger.println("[seed] Gradle script extraction needed: ${scriptExtraction}")
 
         // Prepares the Gradle environment (only if script extraction is needed)
         if (scriptExtraction) {
-            listener.logger.println("Preparing the Gradle environment...")
+            listener.logger.println("[seed] Preparing the Gradle environment...")
             def gradleDir = prepareGradleEnvironment(listener, build)
 
             // Generates the build.gradle file
-            listener.logger.println("Generating the build.gradle file...")
+            listener.logger.println("[seed] Generating the build.gradle file...")
             String gradle = generateGradle(listener, repository, dependencies, dslBootstrapDependency, dslBootstrapLocation)
             gradleDir.child('build.gradle').write(gradle, 'UTF-8')
         }
@@ -113,7 +115,7 @@ class PipelineGeneration {
             if (repositoryUrl.startsWith('flat:')) {
                 def repositoryDir = repositoryUrl - 'flat:'
                 repository = "flatDir { dirs '${repositoryDir}' }"
-                listener.logger.println("Using local repository at ${repositoryDir}")
+                listener.logger.println("[seed] Using local repository at ${repositoryDir}")
             } else {
                 String repositoryUser = properties[SEED_DSL_REPOSITORY_USER]
                 String repositoryPassword = properties[SEED_DSL_REPOSITORY_PASSWORD]
@@ -129,16 +131,16 @@ maven {
     }
 }
 """
-                    listener.logger.println("Using authenticated repository at ${repositoryUrl} using ${repositoryUser} user")
+                    listener.logger.println("[seed] Using authenticated repository at ${repositoryUrl} using ${repositoryUser} user")
                 } else {
                     // Repository without credentials
                     repository = "maven { url '${repositoryUrl}' }"
-                    listener.logger.println("Using repository at ${repositoryUrl}")
+                    listener.logger.println("[seed] Using repository at ${repositoryUrl}")
                 }
             }
         } else {
             repository = "mavenCentral()"
-            listener.logger.println("Using Maven Central repository")
+            listener.logger.println("[seed] Using Maven Central repository")
         }
         return repository
     }
@@ -149,7 +151,7 @@ maven {
             List<String> dependencies,
             String dslBootstrapDependency,
             String dslBootstrapLocation) {
-        listener.logger.println("Generating the Gradle file...")
+        listener.logger.println("[seed] Generating the Gradle file...")
         String gradle = """\
 repositories {
     ${repository}
@@ -200,7 +202,7 @@ task prepare(dependsOn: copyLibraries)
     }
 
     public static FilePath prepareGradleEnvironment(BuildListener listener, AbstractBuild build) {
-        listener.logger.println("Preparing the Gradle environment...")
+        listener.logger.println("[seed] Preparing the Gradle environment...")
         def gradleDir = build.workspace.child('seed')
         gradleDir.mkdirs()
         gradleDir.child('gradlew').copyFrom(PipelineGeneration.class.getResource('/gradle/gradlew'))
