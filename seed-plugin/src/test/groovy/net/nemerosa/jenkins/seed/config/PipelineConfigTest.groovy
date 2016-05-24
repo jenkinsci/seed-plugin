@@ -7,25 +7,25 @@ class PipelineConfigTest {
     @Test
     void 'Default config'() {
         def cfg = PipelineConfig.defaultConfig()
-        assert cfg.authorisations == null
-        assert cfg.branchParameters == null
+        assert cfg.authorisations == ''
+        assert cfg.branchParameters == ''
         assert !cfg.branchSCMParameter
-        assert cfg.commitParameter == null
+        assert cfg.commitParameter == ''
         assert !cfg.destructor
 
         def strategy = cfg.namingStrategy
         assert strategy != null
-        assert strategy.projectFolderPath == null
-        assert strategy.projectSeedName == null
-        assert strategy.projectDestructorName == null
-        assert strategy.branchFolderPath == null
-        assert strategy.branchSeedName == null
-        assert strategy.branchStartName == null
+        assert strategy.projectFolderPath == ''
+        assert strategy.projectSeedName == ''
+        assert strategy.projectDestructorName == ''
+        assert strategy.branchFolderPath == ''
+        assert strategy.branchSeedName == ''
+        assert strategy.branchStartName == ''
 
         def eventStrategy = cfg.eventStrategy
         assert eventStrategy.auto
         assert eventStrategy.delete
-        assert eventStrategy.commit == null
+        assert eventStrategy.commit == ''
     }
 
     @Test
