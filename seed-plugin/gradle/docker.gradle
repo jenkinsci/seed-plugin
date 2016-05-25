@@ -78,5 +78,6 @@ if (versioning.info.branchType == 'release') {
 
 // Link with the build
 
-buildImage.dependsOn test
-buildImage.dependsOn assemble
+buildImage.dependsOn 'test'
+buildImage.dependsOn 'integrationTest'
+buildImage.dependsOn 'assemble'
