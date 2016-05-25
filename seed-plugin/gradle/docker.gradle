@@ -38,7 +38,7 @@ task prepareDslLib(type: Copy) {
 // Getting the Seed plug-in
 
 task prepareSeedHpi(type: Copy, dependsOn: jpi) {
-    from jpi.archivePath
+    from jpi
     into 'src/main/docker'
 }
 
