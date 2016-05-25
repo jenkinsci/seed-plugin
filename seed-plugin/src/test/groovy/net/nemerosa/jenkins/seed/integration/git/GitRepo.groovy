@@ -43,7 +43,7 @@ class GitRepo {
         }
 
         // Committing
-        git.commit().setMessage("Seed files").setAuthor("Nemerosa", "nemerosa@nemerosa.net")
+        git.commit().setMessage("Seed files").setAuthor("Nemerosa", "nemerosa@nemerosa.net").call()
 
         // OK
         return dir.absolutePath
