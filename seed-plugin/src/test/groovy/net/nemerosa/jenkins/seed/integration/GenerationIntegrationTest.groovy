@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.integration
 
+import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.integration.git.GitRepo
 import org.junit.Rule
 import org.junit.Test
@@ -70,5 +71,39 @@ class GenerationIntegrationTest {
         // Checks the result of the pipeline (ci & publish must have been fired)
         jenkins.getBuild("${projectName}/${projectName}-master/${projectName}-master-ci", 1).checkSuccess()
         jenkins.getBuild("${projectName}/${projectName}-master/${projectName}-master-publish", 1).checkSuccess()
+    }
+
+    @Test
+    void 'Custom environment variable'() {
+        // Project name
+        def projectName = uid('p')
+        // Prepares Git repository
+        def git = GitRepo.prepare('env')
+        // Configuration of environment variables
+        String seed = jenkins.seed(
+                new PipelineConfig()
+                        .withBranchParameters('BRANCH_PARAM: Additional parameter')
+        )
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : projectName,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${projectName}/${projectName}-seed", [
+                BRANCH      : 'master',
+                BRANCH_PARAM: 'test',
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-build")
+        // Fires the branch pipeline start
+        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-build", [COMMIT: 'HEAD']).checkSuccess()
     }
 }

@@ -35,39 +35,6 @@ class GenerationTest {
     }
 
     @Test
-    void 'Custom environment variable'() {
-        // Project name
-        def projectName = uid('p')
-        // Configuration of environment variables
-        String seed = jenkins.seed(
-                new PipelineConfig()
-                        .withBranchParameters('BRANCH_PARAM: Additional parameter')
-        )
-        // Firing the seed job
-        jenkins.fireJob(seed, [
-                PROJECT         : projectName,
-                PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-env',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${projectName}/${projectName}-seed")
-        // Fires the project seed
-        jenkins.fireJob("${projectName}/${projectName}-seed", [
-                BRANCH      : 'master',
-                BRANCH_PARAM: 'test',
-        ]).checkSuccess()
-        // Checks the branch seed is created
-        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-seed")
-        // Fires the branch seed
-        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess()
-        // Checks the branch pipeline is there
-        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-build")
-        // Fires the branch pipeline start
-        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-build", [COMMIT: 'HEAD']).checkSuccess()
-    }
-
-    @Test
     void 'Branch SCM parameter'() {
         // Project name
         def projectName = uid('p')
