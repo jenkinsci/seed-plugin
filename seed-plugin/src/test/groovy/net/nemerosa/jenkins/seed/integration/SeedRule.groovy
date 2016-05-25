@@ -5,17 +5,27 @@ import hudson.model.queue.QueueTaskFuture
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig
 import net.nemerosa.jenkins.seed.generator.ProjectGenerationStep
-import net.nemerosa.jenkins.seed.integration.SeedRule.Build
+import net.nemerosa.jenkins.seed.test.JenkinsAPINotFoundException
 import net.nemerosa.jenkins.seed.test.TestUtils
 import org.apache.commons.lang.StringUtils
 import org.jvnet.hudson.test.JenkinsRule
 
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import java.util.logging.Logger
 
 import static org.junit.Assert.fail
 
 class SeedRule extends JenkinsRule {
+
+    private final Logger logger = Logger.getLogger(SeedRule.class.name)
+
+    /**
+     * Logging
+     */
+    void info(String message) {
+        logger.info(message)
+    }
 
     /**
      * Creates a Seed job, with default settings
@@ -85,6 +95,18 @@ class SeedRule extends JenkinsRule {
         return new BuildImpl(path, future, timeoutSeconds)
     }
 
+    /**
+     * Gets access to a build, waiting for it to be available first.
+     */
+    Build getBuild(String path, int buildNumber, int timeoutSeconds = 120) {
+        info "[build] Getting build ${buildNumber} for ${path}"
+        def job = jenkins.getItemByFullName(path, AbstractProject)
+        if (!job) throw new JenkinsAPINotFoundException(path)
+        waitUntilNoActivityUpTo(timeoutSeconds * 1000)
+        def run = job.getBuildByNumber(buildNumber)
+        return new BuildImpl(path, run)
+    }
+
     AbstractProject findJobByPath(String path) {
         return findJobByPath(instance, path)
     }
@@ -128,6 +150,13 @@ class SeedRule extends JenkinsRule {
             this.path = path
             this.timeoutSeconds = timeoutSeconds
             this.future = future
+        }
+
+        BuildImpl(String path, AbstractBuild build) {
+            this.path = path
+            this.timeoutSeconds = 0
+            this.future = null
+            this.build = build
         }
 
         protected AbstractBuild waitForBuild() {
