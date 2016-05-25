@@ -48,7 +48,7 @@ dependencies {
 
     // FIXME Correction of plugin configurations
 
-//    jenkinsPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26@jar'
+    jenkinsPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26'
 //    jenkinsPlugins 'org.jenkins-ci.plugins:cloudbees-folder:4.7@jar'
 //    jenkinsPlugins 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
 //    providedCompile 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
