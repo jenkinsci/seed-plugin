@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.integration
 
+import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.integration.git.GitRepo
 import org.junit.Rule
@@ -175,5 +176,159 @@ class GenerationIntegrationTest {
                 "hudson.model.Item.Read:jenkins_${projectName}",
                 "hudson.model.Item.Discover:jenkins_${projectName}",
         ] as List<String>
+    }
+
+    @Test
+    void 'Project pipeline extensions'() {
+        // Project name
+        String project = uid('p')
+        // Prepares Git repository
+        def git = GitRepo.prepare('std')
+        // Configuration
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                        .withGenerationExtension('''\
+                        steps {
+                            shell "echo Extension 1"
+                            shell "echo Extension 2"
+                        }
+                        ''')
+        )
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${project}/${project}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Gets the project seed build...
+        def projectSeedBuild = jenkins.getBuild("${project}/${project}-seed", 1)
+        // ... gets its output
+        def projectSeedBuildOutput = projectSeedBuild.output
+        // ... and checks it contains the customisations
+        assert projectSeedBuildOutput.contains('Extension 1')
+        assert projectSeedBuildOutput.contains('Extension 2')
+    }
+
+    @Test
+    void 'Pipeline is not fired after generation'() {
+        // Project name
+        String project = uid('p')
+        // Prepares Git repository
+        def git = GitRepo.prepare('cinoqueue')
+        // Default configuration
+        def seed = jenkins.defaultSeed()
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${project}/${project}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-ci")
+        // Checks the result of the pipeline (ci must NOT have been fired automatically)
+        def build = jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1, 30)
+        assert build == null: "The pipeline should not have been fired"
+    }
+
+    @Test
+    void 'Destructor job'() {
+        // Project name
+        String project = uid('p')
+        // Prepares Git repository
+        def git = GitRepo.prepare('std')
+        // Default configuration
+        def seed = jenkins.seed(
+                new PipelineConfig().withDestructor(true)
+        )
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
+        ]).checkSuccess()
+
+        // Checks the project seed is created
+        jenkins.checkJobExists("${project}/${project}-seed")
+        // Checks the destructor job is created
+        jenkins.checkJobExists("${project}/${project}-destructor")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
+
+        // Fires the destructor
+        jenkins.fireJob("${project}/${project}-destructor", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+
+        // Checks the branch folder is gone
+        jenkins.gone("${project}/${project}-master")
+    }
+
+    @Test
+    void 'Destructor job with custom naming convention'() {
+        // Project name
+        String project = uid('P')
+        // Prepares Git repository
+        def git = GitRepo.prepare('std')
+        // Default configuration
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                        .withDestructor(true)
+                        .withNamingStrategy(
+                        new NamingStrategyConfig()
+                                .withProjectFolderPath('${PROJECT}')
+                                .withProjectSeedName('${PROJECT}_GENERATOR')
+                                .withProjectDestructorName('${PROJECT}_DESTRUCTOR')
+                                .withBranchFolderPath('${PROJECT}_*')
+                                .withBranchSeedName('${PROJECT}_*_GENERATOR')
+                                .withBranchStartName('${PROJECT}_*_010_BUILD')
+                                .withBranchName('${BRANCH}')
+                                .withIgnoredBranchPrefixes('branches/')
+                )
+        )
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : project,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
+        ]).checkSuccess()
+
+        // Checks the project seed is created
+        jenkins.checkJobExists("${project}/${project}_GENERATOR")
+        // Checks the destructor job is created
+        jenkins.checkJobExists("${project}/${project}_DESTRUCTOR")
+        // Fires the project seed
+        jenkins.fireJob("${project}/${project}_GENERATOR", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${project}/${project}_MASTER/${project}_MASTER_GENERATOR")
+
+        // Fires the destructor
+        jenkins.fireJob("${project}/${project}_DESTRUCTOR", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+
+        // Checks the branch folder is gone
+        jenkins.gone("${project}/${project}_MASTER")
     }
 }

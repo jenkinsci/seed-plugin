@@ -6,6 +6,8 @@ import hudson.model.queue.QueueTaskFuture
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig
 import net.nemerosa.jenkins.seed.generator.ProjectGenerationStep
+import net.nemerosa.jenkins.seed.integration.SeedRule.Build
+import net.nemerosa.jenkins.seed.test.JenkinsAPIFoundException
 import net.nemerosa.jenkins.seed.test.JenkinsAPINotFoundException
 import net.nemerosa.jenkins.seed.test.TestUtils
 import org.apache.commons.lang.StringUtils
@@ -105,7 +107,7 @@ class SeedRule extends JenkinsRule {
         if (!job) throw new JenkinsAPINotFoundException(path)
         waitUntilNoActivityUpTo(timeoutSeconds * 1000)
         def run = job.getBuildByNumber(buildNumber)
-        return new BuildImpl(path, run)
+        return run != null ? new BuildImpl(path, run) : null
     }
 
     AbstractProject findJobByPath(String path) {
@@ -137,6 +139,14 @@ class SeedRule extends JenkinsRule {
         def item = jenkins.getItemByFullName(path)
         def xmlFile = item.configFile as XmlFile
         return new XmlSlurper().parseText(xmlFile.asString())
+    }
+
+    void gone(String path, int timeoutSeconds = 120) {
+        info """[job] Testing job presence at ${path}"""
+        waitUntilNoActivityUpTo(timeoutSeconds * 1000)
+        if (jenkins.getItemByFullName(path) != null) {
+            throw new JenkinsAPIFoundException(path)
+        }
     }
 
     interface Build {
