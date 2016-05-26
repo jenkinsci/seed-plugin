@@ -4,7 +4,6 @@ import net.nemerosa.jenkins.seed.config.EventStrategyConfig
 import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.integration.git.GitRepo
-import net.nemerosa.jenkins.seed.test.JenkinsAPIRefusedException
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -60,70 +59,82 @@ class TriggeringIntegrationTest {
         jenkins.getBuild("${project}/${project}-master/${project}-master-publish", 1).checkSuccess()
     }
 
-    @Test(expected = JenkinsAPIRefusedException)
-    @Ignore
+    @Test
     void 'HTTP API not being enabled'() {
         // Project name
         def project = uid('p')
-        // Configuration
-        def seed = jenkins.defaultSeed()
-        // Firing the seed job
-        jenkins.fireJob('seed', [
-                PROJECT             : project,
-                PROJECT_SCM_TYPE    : 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL     : '/var/lib/jenkins/tests/git/seed-std',
-                PROJECT_TRIGGER_TYPE: 'http',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
-        // Fires the project seed for the `master` branch
-        jenkins.post("seed-http-api/create?project=${project}&branch=master")
-    }
-
-    @Test
-    @Ignore
-    void 'HTTP API being enabled'() {
-        // Project name
-        def project = uid('p')
-        // Configuration
-        def seed = jenkins.defaultSeed()
-        // Firing the seed job
-        jenkins.fireJob(seed, [
-                PROJECT             : project,
-                PROJECT_SCM_TYPE    : 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL     : '/var/lib/jenkins/tests/git/seed-std',
-                PROJECT_TRIGGER_TYPE: 'http',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
-        // Fires the project seed for the `master` branch
-        jenkins.post("seed-http-api/create?project=${project}&branch=master")
-        // Checks the result of the project seed
-        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
-    }
-
-    @Test(expected = JenkinsAPIRefusedException)
-    @Ignore
-    void 'Token not provided'() {
-        // Project name
-        def project = uid('p')
+        // Git
+        def git = GitRepo.prepare('std')
         // Configuration
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
                 PROJECT               : project,
                 PROJECT_SCM_TYPE      : 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL       : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL       : git,
+                PROJECT_TRIGGER_TYPE  : '',
+                PROJECT_TRIGGER_SECRET: '',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        try {
+            jenkins.post("seed-http-api/create?project=${project}&branch=master")
+            fail "Expecting HTTP API call to fail"
+        } catch (IOException ex) {
+            assert ex.message.startsWith('Server returned HTTP response code: 403')
+        }
+    }
+
+    @Test
+    void 'HTTP API being enabled'() {
+        // Project name
+        def project = uid('p')
+        // Git
+        def git = GitRepo.prepare('std')
+        // Configuration
+        def seed = jenkins.defaultSeed()
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT               : project,
+                PROJECT_SCM_TYPE      : 'git',
+                PROJECT_SCM_URL       : git,
+                PROJECT_TRIGGER_TYPE  : 'http',
+                PROJECT_TRIGGER_SECRET: '',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http-api/create?project=${project}&branch=master")
+        // Checks the result of the project seed
+        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
+    }
+
+    @Test
+    void 'Token not provided'() {
+        // Project name
+        def project = uid('p')
+        // Git
+        def git = GitRepo.prepare('std')
+        // Configuration
+        def seed = jenkins.defaultSeed()
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT               : project,
+                PROJECT_SCM_TYPE      : 'git',
+                PROJECT_SCM_URL       : git,
                 PROJECT_TRIGGER_TYPE  : 'http',
                 PROJECT_TRIGGER_SECRET: 'ABCDEF',
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
+        jenkins.checkJobExists("${project}/${project}-seed")
         // Fires the project seed for the `master` branch
-        jenkins.post("seed-http-api/create?project=${project}&branch=master")
+        try {
+            jenkins.post("seed-http-api/create?project=${project}&branch=master")
+            fail "Expecting HTTP API call to fail"
+        } catch (IOException ex) {
+            assert ex.message.startsWith('Server returned HTTP response code: 403')
+        }
     }
 
     @Test

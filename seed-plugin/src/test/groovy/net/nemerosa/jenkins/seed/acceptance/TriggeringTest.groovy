@@ -30,26 +30,6 @@ class TriggeringTest {
         jenkins.job('seed-generator')
     }
 
-    @Test(expected = JenkinsAPIRefusedException)
-    void 'HTTP API not being enabled'() {
-        // Project name
-        def project = uid('p')
-        // Configuration
-        def seed = jenkins.defaultSeed()
-        // Firing the seed job
-        jenkins.fireJob(seed, [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
-                PROJECT_TRIGGER_TYPE: 'http',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
-        // Fires the project seed for the `master` branch
-        jenkins.post("seed-http-api/create?project=${project}&branch=master")
-    }
-
     @Test
     void 'HTTP API being enabled'() {
         // Project name
