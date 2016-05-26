@@ -32,10 +32,11 @@ class TriggeringIntegrationTest {
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT             : project,
-                PROJECT_SCM_TYPE    : 'git',
-                PROJECT_SCM_URL     : git,
-                PROJECT_TRIGGER_TYPE: 'http',
+                PROJECT               : project,
+                PROJECT_SCM_TYPE      : 'git',
+                PROJECT_SCM_URL       : git,
+                PROJECT_TRIGGER_TYPE  : 'http',
+                PROJECT_TRIGGER_SECRET: '',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.checkJobExists("${project}/${project}-seed")
