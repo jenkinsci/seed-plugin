@@ -429,42 +429,43 @@ projects:
     }
 
     @Test
-    @Ignore
     void 'Pipeline is fired by default after regeneration'() {
         // Project name
         String project = uid('P')
+        // Git
+        def git = GitRepo.prepare('std')
         // Default configuration
         jenkins.configureSeed ''
         // Firing the seed job
         jenkins.fireJob('seed', [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
+        jenkins.checkJobExists("${project}/${project}-seed")
         // Fires the project seed
         jenkins.fireJob("${project}/${project}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
         // Fires the branch seed
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job("${project}/${project}-master/${project}-master-build")
-        jenkins.job("${project}/${project}-master/${project}-master-ci")
-        jenkins.job("${project}/${project}-master/${project}-master-publish")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-build")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-ci")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-publish")
         // Checks the result of the pipeline (build must have been fired automatically)
         jenkins.getBuild("${project}/${project}-master/${project}-master-build", 1).checkSuccess()
     }
 
     @Test
-    @Ignore
     void 'Pipeline is not fired after regeneration when pipeline-start-auto is disabled'() {
         // Project name
         String project = uid('P')
+        // Git
+        def git = GitRepo.prepare('cinoqueue')
         // Default configuration
         jenkins.configureSeed """
 projects:
@@ -475,35 +476,31 @@ projects:
         jenkins.fireJob('seed', [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-cinoqueue',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
+        jenkins.checkJobExists("${project}/${project}-seed")
         // Fires the project seed
         jenkins.fireJob("${project}/${project}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
         // Fires the branch seed
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job("${project}/${project}-master/${project}-master-ci")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-ci")
         // Checks the result of the pipeline (build must NOT have been fired automatically)
-        try {
-            jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1, 30).checkSuccess()
-            fail "The pipeline should not have been fired"
-        } catch (TimeoutException ignored) {
-            // OK
-        }
+        def build = jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1, 30)
+        assert build == null : "The pipeline should not have been fired"
     }
 
     @Test
-    @Ignore
     void 'Destructor job'() {
         // Project name
         String project = uid('P')
+        // Git
+        def git = GitRepo.prepare('std')
         // Default configuration
         jenkins.configureSeed """
 projects:
@@ -514,20 +511,19 @@ projects:
         jenkins.fireJob('seed', [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
 
         // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
+        jenkins.checkJobExists("${project}/${project}-seed")
         // Checks the destructor job is created
-        jenkins.job("${project}/${project}-destructor")
+        jenkins.checkJobExists("${project}/${project}-destructor")
         // Fires the project seed
         jenkins.fireJob("${project}/${project}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
 
         // Fires the destructor
         jenkins.fireJob("${project}/${project}-destructor", [
@@ -539,10 +535,11 @@ projects:
     }
 
     @Test
-    @Ignore
     void 'Destructor job with custom naming convention'() {
         // Project name
         String project = uid('P')
+        // Git
+        def git = GitRepo.prepare('std')
         // Default configuration
         jenkins.configureSeed """
 strategies:
@@ -564,20 +561,19 @@ projects:
         jenkins.fireJob('seed', [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
 
         // Checks the project seed is created
-        jenkins.job("${project}/${project}_GENERATOR")
+        jenkins.checkJobExists("${project}/${project}_GENERATOR")
         // Checks the destructor job is created
-        jenkins.job("${project}/${project}_DESTRUCTOR")
+        jenkins.checkJobExists("${project}/${project}_DESTRUCTOR")
         // Fires the project seed
         jenkins.fireJob("${project}/${project}_GENERATOR", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${project}/${project}_MASTER/${project}_MASTER_GENERATOR")
+        jenkins.checkJobExists("${project}/${project}_MASTER/${project}_MASTER_GENERATOR")
 
         // Fires the destructor
         jenkins.fireJob("${project}/${project}_DESTRUCTOR", [
