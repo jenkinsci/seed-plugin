@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.integration
 
+import hudson.XmlFile
 import hudson.model.*
 import hudson.model.queue.QueueTaskFuture
 import net.nemerosa.jenkins.seed.config.PipelineConfig
@@ -126,6 +127,16 @@ class SeedRule extends JenkinsRule {
         if (!jenkins.getItemByFullName(path)) {
             fail "Cannot find job at ${path}"
         }
+    }
+
+    /**
+     * Gets a job/folder configuration as XML
+     */
+    def jobConfig(String path) {
+        info "[job] Getting job config for ${path}"
+        def item = jenkins.getItemByFullName(path)
+        def xmlFile = item.configFile as XmlFile
+        return new XmlSlurper().parseText(xmlFile.asString())
     }
 
     interface Build {

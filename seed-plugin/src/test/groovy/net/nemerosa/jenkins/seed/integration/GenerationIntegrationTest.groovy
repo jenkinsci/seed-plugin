@@ -142,4 +142,38 @@ class GenerationIntegrationTest {
         build.checkSuccess()
         assert build.output.contains('Branch SCM: master')
     }
+
+    @Test
+    void 'Project folder authorisations'() {
+        // Project name
+        def projectName = uid('p')
+        // Configuration of the Seed job
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                        .withAuthorisations('''\
+                        hudson.model.Item.Workspace:jenkins_*
+                        hudson.model.Item.Read:jenkins_*
+                        # Comments and empty lines are allowed
+
+                        hudson.model.Item.Discover:jenkins_*
+                        ''')
+        )
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : projectName,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : 'path/to/repo',
+        ]).checkSuccess()
+        // Checks the project folder is created
+        jenkins.checkJobExists(projectName)
+        // Checks the project folder authorisation matrix
+        def xml = jenkins.jobConfig(projectName)
+        def matrix = xml.properties['com.cloudbees.hudson.plugins.folder.properties.AuthorizationMatrixProperty']
+        assert matrix
+        assert matrix.permission.collect { it.text() as String } == [
+                "hudson.model.Item.Workspace:jenkins_${projectName}",
+                "hudson.model.Item.Read:jenkins_${projectName}",
+                "hudson.model.Item.Discover:jenkins_${projectName}",
+        ] as List<String>
+    }
 }
