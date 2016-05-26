@@ -121,10 +121,11 @@ classes:
     }
 
     @Test
-    @Ignore
     void 'Branch SCM parameter'() {
         // Project name
         def projectName = uid('P')
+        // Git repo
+        def git = GitRepo.prepare('scm')
         // Configuration of environment variables
         jenkins.configureSeed '''\
 classes:
@@ -136,22 +137,21 @@ classes:
                 PROJECT         : projectName,
                 PROJECT_CLASS   : 'branch-scm',
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-scm',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${projectName}/${projectName}-seed")
+        jenkins.checkJobExists("${projectName}/${projectName}-seed")
         // Fires the project seed
         jenkins.fireJob("${projectName}/${projectName}-seed", [
                 BRANCH    : '1.0',
                 BRANCH_SCM: 'master',
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${projectName}/${projectName}-1.0/${projectName}-1.0-seed")
+        jenkins.checkJobExists("${projectName}/${projectName}-1.0/${projectName}-1.0-seed")
         // Fires the branch seed
         jenkins.fireJob("${projectName}/${projectName}-1.0/${projectName}-1.0-seed").checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job("${projectName}/${projectName}-1.0/${projectName}-1.0-build")
+        jenkins.checkJobExists("${projectName}/${projectName}-1.0/${projectName}-1.0-build")
         // Fires the branch pipeline start
         def build = jenkins.fireJob("${projectName}/${projectName}-1.0/${projectName}-1.0-build", [COMMIT: 'HEAD'])
         build.checkSuccess()
@@ -159,10 +159,11 @@ classes:
     }
 
     @Test
-    @Ignore
     void 'Direct script execution - not allowed'() {
         // Project name
         String project = uid('P')
+        // Git
+        def git = GitRepo.prepare('std')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 pipeline-generator-script-allowed: no
@@ -171,26 +172,26 @@ pipeline-generator-script-allowed: no
         jenkins.fireJob('seed', [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
+        jenkins.checkJobExists("${project}/${project}-seed")
         // Fires the project seed
         jenkins.fireJob("${project}/${project}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
         // Fires the branch seed
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
     }
 
     @Test
-    @Ignore
     void 'Direct script execution - not allowed at project level'() {
         // Project name
         String project = uid('P')
+        // Git
+        def git = GitRepo.prepare('std')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 classes:
@@ -202,26 +203,26 @@ classes:
                 PROJECT         : project,
                 PROJECT_CLASS   : 'my-class',
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
+        jenkins.checkJobExists("${project}/${project}-seed")
         // Fires the project seed
         jenkins.fireJob("${project}/${project}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
         // Fires the branch seed
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
     }
 
     @Test
-    @Ignore
     void 'Direct script execution - allowed at project level'() {
         // Project name
         String project = uid('P')
+        // Git
+        def git = GitRepo.prepare('std')
         // Configuration of the Seed job
         jenkins.configureSeed '''\
 pipeline-generator-script-allowed: no
@@ -234,17 +235,16 @@ classes:
                 PROJECT         : project,
                 PROJECT_CLASS   : 'my-class',
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
+        jenkins.checkJobExists("${project}/${project}-seed")
         // Fires the project seed
         jenkins.fireJob("${project}/${project}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
         // Fires the branch seed
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
     }
