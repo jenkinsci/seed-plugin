@@ -34,41 +34,6 @@ class GenerationTest {
         jenkins.defaultSeed()
     }
 
-    @Test
-    void 'Branch SCM parameter'() {
-        // Project name
-        def projectName = uid('p')
-        // Configuration of environment variables
-        def seed = jenkins.seed(
-                new PipelineConfig()
-                        .withBranchSCMParameter(true)
-        )
-        // Firing the seed job
-        jenkins.fireJob(seed, [
-                PROJECT         : projectName,
-                PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-scm',
-        ]).checkSuccess()
-        // Checks the project seed is created
-        jenkins.job("${projectName}/${projectName}-seed")
-        // Fires the project seed
-        jenkins.fireJob("${projectName}/${projectName}-seed", [
-                BRANCH    : '1.0',
-                BRANCH_SCM: 'master',
-        ]).checkSuccess()
-        // Checks the branch seed is created
-        jenkins.job("${projectName}/${projectName}-1.0/${projectName}-1.0-seed")
-        // Fires the branch seed
-        jenkins.fireJob("${projectName}/${projectName}-1.0/${projectName}-1.0-seed").checkSuccess()
-        // Checks the branch pipeline is there
-        jenkins.job("${projectName}/${projectName}-1.0/${projectName}-1.0-build")
-        // Fires the branch pipeline start
-        def build = jenkins.fireJob("${projectName}/${projectName}-1.0/${projectName}-1.0-build", [COMMIT: 'HEAD'])
-        build.checkSuccess()
-        assert build.output.contains('Branch SCM: master')
-    }
-
     // TODO Direct script execution?
     @Test
     @Ignore
