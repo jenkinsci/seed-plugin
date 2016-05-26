@@ -45,10 +45,8 @@ class SeedGeneratorTest {
                 '${PROJECT_SCM_URL}',
                 '${PROJECT_SCM_CREDENTIALS}',
         )
-        // FIXME Seed YAML Configuration
-//        jenkins.job('seed', JOB_TIMEOUT, JOB_TIMEOUT)
         // Makes sure the configuration is empty
-//        jenkins.configureSeed ''
+        jenkins.configureSeed ''
     }
 
     @Test
@@ -86,10 +84,11 @@ class SeedGeneratorTest {
     }
 
     @Test
-    @Ignore
     void 'Custom environment variable'() {
         // Project name
         def projectName = uid('P')
+        // Git
+        def git = GitRepo.prepare('env')
         // Configuration of environment variables
         jenkins.configureSeed '''\
 classes:
@@ -102,22 +101,21 @@ classes:
                 PROJECT         : projectName,
                 PROJECT_CLASS   : 'branch-path',
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-env',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${projectName}/${projectName}-seed")
+        jenkins.checkJobExists("${projectName}/${projectName}-seed")
         // Fires the project seed
         jenkins.fireJob("${projectName}/${projectName}-seed", [
                 BRANCH      : 'master',
                 BRANCH_PARAM: 'test',
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-seed")
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-seed")
         // Fires the branch seed
         jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job("${projectName}/${projectName}-master/${projectName}-master-build")
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-build")
         // Fires the branch pipeline start
         jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-build", [COMMIT: 'HEAD']).checkSuccess()
     }

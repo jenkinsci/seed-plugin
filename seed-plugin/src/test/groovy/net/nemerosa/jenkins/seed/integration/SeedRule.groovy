@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.integration
 
+import com.gargoylesoftware.htmlunit.util.NameValuePair
 import hudson.XmlFile
 import hudson.model.*
 import hudson.model.queue.QueueTaskFuture
@@ -35,6 +36,34 @@ class SeedRule extends JenkinsRule {
      */
     String defaultSeed() {
         return seed(PipelineConfig.defaultConfig())
+    }
+
+    /**
+     * Seed YAML configuration
+     *
+     * @deprecated Legacy plug-in (0.x)
+     */
+    @Deprecated
+    void configureSeed(String yaml) {
+        def url = new URL(new URL(jenkins.rootUrl), "seed-config/")
+        info "[config] Updating Seed configuration at ${url}..."
+        def connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = 'POST'
+        NameValuePair crumb = new NameValuePair(
+                jenkins.getCrumbIssuer().getDescriptor().getCrumbRequestField(),
+                jenkins.getCrumbIssuer().getCrumb(null)
+        );
+        connection.setRequestProperty(crumb.getName(), crumb.getValue());
+        connection.doOutput = true
+        connection.connect()
+        try {
+            connection.outputStream.write(yaml.getBytes('UTF-8'))
+            connection.outputStream.flush()
+            // Reads the response
+            assert (connection.responseCode == HttpURLConnection.HTTP_OK): "Seed configuration failed with code: ${connection.responseCode}"
+        } finally {
+            connection.disconnect()
+        }
     }
 
     /**
