@@ -1,8 +1,14 @@
-package net.nemerosa.seed.acceptance
+package net.nemerosa.seed.integration
 
+import hudson.model.ChoiceParameterDefinition
+import hudson.model.ParametersDefinitionProperty
+import hudson.model.StringParameterDefinition
+import net.nemerosa.jenkins.seed.integration.SeedRule
+import net.nemerosa.jenkins.seed.integration.git.GitRepo
 import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
-import net.nemerosa.jenkins.seed.test.JenkinsAccessRule
+import net.nemerosa.seed.generator.ProjectSeedBuilder
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,49 +24,69 @@ import static org.junit.Assert.fail
 @RunWith(AcceptanceTestRunner)
 class SeedGeneratorTest {
 
-    public static final int JOB_TIMEOUT = 1 * 60
-
     @Rule
-    public JenkinsAccessRule jenkins = new JenkinsAccessRule()
+    public SeedRule jenkins = new SeedRule()
 
     @Before
     void 'Default seed job created'() {
-        jenkins.job('seed', JOB_TIMEOUT, JOB_TIMEOUT)
+        // Creation of the `seed` job
+        def seed = jenkins.createFreeStyleProject('seed')
+        seed.addProperty(new ParametersDefinitionProperty(
+                new StringParameterDefinition('PROJECT', ''),
+                new StringParameterDefinition('PROJECT_CLASS', ''),
+                new ChoiceParameterDefinition('PROJECT_SCM_TYPE', ['git', 'svn'] as String[], ''),
+                new StringParameterDefinition('PROJECT_SCM_URL', ''),
+                new StringParameterDefinition('PROJECT_SCM_CREDENTIALS', ''),
+        ))
+        seed.buildersList << new ProjectSeedBuilder(
+                '${PROJECT}',
+                '${PROJECT_CLASS}',
+                '${PROJECT_SCM_TYPE}',
+                '${PROJECT_SCM_URL}',
+                '${PROJECT_SCM_CREDENTIALS}',
+        )
+        // FIXME Seed YAML Configuration
+//        jenkins.job('seed', JOB_TIMEOUT, JOB_TIMEOUT)
         // Makes sure the configuration is empty
-        jenkins.configureSeed ''
+//        jenkins.configureSeed ''
     }
 
     @Test
     void 'Creating a complete seed tree'() {
+        // Project name
+        def projectName = uid('p')
+        // Git repo
+        def git = GitRepo.prepare('std')
         // Firing the seed job
         jenkins.fireJob('seed', [
-                PROJECT         : 'test',
+                PROJECT         : projectName,
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job('test/test-seed')
+        jenkins.checkJobExists("${projectName}/${projectName}-seed")
         // Fires the project seed
-        jenkins.fireJob('test/test-seed', [
+        jenkins.fireJob("${projectName}/${projectName}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job('test/test-master/test-master-seed')
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-seed")
         // Fires the branch seed
-        jenkins.fireJob('test/test-master/test-master-seed').checkSuccess()
+        def output = jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess().output
+        println "OUTPUT ${projectName}-master-seed:\n${output}"
         // Checks the branch pipeline is there
-        jenkins.job('test/test-master/test-master-build')
-        jenkins.job('test/test-master/test-master-ci')
-        jenkins.job('test/test-master/test-master-publish')
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-build")
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-ci")
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-publish")
         // Fires the branch pipeline start
-        jenkins.fireJob('test/test-master/test-master-build', [COMMIT: 'HEAD']).checkSuccess()
+        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-build", [COMMIT: 'HEAD']).checkSuccess()
         // Checks the result of the pipeline (ci & publish must have been fired)
-        jenkins.getBuild('test/test-master/test-master-ci', 1).checkSuccess()
-        jenkins.getBuild('test/test-master/test-master-publish', 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}-master/${projectName}-master-ci", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}-master/${projectName}-master-publish", 1).checkSuccess()
     }
 
     @Test
+    @Ignore
     void 'Custom environment variable'() {
         // Project name
         def projectName = uid('P')
@@ -97,6 +123,7 @@ classes:
     }
 
     @Test
+    @Ignore
     void 'Branch SCM parameter'() {
         // Project name
         def projectName = uid('P')
@@ -134,6 +161,7 @@ classes:
     }
 
     @Test
+    @Ignore
     void 'Direct script execution - not allowed'() {
         // Project name
         String project = uid('P')
@@ -161,6 +189,7 @@ pipeline-generator-script-allowed: no
     }
 
     @Test
+    @Ignore
     void 'Direct script execution - not allowed at project level'() {
         // Project name
         String project = uid('P')
@@ -191,6 +220,7 @@ classes:
     }
 
     @Test
+    @Ignore
     void 'Direct script execution - allowed at project level'() {
         // Project name
         String project = uid('P')
@@ -222,6 +252,7 @@ classes:
     }
 
     @Test
+    @Ignore
     void 'Project folder authorisations'() {
         // Configuration of the Seed job
         jenkins.configureSeed '''\
@@ -253,6 +284,7 @@ classes:
     }
 
     @Test
+    @Ignore
     void 'Creating a project tree based of full customisation'() {
         // Configuration
         jenkins.configureSeed '''\
@@ -298,6 +330,7 @@ classes:
     }
 
     @Test
+    @Ignore
     void 'Branch pipeline extensions'() {
         // Project name
         String project = uid('P')
@@ -351,6 +384,7 @@ projects:
     }
 
     @Test
+    @Ignore
     void 'Project pipeline extensions'() {
         // Project name
         String project = uid('P')
@@ -396,6 +430,7 @@ projects:
     }
 
     @Test
+    @Ignore
     void 'Pipeline is fired by default after regeneration'() {
         // Project name
         String project = uid('P')
@@ -427,6 +462,7 @@ projects:
     }
 
     @Test
+    @Ignore
     void 'Pipeline is not fired after regeneration when pipeline-start-auto is disabled'() {
         // Project name
         String project = uid('P')
@@ -465,6 +501,7 @@ projects:
     }
 
     @Test
+    @Ignore
     void 'Destructor job'() {
         // Project name
         String project = uid('P')
@@ -503,6 +540,7 @@ projects:
     }
 
     @Test
+    @Ignore
     void 'Destructor job with custom naming convention'() {
         // Project name
         String project = uid('P')

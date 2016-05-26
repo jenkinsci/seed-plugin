@@ -27,11 +27,13 @@ task acceptanceTest(type: Test) {
 
 task integrationTest(type: Test) {
     include 'net/nemerosa/jenkins/seed/integration/**'
+    include 'net/nemerosa/seed/integration/**'
 }
 
 // Exclude the acceptance tests from the default tests
 test {
     exclude 'net/nemerosa/seed/acceptance/**'
+    exclude 'net/nemerosa/seed/integration/**'
     exclude 'net/nemerosa/jenkins/seed/acceptance/**'
     exclude 'net/nemerosa/jenkins/seed/integration/**'
 }
