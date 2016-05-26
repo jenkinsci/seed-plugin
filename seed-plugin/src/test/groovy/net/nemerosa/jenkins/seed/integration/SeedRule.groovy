@@ -178,6 +178,10 @@ class SeedRule extends JenkinsRule {
         }
     }
 
+    void post(String path) {
+        postJSON(path, '')
+    }
+
     interface Build {
 
         Build checkSuccess()

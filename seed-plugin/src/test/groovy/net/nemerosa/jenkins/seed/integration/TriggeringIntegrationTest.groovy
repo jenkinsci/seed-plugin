@@ -1,15 +1,13 @@
-package net.nemerosa.jenkins.seed.acceptance
+package net.nemerosa.jenkins.seed.integration
 
 import net.nemerosa.jenkins.seed.config.EventStrategyConfig
 import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
-import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
+import net.nemerosa.jenkins.seed.integration.git.GitRepo
 import net.nemerosa.jenkins.seed.test.JenkinsAPIRefusedException
-import net.nemerosa.jenkins.seed.test.JenkinsAccessRule
-import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 import java.util.concurrent.TimeoutException
 
@@ -19,29 +17,61 @@ import static org.junit.Assert.fail
 /**
  * Testing the triggering of seeds and pipelines using the Seed plug-in.
  */
-@RunWith(AcceptanceTestRunner)
-class TriggeringTest {
+class TriggeringIntegrationTest {
 
     @Rule
-    public JenkinsAccessRule jenkins = new JenkinsAccessRule()
+    public SeedRule jenkins = new SeedRule()
 
-    @Before
-    void 'Seed generator created'() {
-        jenkins.job('seed-generator')
+    @Test
+    void 'Default seed tree'() {
+        // Project name
+        def project = uid('p')
+        // Git
+        def git = GitRepo.prepare('std')
+        // Configuration
+        def seed = jenkins.defaultSeed()
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT             : project,
+                PROJECT_SCM_TYPE    : 'git',
+                PROJECT_SCM_URL     : git,
+                PROJECT_TRIGGER_TYPE: 'http',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http-api/create?project=${project}&branch=master")
+        // Checks the result of the project seed
+        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
+        // Checks the result of the branch seed
+        jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1).checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-build")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-ci")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-publish")
+        // Fires the branch pipeline start
+        jenkins.post("seed-http-api/commit?project=${project}&branch=master")
+        // Checks the result of the pipeline (ci & publish must have been fired)
+        jenkins.getBuild("${project}/${project}-master/${project}-master-build", 1).checkSuccess()
+        jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1).checkSuccess()
+        jenkins.getBuild("${project}/${project}-master/${project}-master-publish", 1).checkSuccess()
     }
 
     @Test(expected = JenkinsAPIRefusedException)
+    @Ignore
     void 'HTTP API not being enabled'() {
         // Project name
         def project = uid('p')
         // Configuration
         def seed = jenkins.defaultSeed()
         // Firing the seed job
-        jenkins.fireJob(seed, [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
+        jenkins.fireJob('seed', [
+                PROJECT             : project,
+                PROJECT_SCM_TYPE    : 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL     : '/var/lib/jenkins/tests/git/seed-std',
                 PROJECT_TRIGGER_TYPE: 'http',
         ]).checkSuccess()
         // Checks the project seed is created
@@ -51,6 +81,7 @@ class TriggeringTest {
     }
 
     @Test
+    @Ignore
     void 'HTTP API being enabled'() {
         // Project name
         def project = uid('p')
@@ -58,10 +89,10 @@ class TriggeringTest {
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
+                PROJECT             : project,
+                PROJECT_SCM_TYPE    : 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL     : '/var/lib/jenkins/tests/git/seed-std',
                 PROJECT_TRIGGER_TYPE: 'http',
         ]).checkSuccess()
         // Checks the project seed is created
@@ -73,6 +104,7 @@ class TriggeringTest {
     }
 
     @Test(expected = JenkinsAPIRefusedException)
+    @Ignore
     void 'Token not provided'() {
         // Project name
         def project = uid('p')
@@ -80,11 +112,11 @@ class TriggeringTest {
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
+                PROJECT               : project,
+                PROJECT_SCM_TYPE      : 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
-                PROJECT_TRIGGER_TYPE: 'http',
+                PROJECT_SCM_URL       : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_TRIGGER_TYPE  : 'http',
                 PROJECT_TRIGGER_SECRET: 'ABCDEF',
         ]).checkSuccess()
         // Checks the project seed is created
@@ -94,6 +126,7 @@ class TriggeringTest {
     }
 
     @Test
+    @Ignore
     void 'Token provided'() {
         // Project name
         def project = uid('p')
@@ -101,11 +134,11 @@ class TriggeringTest {
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
+                PROJECT               : project,
+                PROJECT_SCM_TYPE      : 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
-                PROJECT_TRIGGER_TYPE: 'http',
+                PROJECT_SCM_URL       : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_TRIGGER_TYPE  : 'http',
                 PROJECT_TRIGGER_SECRET: 'ABCDEF',
         ]).checkSuccess()
         // Checks the project seed is created
@@ -119,20 +152,21 @@ class TriggeringTest {
     }
 
     @Test
+    @Ignore
     void 'No pipeline generation when auto is set to false'() {
         // Project name
         def project = uid('p')
         // Configuration
         def seed = jenkins.seed(
                 new PipelineConfig()
-                    .withEventStrategy(new EventStrategyConfig().withAuto(false))
+                        .withEventStrategy(new EventStrategyConfig().withAuto(false))
         )
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
+                PROJECT             : project,
+                PROJECT_SCM_TYPE    : 'git',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL     : '/var/lib/jenkins/tests/git/seed-std',
                 PROJECT_TRIGGER_TYPE: 'http',
         ]).checkSuccess()
         // Checks the project seed is created
@@ -151,22 +185,23 @@ class TriggeringTest {
     }
 
     @Test
+    @Ignore
     void 'Commit event with a custom naming strategy'() {
         // Project name
         def project = uid('p')
         // Configuration
         def seed = jenkins.seed(
                 new PipelineConfig()
-                    .withNamingStrategy(new NamingStrategyConfig().withBranchStartName('${project}-*-ci'))
-                    .withEventStrategy(new EventStrategyConfig().withCommit('SVN_REVISION'))
+                        .withNamingStrategy(new NamingStrategyConfig().withBranchStartName('${project}-*-ci'))
+                        .withEventStrategy(new EventStrategyConfig().withCommit('SVN_REVISION'))
         )
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT         : project,
-                PROJECT_SCM_TYPE: 'git',
-                PROJECT_CLASS   : 'my-class',
+                PROJECT             : project,
+                PROJECT_SCM_TYPE    : 'git',
+                PROJECT_CLASS       : 'my-class',
                 // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-ci',
+                PROJECT_SCM_URL     : '/var/lib/jenkins/tests/git/seed-ci',
                 PROJECT_TRIGGER_TYPE: 'http',
         ]).checkSuccess()
         // Checks the project seed is created
