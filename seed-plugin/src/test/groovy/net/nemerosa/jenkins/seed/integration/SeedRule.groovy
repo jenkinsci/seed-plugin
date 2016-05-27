@@ -8,9 +8,7 @@ import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig
 import net.nemerosa.jenkins.seed.generator.ProjectGenerationStep
 import net.nemerosa.jenkins.seed.integration.SeedRule.Build
-import net.nemerosa.jenkins.seed.test.JenkinsAPIFoundException
-import net.nemerosa.jenkins.seed.test.JenkinsAPINotFoundException
-import net.nemerosa.jenkins.seed.test.TestUtils
+import net.nemerosa.jenkins.seed.test.*
 import org.apache.commons.lang.StringUtils
 import org.jvnet.hudson.test.JenkinsRule
 
@@ -23,6 +21,12 @@ import static org.junit.Assert.fail
 class SeedRule extends JenkinsRule {
 
     private final Logger logger = Logger.getLogger(SeedRule.class.name)
+
+    private final Set<Integer> HTTP_OK_CODES = [
+            HttpURLConnection.HTTP_OK,
+            HttpURLConnection.HTTP_CREATED,
+            HttpURLConnection.HTTP_ACCEPTED,
+    ] as Set
 
     /**
      * Logging
@@ -45,25 +49,7 @@ class SeedRule extends JenkinsRule {
      */
     @Deprecated
     void configureSeed(String yaml) {
-        def url = new URL(new URL(jenkins.rootUrl), "seed-config/")
-        info "[config] Updating Seed configuration at ${url}..."
-        def connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = 'POST'
-        NameValuePair crumb = new NameValuePair(
-                jenkins.getCrumbIssuer().getDescriptor().getCrumbRequestField(),
-                jenkins.getCrumbIssuer().getCrumb(null)
-        );
-        connection.setRequestProperty(crumb.getName(), crumb.getValue());
-        connection.doOutput = true
-        connection.connect()
-        try {
-            connection.outputStream.write(yaml.getBytes('UTF-8'))
-            connection.outputStream.flush()
-            // Reads the response
-            assert (connection.responseCode == HttpURLConnection.HTTP_OK): "Seed configuration failed with code: ${connection.responseCode}"
-        } finally {
-            connection.disconnect()
-        }
+        post('seed-config/', yaml)
     }
 
     /**
@@ -178,8 +164,40 @@ class SeedRule extends JenkinsRule {
         }
     }
 
-    void post(String path) {
-        postJSON(path, '')
+    void post(String path, Object content = '', Map<String, String> headers = [:]) {
+        def url = new URL(new URL(jenkins.rootUrl), path)
+        info "[http] Posting to ${url}..."
+        def connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = 'POST'
+        // CORS
+        NameValuePair crumb = new NameValuePair(
+                jenkins.getCrumbIssuer().getDescriptor().getCrumbRequestField(),
+                jenkins.getCrumbIssuer().getCrumb(null)
+        );
+        connection.setRequestProperty(crumb.getName(), crumb.getValue());
+        // Headers
+        headers.each { name, value ->
+            connection.setRequestProperty(name, value)
+        }
+        // OK
+        connection.doOutput = true
+        connection.connect()
+        try {
+            connection.outputStream.write(content.toString().getBytes('UTF-8'))
+            connection.outputStream.flush()
+            // Response code
+            int code = connection.responseCode
+            // Translates into an exception
+            if (code == HttpURLConnection.HTTP_FORBIDDEN) {
+                throw new JenkinsForbiddenException(path)
+            } else if (code == HttpURLConnection.HTTP_NOT_FOUND) {
+                throw new JenkinsNotFoundException(path)
+            } else if (!(code in HTTP_OK_CODES)) {
+                throw new JenkinsHTTPException(path, code)
+            }
+        } finally {
+            connection.disconnect()
+        }
     }
 
     interface Build {

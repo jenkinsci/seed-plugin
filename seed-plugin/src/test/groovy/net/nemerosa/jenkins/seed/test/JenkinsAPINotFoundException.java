@@ -4,6 +4,7 @@ import net.nemerosa.seed.config.SeedException;
 
 import java.net.URL;
 
+@Deprecated
 public class JenkinsAPINotFoundException extends SeedException {
 
     @Deprecated

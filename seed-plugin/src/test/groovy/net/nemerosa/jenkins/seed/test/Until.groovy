@@ -2,6 +2,7 @@ package net.nemerosa.jenkins.seed.test
 
 import java.util.concurrent.TimeoutException
 
+@Deprecated
 class Until {
 
     static def until(int seconds) {
