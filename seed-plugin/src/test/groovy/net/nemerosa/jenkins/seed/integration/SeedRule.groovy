@@ -7,7 +7,6 @@ import hudson.model.queue.QueueTaskFuture
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.config.ProjectPipelineConfig
 import net.nemerosa.jenkins.seed.generator.ProjectGenerationStep
-import net.nemerosa.jenkins.seed.integration.SeedRule.Build
 import net.nemerosa.jenkins.seed.test.*
 import org.apache.commons.lang.StringUtils
 import org.jvnet.hudson.test.JenkinsRule
@@ -160,7 +159,7 @@ class SeedRule extends JenkinsRule {
         info """[job] Testing job presence at ${path}"""
         waitUntilNoActivityUpTo(timeoutSeconds * 1000)
         if (jenkins.getItemByFullName(path) != null) {
-            throw new JenkinsAPIFoundException(path)
+            throw new JenkinsNotGoneException(path)
         }
     }
 

@@ -5,23 +5,17 @@ import hudson.model.ParametersDefinitionProperty
 import hudson.model.StringParameterDefinition
 import net.nemerosa.jenkins.seed.integration.SeedRule
 import net.nemerosa.jenkins.seed.integration.git.GitRepo
-import net.nemerosa.jenkins.seed.test.AcceptanceTestRunner
 import net.nemerosa.seed.generator.ProjectSeedBuilder
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-
-import java.util.concurrent.TimeoutException
 
 import static net.nemerosa.jenkins.seed.test.TestUtils.uid
-import static org.junit.Assert.fail
 
 /**
  * Testing the generation of seeds and pipelines using the Seed plug-in.
  */
-@RunWith(AcceptanceTestRunner)
 class SeedGeneratorTest {
 
     @Rule
@@ -492,7 +486,7 @@ projects:
         jenkins.checkJobExists("${project}/${project}-master/${project}-master-ci")
         // Checks the result of the pipeline (build must NOT have been fired automatically)
         def build = jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1, 30)
-        assert build == null : "The pipeline should not have been fired"
+        assert build == null: "The pipeline should not have been fired"
     }
 
     @Test
