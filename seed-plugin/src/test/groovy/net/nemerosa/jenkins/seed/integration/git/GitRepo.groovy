@@ -50,7 +50,7 @@ class GitRepo {
     }
 
     static File createTempDir(String id) {
-        File file = File.createTempFile(id, '.d')
+        File file = File.createTempFile("seed-test-git-${id}", '.d')
         FileUtils.forceDelete(file)
         file.mkdirs()
         file.deleteOnExit()

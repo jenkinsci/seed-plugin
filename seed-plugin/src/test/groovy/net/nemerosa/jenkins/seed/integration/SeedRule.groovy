@@ -119,7 +119,7 @@ class SeedRule extends JenkinsRule {
     Build getBuild(String path, int buildNumber, int timeoutSeconds = 120) {
         info "[build] Getting build ${buildNumber} for ${path}"
         def job = jenkins.getItemByFullName(path, AbstractProject)
-        if (!job) throw new JenkinsAPINotFoundException(path)
+        if (!job) throw new JenkinsNotFoundException(path)
         waitUntilNoActivityUpTo(timeoutSeconds * 1000)
         def run = job.getBuildByNumber(buildNumber)
         return run != null ? new BuildImpl(path, run) : null
