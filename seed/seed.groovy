@@ -35,7 +35,7 @@ freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
         }
     }
     steps {
-        gradle 'clean localDockerAcceptanceTest --info --profile'
+        gradle 'clean build --info --profile'
     }
     publishers {
         archiveJunit("**/build/test-results/*.xml")
