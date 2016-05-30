@@ -3,7 +3,7 @@ package net.nemerosa.jenkins.seed.integration
 import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.integration.git.GitRepo
-import org.junit.Ignore
+import net.nemerosa.jenkins.seed.integration.svn.SVNRepo
 import org.junit.Rule
 import org.junit.Test
 
@@ -407,7 +407,40 @@ class GenerationIntegrationTest {
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
     }
 
-    // TODO Subversion test (with branch prefix)
+    @Test
+    void 'SVN pipeline'() {
+        // Project name
+        def projectName = uid('p')
+        // Configuration
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                        .withNamingStrategy(
+                        new NamingStrategyConfig()
+                                .withIgnoredBranchPrefixes('branches/')
+                )
+        )
+        // With a SVN repository
+        SVNRepo.withPreparedSvnRepo(projectName, 'branches/11.7.0', 'svn') { SVNRepo svn ->
+            // Firing the seed job
+            jenkins.fireJob(seed, [
+                    PROJECT         : projectName,
+                    PROJECT_SCM_TYPE: 'svn',
+                    PROJECT_SCM_URL : svn.url,
+            ]).checkSuccess()
+            // Checks the project seed is created
+            jenkins.checkJobExists("${projectName}/${projectName}-seed")
+            // Fires the project seed
+            jenkins.fireJob("${projectName}/${projectName}-seed", [
+                    BRANCH: 'branches/11.7.0'
+            ]).checkSuccess()
+            // Checks the branch seed is created
+            jenkins.checkJobExists("${projectName}/${projectName}-11.7.0/${projectName}-11.7.0-seed")
+            // Checks the branch pipeline is there
+            jenkins.checkJobExists("${projectName}/${projectName}-11.7.0/${projectName}-11.7.0-build")
+            // Checks the result of the pipeline (build must have been fired automatically by the DSL)
+            jenkins.getBuild("${projectName}/${projectName}-11.7.0/${projectName}-11.7.0-build", 1).checkSuccess()
+        }
+    }
 
     @Test
     void 'Custom naming strategy'() {

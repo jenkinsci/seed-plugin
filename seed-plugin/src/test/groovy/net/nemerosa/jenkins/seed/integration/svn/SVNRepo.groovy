@@ -26,11 +26,11 @@ class SVNRepo {
             // Prepares the SVN repository
             svn.mkdir("${projectName}/${branchPath}", "Creating ${branchPath}")
             def workingCopy = svn.checkout("${projectName}/${branchPath}")
-            def seed = new File(workingCopy, 'seed/seed.properties')
+            def seed = new File(workingCopy, 'seed/seed.groovy')
             seed.parentFile.mkdirs()
             add(workingCopy, 'seed')
-            seed.text = SVNRepo.class.getResource("/acceptance/seed-${seedId}.properties").text
-            add(workingCopy, 'seed/seed.properties')
+            seed.text = SVNRepo.class.getResource("/acceptance/seed-${seedId}.groovy").text
+            add(workingCopy, 'seed/seed.groovy')
             commit(workingCopy, "Seed files")
             // Logging
             svn.log()
