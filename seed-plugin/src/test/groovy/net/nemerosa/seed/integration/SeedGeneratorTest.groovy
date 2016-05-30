@@ -288,7 +288,7 @@ classes:
         // Creates a Git repository with a seed.properties file
         String userDir = System.getProperty('user.dir')
         String seedProperties = """\
-seed.dsl.repository = flat:${userDir}/seed-plugin/build/integration/repository
+seed.dsl.repository = flat:${userDir}/build/integration/repository
 seed.dsl.libraries = :seed-pipeline-demo:+
 seed.dsl.script.jar = seed-pipeline-demo
 """
