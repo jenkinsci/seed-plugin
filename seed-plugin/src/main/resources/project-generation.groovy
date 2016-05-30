@@ -28,6 +28,7 @@ job("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
                     branchSCMParameter PIPELINE_BRANCH_SCM_PARAMETER
                     branchParameters PIPELINE_BRANCH_PARAMETERS
                     generationExtension PIPELINE_GENERATION_EXTENSION
+                    pipelineGenerationExtension PIPELINE_PIPELINE_GENERATION_EXTENSION
                     namingStrategy {
                         projectFolderPath PROJECT_FOLDER_PATH
                         projectSeedName PROJECT_SEED_NAME

@@ -89,7 +89,8 @@ fi
         }
     }
 
-    // TODO Branch seed extensions
+    // Branch seed extensions
+    branchSeedDslExtensionPoint()
 }
 
 /**

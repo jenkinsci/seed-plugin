@@ -50,6 +50,12 @@ public class PipelineConfig {
     private final String generationExtension;
 
     /**
+     * Arbitrary DSL to add to the pipeline generation job.
+     */
+    @Wither
+    private final String pipelineGenerationExtension;
+
+    /**
      * Naming strategy
      */
     @Wither
@@ -69,6 +75,7 @@ public class PipelineConfig {
                 false, // No branch SCM parameter
                 "", // No extra parameter
                 "", // No extra DSL
+                "", // No extra DSL
                 new NamingStrategyConfig(), // Default values
                 new EventStrategyConfig() // Default values
         );
@@ -80,13 +87,14 @@ public class PipelineConfig {
 
 
     @DataBoundConstructor
-    public PipelineConfig(boolean destructor, String commitParameter, String authorisations, boolean branchSCMParameter, String branchParameters, String generationExtension, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
+    public PipelineConfig(boolean destructor, String commitParameter, String authorisations, boolean branchSCMParameter, String branchParameters, String generationExtension, String pipelineGenerationExtension, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
         this.destructor = destructor;
         this.commitParameter = commitParameter;
         this.authorisations = authorisations;
         this.branchSCMParameter = branchSCMParameter;
         this.branchParameters = branchParameters;
         this.generationExtension = generationExtension;
+        this.pipelineGenerationExtension = pipelineGenerationExtension;
         this.namingStrategy = namingStrategy;
         this.eventStrategy = eventStrategy;
     }

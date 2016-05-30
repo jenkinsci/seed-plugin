@@ -74,7 +74,8 @@ public class BranchGenerationStep extends AbstractSeedStep {
     protected Map<String, GenerationExtension> getExtensionPoints(EnvVars env, ProjectPipelineConfig projectConfig, ProjectParameters parameters) {
         return ImmutableMap.<String, GenerationExtension>of(
                 "branchSeedScm", new BranchSeedSCMExtension(projectConfig, parameters, getBranchParameter(env), env),
-                "branchSeedParameters", new BranchSeedParametersExtension(projectConfig, parameters, getBranchParameter(env), env)
+                "branchSeedParameters", new BranchSeedParametersExtension(projectConfig, parameters, getBranchParameter(env), env),
+                "branchSeedDsl", new BranchSeedDslExtension(projectConfig, parameters, getBranchParameter(env), env)
         );
     }
 

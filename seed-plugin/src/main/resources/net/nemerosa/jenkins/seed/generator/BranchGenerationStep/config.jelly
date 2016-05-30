@@ -44,6 +44,11 @@
                             codemirror-mode="groovy"
                             codemirror-config="mode: 'text/x-groovy', lineNumbers: true, matchBrackets: true, onBlur: function(editor){editor.save()}"/>
             </f:entry>
+            <f:entry title="Extra DSL for pipeline generation" field="pipelineGenerationExtension">
+                <f:textarea value="${instance.projectConfig.pipelineConfig.pipelineGenerationExtension}"
+                            codemirror-mode="groovy"
+                            codemirror-config="mode: 'text/x-groovy', lineNumbers: true, matchBrackets: true, onBlur: function(editor){editor.save()}"/>
+            </f:entry>
             <f:section title="Naming strategy" name="namingStrategy">
                 <f:entry title="Project folder path" field="projectFolderPath">
                     <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.projectFolderPath}"/>

@@ -333,53 +333,42 @@ class GenerationIntegrationTest {
         jenkins.gone("${project}/${project}_MASTER")
     }
 
-    // TODO Branch pipeline extensions
-
     @Test
-    @Ignore
     void 'Branch pipeline extensions'() {
         // Project name
         String project = uid('p')
+        // Prepares Git repository
+        def git = GitRepo.prepare('std')
         // Configuration
-        jenkins.configureSeed """\
-extensions:
-    - id: extension1
-      dsl: |
-        steps {
-            shell "echo Extension 1"
-        }
-    - id: extension2
-      dsl: |
-        steps {
-            shell "echo Extension 2"
-        }
-projects:
-    - id: "${project}"
-      pipeline-generator-extensions:
-        - extension1
-        - extension2
-"""
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                        .withPipelineGenerationExtension('''\
+                        steps {
+                            shell "echo Extension 1"
+                            shell "echo Extension 2"
+                        }
+                        ''')
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
+        jenkins.checkJobExists("${project}/${project}-seed")
         // Fires the project seed
         jenkins.fireJob("${project}/${project}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
         // Fires the branch seed
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job("${project}/${project}-master/${project}-master-build")
-        jenkins.job("${project}/${project}-master/${project}-master-ci")
-        jenkins.job("${project}/${project}-master/${project}-master-publish")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-build")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-ci")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-publish")
         // Gets the branch seed build...
         def branchSeedBuild = jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1)
         // ... gets its output

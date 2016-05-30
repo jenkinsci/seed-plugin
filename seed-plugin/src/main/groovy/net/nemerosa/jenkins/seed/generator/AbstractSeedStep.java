@@ -61,6 +61,7 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         config.put("PIPELINE_BRANCH_SCM_PARAMETER", String.valueOf(projectConfig.getPipelineConfig().isBranchSCMParameter()));
         config.put("PIPELINE_BRANCH_PARAMETERS", Objects.toString(projectConfig.getPipelineConfig().getBranchParameters(), ""));
         config.put("PIPELINE_GENERATION_EXTENSION", Objects.toString(projectConfig.getPipelineConfig().getGenerationExtension(), ""));
+        config.put("PIPELINE_PIPELINE_GENERATION_EXTENSION", Objects.toString(projectConfig.getPipelineConfig().getPipelineGenerationExtension(), ""));
         config.put("IGNORED_BRANCH_PREFIXES", Objects.toString(projectConfig.getPipelineConfig().getNamingStrategy().getIgnoredBranchPrefixes(), ""));
     }
 
