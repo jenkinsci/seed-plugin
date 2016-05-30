@@ -102,3 +102,12 @@ test {
 
 build.dependsOn integrationTest
 integrationTest.mustRunAfter test
+
+// Copy of the pipeline demo JAR for some integration tests
+
+task copyPipelineDemo(type: Copy, dependsOn: ':seed-pipeline-demo:jar') {
+    from project(':seed-pipeline-demo').tasks.jar
+    into project.file('build/integration/repository')
+}
+
+integrationTest.dependsOn copyPipelineDemo

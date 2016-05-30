@@ -333,6 +333,8 @@ class GenerationIntegrationTest {
         jenkins.gone("${project}/${project}_MASTER")
     }
 
+    // TODO Branch pipeline extensions
+
     @Test
     @Ignore
     void 'Branch pipeline extensions'() {
@@ -419,7 +421,6 @@ classes:
     }
 
     // TODO Subversion test (with branch prefix)
-    // TODO Custom library test (relies on the pipeline-demo being available in the file:/var/test/repository/ repository)
 
     @Test
     void 'Custom naming strategy'() {
@@ -501,5 +502,65 @@ classes:
         jenkins.getBuild("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-build", 1).checkSuccess()
         jenkins.getBuild("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-ci", 1).checkSuccess()
         jenkins.getBuild("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-publish", 1).checkSuccess()
+    }
+
+    /**
+     * The <code>copyPipelineDemo</code> Gradle task must be run before this test can run.
+     */
+    @Test
+    void 'Pipeline library'() {
+        // Project name
+        def projectName = uid('P')
+        // Creates a Git repository with a seed.properties file
+        String userDir = System.getProperty('user.dir')
+        String seedProperties = """\
+seed.dsl.repository = flat:${userDir}/seed-plugin/build/integration/repository
+seed.dsl.libraries = :seed-pipeline-demo:+
+seed.dsl.script.jar = seed-pipeline-demo
+"""
+        def git = GitRepo.prepare('custom', [
+                'seed/seed.properties': seedProperties
+        ])
+        // Configuration
+        // @formatter:off
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                        .withNamingStrategy(
+                            new NamingStrategyConfig()
+                                .withProjectFolderPath('${PROJECT}')
+                                .withProjectSeedName('${PROJECT}_GENERATOR')
+                                .withBranchFolderPath('${PROJECT}_*')
+                                .withBranchSeedName('${PROJECT}_*_GENERATOR')
+                                .withBranchStartName('${PROJECT}_*_010_BUILD')
+                                .withBranchName('${BRANCH}')
+                        )
+        )
+        // @formatter:on
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : projectName,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}_GENERATOR")
+        // Fires the project seed
+        jenkins.fireJob("${projectName}/${projectName}_GENERATOR", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_GENERATOR")
+        // Fires the branch seed (extra timeout because of Gradle runtime download)
+        jenkins.fireJob("${projectName}/${projectName}_MASTER/${projectName}_MASTER_GENERATOR", [:], 600).checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD")
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_020_CI")
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH")
+        // Fires the build job (not fired automatically by the custom library)
+        jenkins.fireJob("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD")
+        // Checks the result of the pipeline (build, ci & publish must have been fired)
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
     }
 }
