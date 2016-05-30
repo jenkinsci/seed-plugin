@@ -1,6 +1,6 @@
 package net.nemerosa.jenkins.seed.integration.git
 
-import org.apache.commons.io.FileUtils
+import net.nemerosa.jenkins.seed.integration.IntegrationSupport
 import org.eclipse.jgit.api.Git
 
 class GitRepo {
@@ -28,7 +28,7 @@ class GitRepo {
      * and returns the path of the directory.
      */
     static String prepare(String id, Map<String, String> resources, String branch = 'master') {
-        File dir = createTempDir(id)
+        File dir = IntegrationSupport.createTempDir(id)
         println "Creating Git directory for ${id} at ${dir}..."
 
         // Initialisation
@@ -52,13 +52,5 @@ class GitRepo {
 
         // OK
         return dir.absolutePath
-    }
-
-    static File createTempDir(String id) {
-        File file = File.createTempFile("seed-test-git-${id}", '.d')
-        FileUtils.forceDelete(file)
-        file.mkdirs()
-        file.deleteOnExit()
-        return file
     }
 }
