@@ -9,11 +9,11 @@ class GitRepo {
      * Prepares a Git repository in a directory, initialise it with some content identified by the {@code id} name
      * and returns the path of the directory.
      */
-    static String prepare(String id) {
+    static String prepare(String id, String branch = 'master') {
         Map<String, String> resources = [:]
         loadResource(resources, "seed-${id}.properties", "seed/seed.properties")
         loadResource(resources, "seed-${id}.groovy", "seed/seed.groovy")
-        return prepare(id, resources)
+        return prepare(id, resources, branch)
     }
 
     static def loadResource(Map<String, String> resources, String name, String targetName) {
@@ -27,7 +27,7 @@ class GitRepo {
      * Prepares a Git repository in a directory, initialise it with some content identified by the {@code id} name
      * and returns the path of the directory.
      */
-    static String prepare(String id, Map<String, String> resources) {
+    static String prepare(String id, Map<String, String> resources, String branch = 'master') {
         File dir = createTempDir(id)
         println "Creating Git directory for ${id} at ${dir}..."
 
@@ -44,6 +44,11 @@ class GitRepo {
 
         // Committing
         git.commit().setMessage("Seed files").setAuthor("Nemerosa", "nemerosa@nemerosa.net").call()
+
+        // Branch?
+        if (branch != 'master') {
+            git.checkout().setName(branch).setCreateBranch(true).call()
+        }
 
         // OK
         return dir.absolutePath

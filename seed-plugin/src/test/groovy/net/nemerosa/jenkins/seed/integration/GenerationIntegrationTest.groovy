@@ -418,9 +418,12 @@ classes:
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
     }
 
+    // TODO Git branch test
+    // TODO Subversion test (with branch prefix)
+    // TODO Custom library test (relies on the pipeline-demo being available in the file:/var/test/repository/ repository)
+
     @Test
-    @Ignore
-    void 'Creating a project tree based of full customisation'() {
+    void 'Custom naming strategy'() {
         // Configuration
         // @formatter:off
         def seed = jenkins.seed(
@@ -433,37 +436,36 @@ classes:
                                 .withBranchSeedName('${PROJECT}_*_GENERATOR')
                                 .withBranchStartName('${PROJECT}_*_010_BUILD')
                                 .withBranchName('${BRANCH}')
-                                .withIgnoredBranchPrefixes('branches/')
-                                // TODO Commit parameter? REVISION
                         )
         )
         // @formatter:on
         // Project name
         def projectName = uid('P')
+        // Repository
+        def git = GitRepo.prepare('custom-naming')
         // Firing the seed job
         jenkins.fireJob(seed, [
                 PROJECT         : projectName,
-                PROJECT_SCM_TYPE: 'svn',
-                PROJECT_SCM_URL : 'svn://localhost/PRJ',
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${projectName}/${projectName}_GENERATOR")
+        jenkins.checkJobExists("${projectName}/${projectName}_GENERATOR")
         // Fires the project seed
         jenkins.fireJob("${projectName}/${projectName}_GENERATOR", [
-                BRANCH: 'branches/R11.7.0'
+                BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_GENERATOR")
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_GENERATOR")
         // Fires the branch seed (extra timeout because of Gradle runtime download)
-        jenkins.fireJob("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_GENERATOR", [:], 600).checkSuccess()
+        jenkins.fireJob("${projectName}/${projectName}_MASTER/${projectName}_MASTER_GENERATOR", [:], 600).checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_010_BUILD")
-        jenkins.job("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_020_CI")
-        jenkins.job("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_030_PUBLISH")
-        // Fires the branch pipeline start
-        jenkins.fireJob("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_010_BUILD").checkSuccess()
-        // Checks the result of the pipeline (ci & publish must have been fired)
-        jenkins.getBuild("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_020_CI", 1).checkSuccess()
-        jenkins.getBuild("${projectName}/${projectName}_R11.7.0/${projectName}_R11.7.0_030_PUBLISH", 1).checkSuccess()
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD")
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_020_CI")
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH")
+        // Checks the result of the pipeline (build, ci & publish must have been fired)
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
     }
 }
