@@ -418,7 +418,6 @@ classes:
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
     }
 
-    // TODO Git branch test
     // TODO Subversion test (with branch prefix)
     // TODO Custom library test (relies on the pipeline-demo being available in the file:/var/test/repository/ repository)
 
@@ -467,5 +466,40 @@ classes:
         jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD", 1).checkSuccess()
         jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
         jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
+    }
+
+    @Test
+    void 'Git branch'() {
+        // Default seed
+        String seed = jenkins.defaultSeed()
+        // Project name
+        def projectName = uid('p')
+        // Prepares Git repository
+        def git = GitRepo.prepare('std', 'release/11.7')
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : projectName,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${projectName}/${projectName}-seed", [
+                BRANCH: 'release/11.7'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-seed")
+        // Fires the branch seed
+        def output = jenkins.fireJob("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-seed").checkSuccess().output
+        println "OUTPUT ${projectName}-release-11.7-seed:\n${output}"
+        // Checks the branch pipeline is there
+        jenkins.checkJobExists("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-build")
+        jenkins.checkJobExists("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-ci")
+        jenkins.checkJobExists("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-publish")
+        // Checks the result of the pipeline (ci & publish must have been fired)
+        jenkins.getBuild("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-build", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-ci", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}-release-11.7/${projectName}-release-11.7-publish", 1).checkSuccess()
     }
 }
