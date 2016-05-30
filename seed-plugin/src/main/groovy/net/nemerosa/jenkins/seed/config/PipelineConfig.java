@@ -56,6 +56,13 @@ public class PipelineConfig {
     private final String pipelineGenerationExtension;
 
     /**
+     * Disables the execution of arbitrary DSL Groovy scripts - relies on
+     * pipeline libraries.
+     */
+    @Wither
+    private final boolean disableDslScript;
+
+    /**
      * Naming strategy
      */
     @Wither
@@ -76,6 +83,7 @@ public class PipelineConfig {
                 "", // No extra parameter
                 "", // No extra DSL
                 "", // No extra DSL
+                false, // Allows DSL script
                 new NamingStrategyConfig(), // Default values
                 new EventStrategyConfig() // Default values
         );
@@ -87,7 +95,7 @@ public class PipelineConfig {
 
 
     @DataBoundConstructor
-    public PipelineConfig(boolean destructor, String commitParameter, String authorisations, boolean branchSCMParameter, String branchParameters, String generationExtension, String pipelineGenerationExtension, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
+    public PipelineConfig(boolean destructor, String commitParameter, String authorisations, boolean branchSCMParameter, String branchParameters, String generationExtension, String pipelineGenerationExtension, boolean disableDslScript, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
         this.destructor = destructor;
         this.commitParameter = commitParameter;
         this.authorisations = authorisations;
@@ -95,6 +103,7 @@ public class PipelineConfig {
         this.branchParameters = branchParameters;
         this.generationExtension = generationExtension;
         this.pipelineGenerationExtension = pipelineGenerationExtension;
+        this.disableDslScript = disableDslScript;
         this.namingStrategy = namingStrategy;
         this.eventStrategy = eventStrategy;
     }

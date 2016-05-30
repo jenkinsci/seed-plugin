@@ -378,34 +378,32 @@ class GenerationIntegrationTest {
         assert branchSeedBuildOutput.contains('Extension 2')
     }
 
-    // TODO Direct script execution?
     @Test
-    @Ignore
     void 'Direct script execution - not allowed'() {
         // Project name
         String project = uid('p')
-        // Configuration of the Seed job
-        jenkins.configureSeed '''\
-classes:
-    - id: my-class
-      pipeline-generator-script-allowed: no
-'''
+        // Prepares Git repository
+        def git = GitRepo.prepare('std')
+        // Configuration
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                        .withDisableDslScript(true)
+        )
         // Firing the seed job
-        jenkins.fireJob('seed', [
+        jenkins.fireJob(seed, [
                 PROJECT         : project,
                 PROJECT_SCM_TYPE: 'git',
-                // Path to the prepared Git repository in docker.gradle
-                PROJECT_SCM_URL : '/var/lib/jenkins/tests/git/seed-std',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job("${project}/${project}-seed")
+        jenkins.checkJobExists("${project}/${project}-seed")
         // Fires the project seed
         jenkins.fireJob("${project}/${project}-seed", [
                 BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job("${project}/${project}-master/${project}-master-seed")
-        // Fires the branch seed
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
+        // Fires the branch seed - it must fail
         jenkins.fireJob("${project}/${project}-master/${project}-master-seed").checkFailure()
     }
 

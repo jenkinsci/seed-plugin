@@ -39,6 +39,8 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
             scmType PROJECT_SCM_TYPE
             scmUrl PROJECT_SCM_URL
             scmCredentials PROJECT_SCM_CREDENTIALS
+            // Pipeline
+            disableDslScript PIPELINE_DISABLE_DSL_SCRIPT
             // Branch
             branch BRANCH
             // Jenkins-safe names

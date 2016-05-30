@@ -29,6 +29,7 @@ job("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
                     branchParameters PIPELINE_BRANCH_PARAMETERS
                     generationExtension PIPELINE_GENERATION_EXTENSION
                     pipelineGenerationExtension PIPELINE_PIPELINE_GENERATION_EXTENSION
+                    disableDslScript PIPELINE_DISABLE_DSL_SCRIPT
                     namingStrategy {
                         projectFolderPath PROJECT_FOLDER_PATH
                         projectSeedName PROJECT_SEED_NAME

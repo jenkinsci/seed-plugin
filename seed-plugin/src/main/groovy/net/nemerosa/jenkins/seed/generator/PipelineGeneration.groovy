@@ -5,6 +5,7 @@ import hudson.model.AbstractBuild
 import hudson.model.BuildListener
 import hudson.model.ParametersAction
 import hudson.model.StringParameterValue
+import net.nemerosa.jenkins.seed.config.PipelineGeneratorScriptNotAllowedException
 import org.apache.commons.lang.StringUtils
 
 import static SeedProperties.SEED_DSL_LIBRARIES
@@ -28,8 +29,9 @@ class PipelineGeneration {
     private final String branch
     private final String seedProject
     private final String seedBranch
+    private final boolean disableDslScript
 
-    PipelineGeneration(String project, String scmType, String scmUrl, String scmCredentials, String branch, String seedProject, String seedBranch) {
+    PipelineGeneration(String project, String scmType, String scmUrl, String scmCredentials, String branch, String seedProject, String seedBranch, boolean disableDslScript) {
         this.branch = branch
         this.scmCredentials = scmCredentials
         this.scmUrl = scmUrl
@@ -37,6 +39,7 @@ class PipelineGeneration {
         this.project = project
         this.seedProject = seedProject
         this.seedBranch = seedBranch
+        this.disableDslScript = disableDslScript
     }
 
     boolean perform(AbstractBuild build, BuildListener listener) {
@@ -79,10 +82,10 @@ class PipelineGeneration {
         // Is the script extraction step needed?
         boolean scriptExtraction = StringUtils.isNotBlank(dslBootstrapDependency) || !dependencies.empty
 
-        // TODO Is a direct script execution allowed for the project?
-//        if (!scriptExtraction && !projectEnvironment.getConfigurationBoolean('pipeline-generator-script-allowed', true)) {
-//            throw new PipelineGeneratorScriptNotAllowedException()
-//        }
+        // Checks for authorisation to run DSL scripts
+        if (!scriptExtraction && disableDslScript) {
+            throw new PipelineGeneratorScriptNotAllowedException()
+        }
 
         // Injects the environment variables
         build.addAction(new ParametersAction(

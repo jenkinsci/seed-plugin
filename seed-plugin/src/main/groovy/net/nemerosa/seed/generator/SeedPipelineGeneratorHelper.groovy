@@ -4,6 +4,7 @@ import hudson.model.AbstractBuild
 import hudson.model.BuildListener
 import hudson.model.ParametersAction
 import hudson.model.StringParameterValue
+import net.nemerosa.jenkins.seed.config.PipelineGeneratorScriptNotAllowedException
 import net.nemerosa.seed.config.SeedDSLHelper
 import net.nemerosa.seed.config.SeedProjectEnvironment
 import org.apache.commons.lang.StringUtils
