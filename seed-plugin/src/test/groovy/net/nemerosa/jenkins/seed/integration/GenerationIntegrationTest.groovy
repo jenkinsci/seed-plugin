@@ -3,7 +3,6 @@ package net.nemerosa.jenkins.seed.integration
 import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.integration.git.GitRepo
-import net.nemerosa.jenkins.seed.integration.svn.SVNRepo
 import org.junit.Rule
 import org.junit.Test
 
@@ -485,7 +484,7 @@ class GenerationIntegrationTest {
         jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH")
         // Checks the result of the pipeline (build, ci & publish must have been fired)
         jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD", 1).checkSuccess()
-        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_020_CI", 1).checkSuccess()
         jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
     }
 
@@ -534,7 +533,7 @@ class GenerationIntegrationTest {
         // Creates a Git repository with a seed.properties file
         String userDir = System.getProperty('user.dir')
         String seedProperties = """\
-seed.dsl.repository = flat:${userDir}/seed-plugin/build/integration/repository
+seed.dsl.repository = flat:${userDir}/build/integration/repository
 seed.dsl.libraries = :seed-pipeline-demo:+
 seed.dsl.script.jar = seed-pipeline-demo
 """
@@ -580,7 +579,7 @@ seed.dsl.script.jar = seed-pipeline-demo
         jenkins.fireJob("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD")
         // Checks the result of the pipeline (build, ci & publish must have been fired)
         jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD", 1).checkSuccess()
-        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_020_CI", 1).checkSuccess()
         jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
     }
 }
