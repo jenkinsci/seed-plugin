@@ -3,6 +3,7 @@ package net.nemerosa.jenkins.seed.integration
 import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
 import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.integration.git.GitRepo
+import net.nemerosa.jenkins.seed.integration.svn.SVNRepo
 import org.junit.Rule
 import org.junit.Test
 
