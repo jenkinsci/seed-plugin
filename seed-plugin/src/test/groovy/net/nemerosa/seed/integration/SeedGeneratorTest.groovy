@@ -3,6 +3,8 @@ package net.nemerosa.seed.integration
 import hudson.model.ChoiceParameterDefinition
 import hudson.model.ParametersDefinitionProperty
 import hudson.model.StringParameterDefinition
+import net.nemerosa.jenkins.seed.config.NamingStrategyConfig
+import net.nemerosa.jenkins.seed.config.PipelineConfig
 import net.nemerosa.jenkins.seed.integration.SeedRule
 import net.nemerosa.jenkins.seed.integration.git.GitRepo
 import net.nemerosa.seed.generator.ProjectSeedBuilder
@@ -276,9 +278,23 @@ classes:
         ]
     }
 
+    /**
+     * The <code>copyPipelineDemo</code> Gradle task must be run before this test can run.
+     */
     @Test
-    @Ignore
-    void 'Creating a project tree based of full customisation'() {
+    void 'Pipeline library'() {
+        // Project name
+        def projectName = uid('P')
+        // Creates a Git repository with a seed.properties file
+        String userDir = System.getProperty('user.dir')
+        String seedProperties = """\
+seed.dsl.repository = flat:${userDir}/seed-plugin/build/integration/repository
+seed.dsl.libraries = :seed-pipeline-demo:+
+seed.dsl.script.jar = seed-pipeline-demo
+"""
+        def git = GitRepo.prepare('custom', [
+                'seed/seed.properties': seedProperties
+        ])
         // Configuration
         jenkins.configureSeed '''\
 strategies:
@@ -287,39 +303,37 @@ strategies:
     branch-seed-expression: "${PROJECT}/${PROJECT}_*/${PROJECT}_*_GENERATOR"
     branch-start-expression: "${PROJECT}/${PROJECT}_*/${PROJECT}_*_010_BUILD"
     branch-name-expression: "${BRANCH}"
-    branch-name-prefixes:
-      - "branches/"
-    commit-parameter: "REVISION"
 classes:
     - id: custom-pipeline
       branch-strategy: custom
 '''
         // Firing the seed job
         jenkins.fireJob('seed', [
-                PROJECT         : 'PRJ',
+                PROJECT         : projectName,
                 PROJECT_CLASS   : 'custom-pipeline',
-                PROJECT_SCM_TYPE: 'svn',
-                PROJECT_SCM_URL : 'svn://localhost/PRJ',
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
         ]).checkSuccess()
         // Checks the project seed is created
-        jenkins.job('PRJ/PRJ_GENERATOR')
+        jenkins.checkJobExists("${projectName}/${projectName}_GENERATOR")
         // Fires the project seed
-        jenkins.fireJob('PRJ/PRJ_GENERATOR', [
-                BRANCH: 'branches/R11.7.0'
+        jenkins.fireJob("${projectName}/${projectName}_GENERATOR", [
+                BRANCH: 'master'
         ]).checkSuccess()
         // Checks the branch seed is created
-        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR')
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_GENERATOR")
         // Fires the branch seed (extra timeout because of Gradle runtime download)
-        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_GENERATOR', [:], 600).checkSuccess()
+        jenkins.fireJob("${projectName}/${projectName}_MASTER/${projectName}_MASTER_GENERATOR", [:], 600).checkSuccess()
         // Checks the branch pipeline is there
-        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_010_BUILD')
-        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_020_CI')
-        jenkins.job('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_030_PUBLISH')
-        // Fires the branch pipeline start
-        jenkins.fireJob('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_010_BUILD').checkSuccess()
-        // Checks the result of the pipeline (ci & publish must have been fired)
-        jenkins.getBuild('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_020_CI', 1).checkSuccess()
-        jenkins.getBuild('PRJ/PRJ_R11.7.0/PRJ_R11.7.0_030_PUBLISH', 1).checkSuccess()
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD")
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_020_CI")
+        jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH")
+        // Fires the build job (not fired automatically by the custom library)
+        jenkins.fireJob("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD")
+        // Checks the result of the pipeline (build, ci & publish must have been fired)
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
+        jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
     }
 
     @Test
