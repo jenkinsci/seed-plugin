@@ -59,9 +59,9 @@ dependencies {
     jenkinsTest 'org.jenkins-ci.plugins:cloudbees-folder:4.7@jar'
     jenkinsTest 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
     jenkinsTest 'org.jenkins-ci.plugins:envinject:1.92.1'
-    jenkinsTest 'org.jenkins-ci.plugins:description-setter:1.10'
+    jenkinsTest 'org.jenkins-ci.plugins:description-setter:1.10@jar'
     jenkinsTest 'org.jenkins-ci.plugins:credentials:1.22@jar'
-    jenkinsTest 'org.jenkins-ci.plugins:parameterized-trigger:2.26'
+    jenkinsTest 'org.jenkins-ci.plugins:parameterized-trigger:2.26@jar'
     jenkinsTest 'org.jenkins-ci.plugins:git:2.3.5'
     // TODO jenkinsTest 'org.jenkins-ci.plugins:subversion:2.5.7@jar'
 
