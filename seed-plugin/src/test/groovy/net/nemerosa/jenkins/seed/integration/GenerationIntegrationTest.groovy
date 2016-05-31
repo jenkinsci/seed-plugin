@@ -425,7 +425,7 @@ class GenerationIntegrationTest {
             jenkins.fireJob(seed, [
                     PROJECT         : projectName,
                     PROJECT_SCM_TYPE: 'svn',
-                    PROJECT_SCM_URL : svn.url,
+                    PROJECT_SCM_URL : svn.getUrlForPath(projectName),
             ]).checkSuccess()
             // Checks the project seed is created
             jenkins.checkJobExists("${projectName}/${projectName}-seed")
