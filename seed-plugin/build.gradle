@@ -50,9 +50,6 @@ dependencies {
 
     jenkinsPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26'
     jenkinsPlugins 'org.jenkins-ci.plugins:cloudbees-folder:4.7'
-//    jenkinsPlugins 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
-//    providedCompile 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
-    // Plugins referred to by the Seed builders
     jenkinsPlugins 'org.jenkins-ci.plugins:gradle:1.24@jar'
     jenkinsPlugins 'org.jenkins-ci.plugins:envinject:1.92.1@jar'
     jenkinsPlugins 'org.jenkins-ci.plugins:description-setter:1.10@jar'
@@ -60,7 +57,8 @@ dependencies {
     jenkinsPlugins 'org.jenkins-ci.plugins:credentials:1.22@jar'
 //    optionalJenkinsPlugins 'org.jenkins-ci.plugins:git:2.3.5@jar'
 //    optionalJenkinsPlugins 'org.jenkins-ci.plugins:subversion:2.5.7@jar'
-//    // The Job DSL
+
+    // The Job DSL
     jenkinsPlugins "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     providedCompile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}@jar"
     providedCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
@@ -70,18 +68,12 @@ dependencies {
     jenkinsTest 'org.jenkins-ci.main:jenkins-test-harness:2.7@jar'
 
     jenkinsTest 'org.jenkins-ci.plugins:junit:1.7@jar'
-//    jenkinsTest 'org.jenkins-ci.plugins:parameterized-trigger:2.26@jar'
     jenkinsTest 'org.jenkins-ci.plugins:cloudbees-folder:4.7@jar'
     jenkinsTest 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
-//    // Plugins referred to by the Seed builders
-//    jenkinsTest 'org.jenkins-ci.plugins:gradle:1.24@jar'
     jenkinsTest 'org.jenkins-ci.plugins:envinject:1.92.1'
     jenkinsTest 'org.jenkins-ci.plugins:description-setter:1.10'
     jenkinsTest 'org.jenkins-ci.plugins:credentials:1.22@jar'
     jenkinsTest 'org.jenkins-ci.plugins:git:2.3.5'
-//    jenkinsTest 'org.jenkins-ci.plugins:subversion:2.5.7@jar'
-    // The Job DSL
-//    jenkinsTest "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
 
     testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.eclipse.jgit:org.eclipse.jgit:4.3.1.201605051710-r'
