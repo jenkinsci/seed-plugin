@@ -435,6 +435,8 @@ class GenerationIntegrationTest {
             ]).checkSuccess()
             // Checks the branch seed is created
             jenkins.checkJobExists("${projectName}/${projectName}-11.7.0/${projectName}-11.7.0-seed")
+            // Checks the pipeline seed had been fired with success
+            jenkins.getBuild("${projectName}/${projectName}-11.7.0/${projectName}-11.7.0-seed", 1).checkSuccess()
             // Checks the branch pipeline is there
             jenkins.checkJobExists("${projectName}/${projectName}-11.7.0/${projectName}-11.7.0-build")
             // Checks the result of the pipeline (build must have been fired automatically by the DSL)
