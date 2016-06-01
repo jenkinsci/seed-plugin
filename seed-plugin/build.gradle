@@ -42,6 +42,13 @@ sourceSets {
     }
 }
 
+configurations {
+    testRuntime {
+        // TODO Brought by Jenkins 1.609.3 - remove when upgrading
+        exclude group: 'xerces', module: 'xerces'
+    }
+}
+
 dependencies {
     compile 'org.yaml:snakeyaml:1.15'
     providedCompile 'org.projectlombok:lombok:1.16.8'
