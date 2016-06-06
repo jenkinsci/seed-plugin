@@ -23,14 +23,14 @@ job("${SEED_PROJECT}-${SEED_BRANCH}-build") {
         stringParam('COMMIT', 'HEAD', 'Commit to build')
     }
     steps {
-        shell '''\
+        shell """\
 echo "Project: ${PROJECT}"
 echo "Branch: ${BRANCH}"
 echo "Seed project: ${SEED_PROJECT}"
 echo "Seed branch: ${SEED_BRANCH}"
 echo "SCM type: ${PROJECT_SCM_TYPE}"
 echo "SCM URL: ${PROJECT_SCM_URL}"
-'''
+"""
     }
 }
 

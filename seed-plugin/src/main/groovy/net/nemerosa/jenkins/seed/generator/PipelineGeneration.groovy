@@ -21,6 +21,11 @@ class PipelineGeneration {
     public static final String ENV_SEED_GRADLE = 'SEED_GRADLE'
     public static final String ENV_SEED_PROJECT = 'SEED_PROJECT'
     public static final String ENV_SEED_BRANCH = 'SEED_BRANCH'
+    public static final String ENV_PROJECT = 'PROJECT'
+    public static final String ENV_PROJECT_SCM_TYPE = 'PROJECT_SCM_TYPE'
+    public static final String ENV_PROJECT_SCM_URL = 'PROJECT_SCM_URL'
+    public static final String ENV_PROJECT_SCM_CREDENTIALS = 'PROJECT_SCM_CREDENTIALS'
+    public static final String ENV_BRANCH = 'BRANCH'
 
     private final String project
     private final String scmType
@@ -92,6 +97,11 @@ class PipelineGeneration {
                 new StringParameterValue(ENV_SEED_PROJECT, seedProject),
                 new StringParameterValue(ENV_SEED_BRANCH, seedBranch),
                 new StringParameterValue(ENV_SEED_GRADLE, scriptExtraction ? 'yes' : 'no'),
+                new StringParameterValue(ENV_BRANCH, branch),
+                new StringParameterValue(ENV_PROJECT, project),
+                new StringParameterValue(ENV_PROJECT_SCM_TYPE, scmType),
+                new StringParameterValue(ENV_PROJECT_SCM_URL, scmUrl),
+                new StringParameterValue(ENV_PROJECT_SCM_CREDENTIALS, scmCredentials),
         ))
 
         // Logging
