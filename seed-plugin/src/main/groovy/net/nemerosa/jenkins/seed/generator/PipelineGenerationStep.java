@@ -57,7 +57,7 @@ public class PipelineGenerationStep extends Builder {
 
         @Override
         public String getDisplayName() {
-            return "Branch pipeline generation";
+            return "Seed - Branch pipeline generation";
         }
     }
 

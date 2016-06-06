@@ -75,7 +75,7 @@ public class ProjectGenerationStep extends AbstractSeedStep {
 
         @Override
         public String getDisplayName() {
-            return "Project folder generation";
+            return "Seed - Project folder generation";
         }
     }
 }

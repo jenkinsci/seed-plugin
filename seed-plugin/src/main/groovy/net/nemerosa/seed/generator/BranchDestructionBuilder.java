@@ -36,7 +36,7 @@ public class BranchDestructionBuilder extends BranchDestructionStep {
 
         @Override
         public String getDisplayName() {
-            return "Branch folder destructor";
+            return "Seed - Branch folder destructor [deprecated]";
         }
     }
 }

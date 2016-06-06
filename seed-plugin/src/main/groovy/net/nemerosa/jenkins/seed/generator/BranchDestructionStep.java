@@ -76,7 +76,7 @@ public class BranchDestructionStep extends Builder {
 
         @Override
         public String getDisplayName() {
-            return "Branch folder deletion";
+            return "Seed - Branch folder deletion";
         }
     }
 }

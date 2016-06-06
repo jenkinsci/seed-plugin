@@ -73,7 +73,7 @@ public class ProjectSeedBuilder extends AbstractSeedBuilder {
 
         @Override
         public String getDisplayName() {
-            return "Project seed generator";
+            return "Seed - Project seed generator [deprecated]";
         }
     }
 }

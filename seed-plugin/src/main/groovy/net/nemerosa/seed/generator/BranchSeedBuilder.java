@@ -82,7 +82,7 @@ public class BranchSeedBuilder extends AbstractSeedBuilder {
 
         @Override
         public String getDisplayName() {
-            return "Branch seed generator";
+            return "Seed - Branch seed generator [deprecated]";
         }
     }
 }

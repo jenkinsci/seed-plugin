@@ -89,7 +89,7 @@ public class BranchGenerationStep extends AbstractSeedStep {
 
         @Override
         public String getDisplayName() {
-            return "Branch folder generation";
+            return "Seed - Branch folder generation";
         }
     }
 }

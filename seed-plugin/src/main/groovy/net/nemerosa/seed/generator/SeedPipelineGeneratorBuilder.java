@@ -91,7 +91,7 @@ public class SeedPipelineGeneratorBuilder extends Builder {
 
         @Override
         public String getDisplayName() {
-            return "Branch pipeline generator preparation";
+            return "Seed - Branch pipeline generator preparation [deprecated]";
         }
     }
 }
