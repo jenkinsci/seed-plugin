@@ -36,9 +36,9 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
             // and branch parameters
             // Project
             project PROJECT
-            scmType PROJECT_SCM_TYPE
-            scmUrl PROJECT_SCM_URL
-            scmCredentials PROJECT_SCM_CREDENTIALS
+            projectScmType PROJECT_SCM_TYPE
+            projectScmUrl PROJECT_SCM_URL
+            projectScmCredentials PROJECT_SCM_CREDENTIALS
             // Pipeline
             disableDslScript PIPELINE_DISABLE_DSL_SCRIPT
             // Branch

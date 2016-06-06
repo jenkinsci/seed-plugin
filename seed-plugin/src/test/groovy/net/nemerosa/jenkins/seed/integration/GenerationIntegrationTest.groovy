@@ -595,4 +595,41 @@ seed.dsl.script.jar = seed-pipeline-demo
         jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_020_CI", 1).checkSuccess()
         jenkins.getBuild("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH", 1).checkSuccess()
     }
+
+    @Test
+    void 'Branch parameter in the seed.groovy'() {
+        // Default seed
+        String seed = jenkins.defaultSeed()
+        // Project name
+        def projectName = uid('p')
+        // Prepares Git repository
+        def git = GitRepo.prepare('branch', 'feature/great')
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : projectName,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${projectName}/${projectName}-seed", [
+                BRANCH: 'feature/great'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-feature-great/${projectName}-feature-great-seed")
+        // The branch seed must have been fired
+        jenkins.getBuild("${projectName}/${projectName}-feature-great/${projectName}-feature-great-seed", 1).checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.checkJobExists("${projectName}/${projectName}-feature-great/${projectName}-feature-great-build")
+        // The branch pipeline must have been fired
+        def output = jenkins.getBuild("${projectName}/${projectName}-feature-great/${projectName}-feature-great-build", 1).checkSuccess().output
+        // Checks the branch name has been output
+        assert output.contains("Project: ${projectName}")
+        assert output.contains('Branch: feature/great')
+        assert output.contains("Seed project: ${projectName}")
+        assert output.contains('Seed branch: feature-great')
+        assert output.contains('SCM type: git')
+        assert output.contains("SCM URL: ${git}")
+    }
 }

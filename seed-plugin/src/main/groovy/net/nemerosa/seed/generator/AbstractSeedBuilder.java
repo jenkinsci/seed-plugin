@@ -14,6 +14,7 @@ import java.io.IOException;
 /**
  * Build step which can generates other jobs and folders.
  */
+@Deprecated
 public abstract class AbstractSeedBuilder extends Builder {
 
     private final String project;
