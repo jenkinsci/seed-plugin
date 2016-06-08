@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 @Extension
 public class ProjectSeedCacheDescriptor extends Descriptor<ProjectSeedCacheDescriptor> implements Describable<ProjectSeedCacheDescriptor> {
 
-    private final Logger logger = Logger.getLogger(ProjectSeedCacheDescriptor.class.getName());
+    private static final Logger logger = Logger.getLogger(ProjectSeedCacheDescriptor.class.getName());
 
     /**
      * Index of project configurations
