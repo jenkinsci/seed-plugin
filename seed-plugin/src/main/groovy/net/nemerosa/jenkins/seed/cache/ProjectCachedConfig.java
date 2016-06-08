@@ -15,7 +15,7 @@ public class ProjectCachedConfig {
     private final PipelineConfig pipelineConfig;
 
     public ProjectCachedConfig(String project) {
-        this.seed = new ProjectSeed(project, "", "");
+        this.seed = new ProjectSeed(project, "", "", "");
         this.pipelineConfig = new PipelineConfig();
     }
 
@@ -71,7 +71,4 @@ public class ProjectCachedConfig {
         );
     }
 
-    public String getCommitParameter() {
-        return pipelineConfig.getCommitParameter();
-    }
 }
