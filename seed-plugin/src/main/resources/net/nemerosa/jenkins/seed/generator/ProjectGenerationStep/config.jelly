@@ -17,6 +17,9 @@
         <f:entry title="Project SCM credentials" field="scmCredentials">
             <f:textbox value="${instance.projectConfig.scmCredentials}"/>
         </f:entry>
+        <f:entry title="Trigger identifier" field="triggerIdentifier">
+            <f:textbox value="${instance.projectConfig.triggerIdentifier}"/>
+        </f:entry>
         <f:entry title="Type of trigger authorised" field="triggerType">
             <f:textbox value="${instance.projectConfig.triggerType}"/>
         </f:entry>

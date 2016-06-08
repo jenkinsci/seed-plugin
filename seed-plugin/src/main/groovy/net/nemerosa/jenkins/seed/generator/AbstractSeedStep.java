@@ -85,6 +85,7 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         config.put("PROJECT_SCM_TYPE", Objects.toString(parameters.getScmType(), ""));
         config.put("PROJECT_SCM_URL", Objects.toString(parameters.getScmUrl(), ""));
         config.put("PROJECT_SCM_CREDENTIALS", Objects.toString(parameters.getScmCredentials(), ""));
+        config.put("PROJECT_TRIGGER_IDENTIFIER", Objects.toString(parameters.getTriggerIdentifier(), ""));
         config.put("PROJECT_TRIGGER_TYPE", Objects.toString(parameters.getTriggerType(), ""));
         config.put("PROJECT_TRIGGER_SECRET", Objects.toString(parameters.getTriggerSecret(), ""));
     }

@@ -36,6 +36,12 @@ public class ProjectPipelineConfig {
     private final String scmCredentials;
 
     /**
+     * Trigger identifier, used to identify the project in the event sent by
+     * the trigger source. If blank, the project name is taken instead.
+     */
+    private final String triggerIdentifier;
+
+    /**
      * Trigger type (non blank is enabled)
      */
     private final String triggerType;
@@ -46,12 +52,13 @@ public class ProjectPipelineConfig {
     private final String triggerSecret;
 
     @DataBoundConstructor
-    public ProjectPipelineConfig(PipelineConfig pipelineConfig, String project, String scmType, String scmUrl, String scmCredentials, String triggerType, String triggerSecret) {
+    public ProjectPipelineConfig(PipelineConfig pipelineConfig, String project, String scmType, String scmUrl, String scmCredentials, String triggerIdentifier, String triggerType, String triggerSecret) {
         this.pipelineConfig = pipelineConfig;
         this.project = project;
         this.scmType = scmType;
         this.scmUrl = scmUrl;
         this.scmCredentials = scmCredentials;
+        this.triggerIdentifier = triggerIdentifier;
         this.triggerType = triggerType;
         this.triggerSecret = triggerSecret;
     }
@@ -65,6 +72,7 @@ public class ProjectPipelineConfig {
                 expandFn.apply(scmType),
                 expandFn.apply(scmUrl),
                 expandFn.apply(scmCredentials),
+                expandFn.apply(triggerIdentifier),
                 expandFn.apply(triggerType),
                 expandFn.apply(triggerSecret)
         );
