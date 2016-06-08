@@ -21,7 +21,7 @@
             <f:textbox value="${instance.projectConfig.triggerType}"/>
         </f:entry>
         <f:entry title="Secret token for trigger authorisation" field="triggerSecret">
-            <f:password value="${instance.projectConfig.triggerSecret}"/>
+            <f:textbox value="${instance.projectConfig.triggerSecret}"/>
         </f:entry>
         <f:section title="Pipeline configuration" name="pipelineConfig">
             <f:entry title="Project branch destructor" field="destructor">
