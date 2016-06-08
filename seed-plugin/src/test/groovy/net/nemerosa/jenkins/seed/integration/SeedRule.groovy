@@ -68,6 +68,7 @@ class SeedRule extends JenkinsRule {
                 new ChoiceParameterDefinition('PROJECT_SCM_TYPE', ['git', 'svn'] as String[], ''),
                 new StringParameterDefinition('PROJECT_SCM_URL', ''),
                 new StringParameterDefinition('PROJECT_SCM_CREDENTIALS', ''),
+                new StringParameterDefinition('PROJECT_TRIGGER_IDENTIFIER', ''),
                 new ChoiceParameterDefinition('PROJECT_TRIGGER_TYPE', ['', 'github', 'bitbucket', 'http'] as String[], ''),
                 new StringParameterDefinition('PROJECT_TRIGGER_SECRET', ''),
         ))
@@ -79,6 +80,7 @@ class SeedRule extends JenkinsRule {
                         '${PROJECT_SCM_TYPE}',
                         '${PROJECT_SCM_URL}',
                         '${PROJECT_SCM_CREDENTIALS}',
+                        '${PROJECT_TRIGGER_IDENTIFIER}',
                         '${PROJECT_TRIGGER_TYPE}',
                         '${PROJECT_TRIGGER_SECRET}',
                 )

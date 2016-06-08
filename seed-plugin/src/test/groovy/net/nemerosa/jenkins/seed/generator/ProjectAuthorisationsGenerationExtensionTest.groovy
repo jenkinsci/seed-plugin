@@ -15,6 +15,7 @@ class ProjectAuthorisationsGenerationExtensionTest {
                 "",
                 "",
                 "",
+                "",
         )
         PipelineConfig config = new PipelineConfig()
         String script = new ProjectAuthorisationsGenerationExtension(config, parameters).generate()
@@ -27,6 +28,7 @@ class ProjectAuthorisationsGenerationExtensionTest {
                 "test",
                 "git",
                 "https://github.com/nemerosa/ontrack.git",
+                "",
                 "",
                 "",
                 "",

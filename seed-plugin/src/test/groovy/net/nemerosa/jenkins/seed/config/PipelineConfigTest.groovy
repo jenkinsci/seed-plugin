@@ -57,6 +57,7 @@ class PipelineConfigTest {
                 "https://github.com/nemerosa/ontrack.git",
                 "",
                 "",
+                "",
                 ""
         )
         PipelineConfig config = new PipelineConfig()
