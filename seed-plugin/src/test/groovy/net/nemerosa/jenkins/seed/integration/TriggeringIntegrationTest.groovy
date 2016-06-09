@@ -28,11 +28,12 @@ class TriggeringIntegrationTest {
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT               : project,
-                PROJECT_SCM_TYPE      : 'git',
-                PROJECT_SCM_URL       : git,
-                PROJECT_TRIGGER_TYPE  : 'http',
-                PROJECT_TRIGGER_SECRET: '',
+                PROJECT                   : project,
+                PROJECT_SCM_TYPE          : 'git',
+                PROJECT_SCM_URL           : git,
+                PROJECT_TRIGGER_IDENTIFIER: '',
+                PROJECT_TRIGGER_TYPE      : 'http',
+                PROJECT_TRIGGER_SECRET    : '',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.checkJobExists("${project}/${project}-seed")
@@ -56,6 +57,69 @@ class TriggeringIntegrationTest {
         jenkins.getBuild("${project}/${project}-master/${project}-master-publish", 1).checkSuccess()
     }
 
+    @Test
+    void 'Default seed tree with trigger identifier'() {
+        // Project name
+        def project = uid('p')
+        // Git
+        def git = GitRepo.prepare('std')
+        // Configuration
+        def seed = jenkins.defaultSeed()
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT                   : project,
+                PROJECT_SCM_TYPE          : 'git',
+                PROJECT_SCM_URL           : git,
+                PROJECT_TRIGGER_IDENTIFIER: "nemerosa/${project}",
+                PROJECT_TRIGGER_TYPE      : 'http',
+                PROJECT_TRIGGER_SECRET    : '',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch
+        jenkins.post("seed-http-api/create?project=nemerosa/${project}&branch=master")
+        // Checks the result of the project seed
+        jenkins.getBuild("${project}/${project}-seed", 1).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-seed")
+        // Checks the result of the branch seed
+        jenkins.getBuild("${project}/${project}-master/${project}-master-seed", 1).checkSuccess()
+        // Checks the branch pipeline is there
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-build")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-ci")
+        jenkins.checkJobExists("${project}/${project}-master/${project}-master-publish")
+        // Fires the branch pipeline start
+        jenkins.post("seed-http-api/commit?project=nemerosa/${project}&branch=master")
+        // Checks the result of the pipeline (ci & publish must have been fired)
+        jenkins.getBuild("${project}/${project}-master/${project}-master-build", 1).checkSuccess()
+        jenkins.getBuild("${project}/${project}-master/${project}-master-ci", 1).checkSuccess()
+        jenkins.getBuild("${project}/${project}-master/${project}-master-publish", 1).checkSuccess()
+    }
+
+    @Test(expected = JenkinsForbiddenException)
+    void 'Default seed tree with trigger identifier, 403 on project name only'() {
+        // Project name
+        def project = uid('p')
+        // Git
+        def git = GitRepo.prepare('std')
+        // Configuration
+        def seed = jenkins.defaultSeed()
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT                   : project,
+                PROJECT_SCM_TYPE          : 'git',
+                PROJECT_SCM_URL           : git,
+                PROJECT_TRIGGER_IDENTIFIER: "nemerosa/${project}",
+                PROJECT_TRIGGER_TYPE      : 'http',
+                PROJECT_TRIGGER_SECRET    : '',
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${project}/${project}-seed")
+        // Fires the project seed for the `master` branch, using the project name only
+        // and not the project trigger identifier, results in 403
+        jenkins.post("seed-http-api/create?project=${project}&branch=master")
+    }
+
     @Test(expected = JenkinsForbiddenException)
     void 'HTTP API not being enabled'() {
         // Project name
@@ -66,11 +130,12 @@ class TriggeringIntegrationTest {
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT               : project,
-                PROJECT_SCM_TYPE      : 'git',
-                PROJECT_SCM_URL       : git,
-                PROJECT_TRIGGER_TYPE  : '',
-                PROJECT_TRIGGER_SECRET: '',
+                PROJECT                   : project,
+                PROJECT_SCM_TYPE          : 'git',
+                PROJECT_SCM_URL           : git,
+                PROJECT_TRIGGER_IDENTIFIER: '',
+                PROJECT_TRIGGER_TYPE      : '',
+                PROJECT_TRIGGER_SECRET    : '',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.checkJobExists("${project}/${project}-seed")
@@ -88,11 +153,12 @@ class TriggeringIntegrationTest {
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT               : project,
-                PROJECT_SCM_TYPE      : 'git',
-                PROJECT_SCM_URL       : git,
-                PROJECT_TRIGGER_TYPE  : 'http',
-                PROJECT_TRIGGER_SECRET: '',
+                PROJECT                   : project,
+                PROJECT_SCM_TYPE          : 'git',
+                PROJECT_SCM_URL           : git,
+                PROJECT_TRIGGER_IDENTIFIER: '',
+                PROJECT_TRIGGER_TYPE      : 'http',
+                PROJECT_TRIGGER_SECRET    : '',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.checkJobExists("${project}/${project}-seed")
@@ -112,11 +178,12 @@ class TriggeringIntegrationTest {
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT               : project,
-                PROJECT_SCM_TYPE      : 'git',
-                PROJECT_SCM_URL       : git,
-                PROJECT_TRIGGER_TYPE  : 'http',
-                PROJECT_TRIGGER_SECRET: 'ABCDEF',
+                PROJECT                   : project,
+                PROJECT_SCM_TYPE          : 'git',
+                PROJECT_SCM_URL           : git,
+                PROJECT_TRIGGER_IDENTIFIER: '',
+                PROJECT_TRIGGER_TYPE      : 'http',
+                PROJECT_TRIGGER_SECRET    : 'ABCDEF',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.checkJobExists("${project}/${project}-seed")
@@ -134,11 +201,12 @@ class TriggeringIntegrationTest {
         def seed = jenkins.defaultSeed()
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT               : project,
-                PROJECT_SCM_TYPE      : 'git',
-                PROJECT_SCM_URL       : git,
-                PROJECT_TRIGGER_TYPE  : 'http',
-                PROJECT_TRIGGER_SECRET: 'ABCDEF',
+                PROJECT                   : project,
+                PROJECT_SCM_TYPE          : 'git',
+                PROJECT_SCM_URL           : git,
+                PROJECT_TRIGGER_IDENTIFIER: '',
+                PROJECT_TRIGGER_TYPE      : 'http',
+                PROJECT_TRIGGER_SECRET    : 'ABCDEF',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.checkJobExists("${project}/${project}-seed")
@@ -163,11 +231,12 @@ class TriggeringIntegrationTest {
         )
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT               : project,
-                PROJECT_SCM_TYPE      : 'git',
-                PROJECT_SCM_URL       : git,
-                PROJECT_TRIGGER_TYPE  : 'http',
-                PROJECT_TRIGGER_SECRET: '',
+                PROJECT                   : project,
+                PROJECT_SCM_TYPE          : 'git',
+                PROJECT_SCM_URL           : git,
+                PROJECT_TRIGGER_IDENTIFIER: '',
+                PROJECT_TRIGGER_TYPE      : 'http',
+                PROJECT_TRIGGER_SECRET    : '',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.checkJobExists("${project}/${project}-seed")
@@ -194,11 +263,12 @@ class TriggeringIntegrationTest {
         )
         // Firing the seed job
         jenkins.fireJob(seed, [
-                PROJECT               : project,
-                PROJECT_SCM_TYPE      : 'git',
-                PROJECT_SCM_URL       : git,
-                PROJECT_TRIGGER_TYPE  : 'http',
-                PROJECT_TRIGGER_SECRET: '',
+                PROJECT                   : project,
+                PROJECT_SCM_TYPE          : 'git',
+                PROJECT_SCM_URL           : git,
+                PROJECT_TRIGGER_IDENTIFIER: '',
+                PROJECT_TRIGGER_TYPE      : 'http',
+                PROJECT_TRIGGER_SECRET    : '',
         ]).checkSuccess()
         // Checks the project seed is created
         jenkins.checkJobExists("${project}/${project}-seed")

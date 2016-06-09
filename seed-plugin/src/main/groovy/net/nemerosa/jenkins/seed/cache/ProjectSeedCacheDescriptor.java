@@ -13,16 +13,12 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Logger;
 
 /**
  * Descriptor used to hold the index of all projects and their associated configuration.
  */
 @Extension
 public class ProjectSeedCacheDescriptor extends Descriptor<ProjectSeedCacheDescriptor> implements Describable<ProjectSeedCacheDescriptor> {
-
-    private static final Logger logger = Logger.getLogger(ProjectSeedCacheDescriptor.class.getName());
 
     /**
      * Index of project configurations
@@ -46,7 +42,7 @@ public class ProjectSeedCacheDescriptor extends Descriptor<ProjectSeedCacheDescr
 
     public void saveProjectConfiguration(ProjectParameters parameters, PipelineConfig config) {
         projectSeeds.put(
-                parameters.getProject(),
+                getProjectTriggerIdentifierOrName(parameters),
                 new ProjectCachedConfig(
                         new ProjectSeed(parameters),
                         config
@@ -73,30 +69,21 @@ public class ProjectSeedCacheDescriptor extends Descriptor<ProjectSeedCacheDescr
      * @return Cached configuration or <code>null</code>.
      */
     public ProjectCachedConfig getProjectSavedConfiguration(String projectName) {
-        AtomicReference<ProjectCachedConfig> cache = new AtomicReference<>();
-        for (ProjectCachedConfig config : projectSeeds.values()) {
-            if (matchConfig(config, projectName)) {
-                if (cache.get() != null) {
-                    logger.warning(
-                            String.format(
-                                    "[seed][cache] Project configuration for %s already cached with name=%s, id=%s. Consider filling the trigger identifier value to solve conflicts.",
-                                    projectName,
-                                    cache.get().getSeed().getProject(),
-                                    cache.get().getSeed().getTriggerIdentifier()
-                            )
-                    );
-                } else {
-                    cache.set(config);
-                }
-            }
-        }
-        return cache.get();
+        return projectSeeds.get(projectName);
     }
 
-    private boolean matchConfig(ProjectCachedConfig config, String projectName) {
-        return StringUtils.equals(config.getSeed().getTriggerIdentifier(), projectName) ||
-                StringUtils.equals(config.getSeed().getProject(), projectName);
+    /**
+     * Gets the trigger identifier if present, and if not, the project name
+     */
+    public String getProjectTriggerIdentifierOrName(ProjectParameters parameters) {
+        String id = parameters.getTriggerIdentifier();
+        if (StringUtils.isNotBlank(id)) {
+            return id;
+        } else {
+            return parameters.getProject();
+        }
     }
+
 
     @Extension
     public static class ProjectSeedCacheDescriptorItemListener extends ItemListener {
