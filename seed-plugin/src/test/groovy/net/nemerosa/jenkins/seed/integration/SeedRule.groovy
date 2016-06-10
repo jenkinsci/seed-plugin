@@ -100,12 +100,22 @@ class SeedRule extends JenkinsRule {
     Build fireJob(String path, Map<String, String> parameters = [:], int timeoutSeconds = 120) {
         // Gets the job to fire
         AbstractProject job = findJobByPath(path)
+        // Makes sure to set empty parameters for the seeding
+        Map<String, String> params = [:]
+        params['PROJECT'] = ''
+        params['PROJECT_SCM_TYPE'] = ''
+        params['PROJECT_SCM_URL'] = ''
+        params['PROJECT_SCM_CREDENTIALS'] = ''
+        params['PROJECT_TRIGGER_IDENTIFIER'] = ''
+        params['PROJECT_TRIGGER_TYPE'] = ''
+        params['PROJECT_TRIGGER_SECRET'] = ''
+        params.putAll parameters
         // Fires the job with parameters
         QueueTaskFuture<AbstractBuild> future = job.scheduleBuild2(
                 0,
                 new Cause.UserIdCause(),
                 new ParametersAction(
-                        parameters.collect { name, value ->
+                        params.collect { name, value ->
                             new StringParameterValue(name, value)
                         }
                 )
