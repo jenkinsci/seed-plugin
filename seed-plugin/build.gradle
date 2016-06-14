@@ -5,11 +5,11 @@ plugins {
 description = "Seed Jenkins plug-in"
 
 ext {
-    jobDslVersion = '1.34'
+    jobDslVersion = '1.46'
 }
 
 jenkinsPlugin {
-    coreVersion = '1.609.3'                                            // Version of Jenkins core this plugin depends on.
+    coreVersion = '1.625.3'                                            // Version of Jenkins core this plugin depends on.
     displayName = 'Seed Jenkins plug-in'                             // Human-readable name of plugin.
     url = 'http://wiki.jenkins-ci.org/display/JENKINS/Seed+Plugin'   // URL for plugin on Jenkins wiki or elsewhere.
     gitHubUrl = 'https://github.com/jenkinsci/seed-plugin'           // Plugin URL on GitHub. Optional.
@@ -61,8 +61,10 @@ dependencies {
     // Testing
 
     jenkinsTest 'org.jenkins-ci.main:jenkins-test-harness:2.7@jar'
+    jenkinsTest 'org.jenkins-ci:symbol-annotation:1.1'
 
     jenkinsTest 'org.jenkins-ci.plugins:junit:1.7@jar'
+    jenkinsTest 'org.jenkins-ci.plugins:structs:1.1@jar'
     jenkinsTest 'org.jenkins-ci.plugins:cloudbees-folder:4.7@jar'
     jenkinsTest 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
     jenkinsTest 'org.jenkins-ci.plugins:envinject:1.92.1'

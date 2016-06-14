@@ -21,11 +21,6 @@ class PipelineGeneration {
     public static final String ENV_SEED_GRADLE = 'SEED_GRADLE'
     public static final String ENV_SEED_PROJECT = 'SEED_PROJECT'
     public static final String ENV_SEED_BRANCH = 'SEED_BRANCH'
-    public static final String ENV_PROJECT = 'PROJECT'
-    public static final String ENV_PROJECT_SCM_TYPE = 'PROJECT_SCM_TYPE'
-    public static final String ENV_PROJECT_SCM_URL = 'PROJECT_SCM_URL'
-    public static final String ENV_PROJECT_SCM_CREDENTIALS = 'PROJECT_SCM_CREDENTIALS'
-    public static final String ENV_BRANCH = 'BRANCH'
 
     private final String project
     private final String scmType
@@ -94,14 +89,14 @@ class PipelineGeneration {
 
         // Environment variables to inject
         Map<String, String> environment = [
-                ENV_SEED_PROJECT           : seedProject,
-                ENV_SEED_BRANCH            : seedBranch,
-                ENV_SEED_GRADLE            : scriptExtraction ? 'yes' : 'no',
-                ENV_BRANCH                 : branch,
-                ENV_PROJECT                : project,
-                ENV_PROJECT_SCM_TYPE       : scmType,
-                ENV_PROJECT_SCM_URL        : scmUrl,
-                ENV_PROJECT_SCM_CREDENTIALS: scmCredentials,
+                SEED_PROJECT           : seedProject,
+                SEED_BRANCH            : seedBranch,
+                SEED_GRADLE            : scriptExtraction ? 'yes' : 'no',
+                BRANCH                 : branch,
+                PROJECT                : project,
+                PROJECT_SCM_TYPE       : scmType,
+                PROJECT_SCM_URL        : scmUrl,
+                PROJECT_SCM_CREDENTIALS: scmCredentials,
         ]
 
         // Logging

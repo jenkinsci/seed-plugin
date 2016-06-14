@@ -30,7 +30,9 @@ echo "Commit: ${COMMIT}"
     }
     publishers {
         downstreamParameterized {
-            trigger("${SEED_PROJECT}_${SEED_BRANCH}_020_CI", 'SUCCESS', true) {
+            trigger("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
+                condition 'SUCCESS'
+                triggerWithNoParameters()
             }
         }
     }
@@ -39,7 +41,9 @@ echo "Commit: ${COMMIT}"
 job("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
     publishers {
         downstreamParameterized {
-            trigger("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH", 'SUCCESS', true) {
+            trigger("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH") {
+                condition 'SUCCESS'
+                triggerWithNoParameters()
             }
         }
     }
