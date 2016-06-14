@@ -4,6 +4,14 @@ Seed Jenkins plug-in
 The Seed project aims to help automating the generation and management of pipelines
 for branches of a project in Jenkins, by splitting the definition of pipelines using the Job DSL and their use and parameterization by actual projects.
 
+Quick links:
+
+* [Quick start](https://github.com/jenkinsci/seed-plugin/wiki/Quick-start)
+* [Configuration](https://github.com/jenkinsci/seed-plugin/wiki/Configuration)
+* [GitHub configuration](https://github.com/jenkinsci/seed-plugin/wiki/GitHub)
+* [Migration from version 0.x](https://github.com/jenkinsci/seed-plugin/wiki/Migration-from-0.x)
+
+
 ![Overview](TeamWork.png)
 
 The following presentations are available about the story of the Seed plug-in and its use in a large scale set-up:
@@ -34,10 +42,3 @@ The plugin implementation is illustrated by the diagram below:
 ## Documentation
 
 Documentation is available in the [Wiki](https://github.com/jenkinsci/seed-plugin/wiki).
-
-## Quick links
-
-* [Quick start](https://github.com/jenkinsci/seed-plugin/wiki/Quick-start)
-* [Configuration](https://github.com/jenkinsci/seed-plugin/wiki/Configuration)
-* [GitHub configuration](https://github.com/jenkinsci/seed-plugin/wiki/GitHub)
-* [Migration from version 0.x](https://github.com/jenkinsci/seed-plugin/wiki/Migration-from-0.x)
