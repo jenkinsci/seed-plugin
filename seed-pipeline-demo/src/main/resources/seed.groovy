@@ -26,7 +26,9 @@ freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_010_BUILD") {
     generalConfiguration delegate, "Build and packaging"
     publishers {
         downstreamParameterized {
-            trigger("${SEED_PROJECT}_${SEED_BRANCH}_020_CI", 'SUCCESS', true) {
+            trigger("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
+                condition 'SUCCESS'
+                triggerWithNoParameters()
             }
         }
     }
@@ -36,7 +38,9 @@ freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
     generalConfiguration delegate, "Continous integration"
     publishers {
         downstreamParameterized {
-            trigger("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH", 'SUCCESS', true) {
+            trigger("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH") {
+                condition 'SUCCESS'
+                triggerWithNoParameters()
             }
         }
     }
