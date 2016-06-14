@@ -92,16 +92,28 @@ class PipelineGeneration {
             throw new PipelineGeneratorScriptNotAllowedException()
         }
 
+        // Environment variables to inject
+        Map<String, String> environment = [
+                ENV_SEED_PROJECT           : seedProject,
+                ENV_SEED_BRANCH            : seedBranch,
+                ENV_SEED_GRADLE            : scriptExtraction ? 'yes' : 'no',
+                ENV_BRANCH                 : branch,
+                ENV_PROJECT                : project,
+                ENV_PROJECT_SCM_TYPE       : scmType,
+                ENV_PROJECT_SCM_URL        : scmUrl,
+                ENV_PROJECT_SCM_CREDENTIALS: scmCredentials,
+        ]
+
+        // Logging
+        environment.each { key, value ->
+            listener.logger.println("[seed] Env: ${key} --> ${value}")
+        }
+
         // Injects the environment variables
         build.addAction(new ParametersAction(
-                new StringParameterValue(ENV_SEED_PROJECT, seedProject),
-                new StringParameterValue(ENV_SEED_BRANCH, seedBranch),
-                new StringParameterValue(ENV_SEED_GRADLE, scriptExtraction ? 'yes' : 'no'),
-                new StringParameterValue(ENV_BRANCH, branch),
-                new StringParameterValue(ENV_PROJECT, project),
-                new StringParameterValue(ENV_PROJECT_SCM_TYPE, scmType),
-                new StringParameterValue(ENV_PROJECT_SCM_URL, scmUrl),
-                new StringParameterValue(ENV_PROJECT_SCM_CREDENTIALS, scmCredentials),
+                environment.collect { key, value ->
+                    new StringParameterValue(key, value)
+                }
         ))
 
         // Logging
@@ -171,15 +183,15 @@ configurations {
     dslLibrary
 }
 ${
-    if (dependencies) {
-        """\
+            if (dependencies) {
+                """\
 dependencies {
     ${dependencies.collect { "dslLibrary '${it}'" }.join('\n    ')}
 }"""
-    } else {
-        ''
-    }
-}
+            } else {
+                ''
+            }
+        }
 task clean {
     delete 'lib'
 }
