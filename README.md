@@ -11,7 +11,6 @@ Quick links:
 * [GitHub configuration](https://github.com/jenkinsci/seed-plugin/wiki/GitHub)
 * [Migration from version 0.x](https://github.com/jenkinsci/seed-plugin/wiki/Migration-from-0.x)
 
-
 ![Overview](TeamWork.png)
 
 The following presentations are available about the story of the Seed plug-in and its use in a large scale set-up:
