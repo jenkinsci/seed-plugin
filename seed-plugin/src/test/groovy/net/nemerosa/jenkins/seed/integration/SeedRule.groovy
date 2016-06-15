@@ -259,9 +259,9 @@ class SeedRule extends JenkinsRule {
         @Override
         Build checkSuccess() {
             def build = waitForBuild()
+            println "Output for ${path}#${build.number}:"
+            println build.logReader.text
             if (!build.result.isBetterOrEqualTo(Result.SUCCESS)) {
-                println "Output for ${path}#${build.number}:"
-                println build.logReader.text
                 fail("${path} resulted in ${build.result}")
             }
             return this

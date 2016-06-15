@@ -24,6 +24,9 @@ import static net.nemerosa.seed.demo.GeneralHelper.generalConfiguration
 
 freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_010_BUILD") {
     generalConfiguration delegate, "Build and packaging"
+    steps {
+        shell 'echo BUILD'
+    }
     publishers {
         downstreamParameterized {
             trigger("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
@@ -36,6 +39,9 @@ freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_010_BUILD") {
 
 freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
     generalConfiguration delegate, "Continous integration"
+    steps {
+        shell 'echo CI'
+    }
     publishers {
         downstreamParameterized {
             trigger("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH") {
@@ -48,4 +54,7 @@ freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_020_CI") {
 
 freeStyleJob("${SEED_PROJECT}_${SEED_BRANCH}_030_PUBLISH") {
     generalConfiguration delegate, "Publication"
+    steps {
+        shell 'echo PUBLISH'
+    }
 }
