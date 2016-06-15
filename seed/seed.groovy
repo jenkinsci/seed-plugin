@@ -29,6 +29,7 @@ job("${SEED_PROJECT}-${SEED_BRANCH}-build") {
             remote {
                 url PROJECT_SCM_URL
                 branch "origin/${BRANCH}"
+                credentials 'jenkins'
             }
             extensions {
                 wipeOutWorkspace()
@@ -68,6 +69,7 @@ if (BRANCH.startsWith('release/')) {
                 remote {
                     url PROJECT_SCM_URL
                     branch "origin/${BRANCH}"
+                    credentials 'jenkins'
                 }
                 extensions {
                     wipeOutWorkspace()
@@ -80,10 +82,15 @@ if (BRANCH.startsWith('release/')) {
             environmentVariables {
                 propertiesFile 'build/version.properties'
             }
-            shell '''\
-git tag ${VERSION_DISPLAY}
-git push origin ${VERSION_DISPLAY}
-'''
+        }
+        publishers {
+            git {
+                pushOnlyIfSuccess()
+                tag('origin', '${VERSION_DISPLAY}') {
+                    message 'Tagging for ${VERSION_DISPLAY}'
+                    create()
+                }
+            }
         }
     }
 
