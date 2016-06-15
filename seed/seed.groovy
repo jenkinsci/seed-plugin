@@ -18,7 +18,7 @@
  * branch itself.
  */
 
-freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
+job("${SEED_PROJECT}-${SEED_BRANCH}-build") {
     logRotator(-1, 40)
     jdk 'JDK7'
     parameters {
@@ -30,8 +30,10 @@ freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
                 url PROJECT_SCM_URL
                 branch "origin/${BRANCH}"
             }
-            wipeOutWorkspace()
-            localBranch "${BRANCH}"
+            extensions {
+                wipeOutWorkspace()
+                localBranch "${BRANCH}"
+            }
         }
     }
     steps {
@@ -47,13 +49,15 @@ freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
     }
 }
 
+queue "${SEED_PROJECT}-${SEED_BRANCH}-build"
+
 /**
  * Release job
  */
 
 if (BRANCH.startsWith('release/')) {
 
-    freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-publish") {
+    job("${SEED_PROJECT}-${SEED_BRANCH}-publish") {
         logRotator(-1, 40)
         jdk 'JDK7'
         parameters {
@@ -65,8 +69,10 @@ if (BRANCH.startsWith('release/')) {
                     url PROJECT_SCM_URL
                     branch "origin/${BRANCH}"
                 }
-                wipeOutWorkspace()
-                localBranch "${BRANCH}"
+                extensions {
+                    wipeOutWorkspace()
+                    localBranch "${BRANCH}"
+                }
             }
         }
         steps {
