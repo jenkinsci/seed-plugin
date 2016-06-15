@@ -27,7 +27,7 @@ freeStyleJob("${SEED_PROJECT}-${SEED_BRANCH}-build") {
     scm {
         git {
             remote {
-                url "git@github.com:jenkinsci/seed-plugin.git"
+                url PROJECT_SCM_URL
                 branch "origin/${BRANCH}"
             }
             wipeOutWorkspace()
@@ -62,7 +62,7 @@ if (BRANCH.startsWith('release/')) {
         scm {
             git {
                 remote {
-                    url "git@github.com:jenkinsci/seed-plugin.git"
+                    url PROJECT_SCM_URL
                     branch "origin/${BRANCH}"
                 }
                 wipeOutWorkspace()
