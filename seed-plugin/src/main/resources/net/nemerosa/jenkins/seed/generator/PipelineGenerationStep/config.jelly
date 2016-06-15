@@ -28,7 +28,7 @@
     <f:entry title="Seed branch" field="seedBranch">
         <f:textbox value="${instance.seedBranch}"/>
     </f:entry>
-    <f:entry title="Seed branch" field="disableDslScript">
+    <f:entry title="Disable DSL scripts" field="disableDslScript">
         <f:checkbox checked="${instance.disableDslScript}"/>
     </f:entry>
 </j:jelly>
