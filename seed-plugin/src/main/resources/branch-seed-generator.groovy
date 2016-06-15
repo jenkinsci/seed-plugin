@@ -26,13 +26,13 @@
  * Branch folder
  */
 
-folder(branchSeedFolder) {}
+folder("/${branchSeedFolder}") {}
 
 /**
  * Branch seed
  */
 
-freeStyleJob(branchSeedPath) {
+freeStyleJob("/${branchSeedPath}") {
     description "Branch seed for ${BRANCH} in ${PROJECT} - generates the pipeline for the ${BRANCH} branch."
     wrappers {
         environmentVariables {
@@ -54,4 +54,4 @@ freeStyleJob(branchSeedPath) {
  * Firing the branch seed
  */
 
-queue(branchSeedPath)
+queue("/${branchSeedPath}")

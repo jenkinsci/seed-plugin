@@ -65,7 +65,7 @@ dependencies {
 
     jenkinsTest 'org.jenkins-ci.plugins:junit:1.7@jar'
     jenkinsTest 'org.jenkins-ci.plugins:structs:1.1@jar'
-    jenkinsTest 'org.jenkins-ci.plugins:cloudbees-folder:4.7@jar'
+    jenkinsTest 'org.jenkins-ci.plugins:cloudbees-folder:5.11@jar'
     jenkinsTest 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
     jenkinsTest 'org.jenkins-ci.plugins:envinject:1.92.1'
     jenkinsTest 'org.jenkins-ci.plugins:description-setter:1.10@jar'
