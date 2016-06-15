@@ -194,10 +194,20 @@ task copyLibraries(type: Copy, dependsOn: clean) {
     into 'lib'
     from configurations.dslLibrary
 }
+task logLibraries(dependsOn: copyLibraries) {
+    doLast {
+        println "[seed][library] DSL libraries:"
+        configurations.dslLibrary.resolvedConfiguration.resolvedArtifacts.each { a ->
+            println "[seed][library] \${a.name} --> \${a.file.absolutePath}"
+        }
+    }
+}
 """
         if (dslBootstrapDependency) {
             gradle += """\
-task extractScript(dependsOn: copyLibraries) {
+task extractScript {
+    dependsOn copyLibraries
+    dependsOn logLibraries
     doFirst {
         ant.unzip(dest: '.') {
             fileset(dir: 'lib') {

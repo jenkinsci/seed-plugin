@@ -566,6 +566,9 @@ seed.dsl.script.jar = seed-pipeline-demo
                                 .withBranchStartName('${PROJECT}_*_010_BUILD')
                                 .withBranchName('${BRANCH}')
                         )
+                        .withEventStrategy(
+                            new EventStrategyConfig().withAuto(false) // Launching the seed manually for specific timeout
+                )
         )
         // @formatter:on
         // Firing the seed job
