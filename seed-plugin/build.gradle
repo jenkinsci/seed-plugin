@@ -53,6 +53,8 @@ dependencies {
     compile 'org.yaml:snakeyaml:1.15'
     providedCompile 'org.projectlombok:lombok:1.16.8'
 
+    jenkinsPlugins "org.jenkins-ci.plugins:matrix-auth:1.4@jar"
+    jenkinsPlugins 'org.jenkins-ci.plugins:cloudbees-folder:5.11@jar'
     // The Job DSL
     jenkinsPlugins "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     providedCompile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}@jar"
@@ -65,7 +67,6 @@ dependencies {
 
     jenkinsTest 'org.jenkins-ci.plugins:junit:1.7@jar'
     jenkinsTest 'org.jenkins-ci.plugins:structs:1.1@jar'
-    jenkinsTest 'org.jenkins-ci.plugins:cloudbees-folder:5.11@jar'
     jenkinsTest 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
     jenkinsTest 'org.jenkins-ci.plugins:envinject:1.92.1'
     jenkinsTest 'org.jenkins-ci.plugins:description-setter:1.10@jar'
