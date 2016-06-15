@@ -588,6 +588,19 @@ seed.dsl.script.jar = seed-pipeline-demo
         jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD")
         jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_020_CI")
         jenkins.checkJobExists("${projectName}/${projectName}_MASTER/${projectName}_MASTER_030_PUBLISH")
+        // Check the downstream links
+        jenkins.jobConfig("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD").with { xml ->
+            def config = xml.publishers['hudson.plugins.parameterizedtrigger.BuildTrigger'].configs['hudson.plugins.parameterizedtrigger.BuildTriggerConfig']
+            assert config.projects.text() == "${projectName}_MASTER_020_CI"
+            assert config.condition.text() == 'SUCCESS'
+            assert config.triggerWithNoParameters.text() == 'true'
+        }
+        jenkins.jobConfig("${projectName}/${projectName}_MASTER/${projectName}_MASTER_020_CI").with { xml ->
+            def config = xml.publishers['hudson.plugins.parameterizedtrigger.BuildTrigger'].configs['hudson.plugins.parameterizedtrigger.BuildTriggerConfig']
+            assert config.projects.text() == "${projectName}_MASTER_030_PUBLISH"
+            assert config.condition.text() == 'SUCCESS'
+            assert config.triggerWithNoParameters.text() == 'true'
+        }
         // Fires the build job (not fired automatically by the custom library)
         jenkins.fireJob("${projectName}/${projectName}_MASTER/${projectName}_MASTER_010_BUILD")
         // Checks the result of the pipeline (build, ci & publish must have been fired)
