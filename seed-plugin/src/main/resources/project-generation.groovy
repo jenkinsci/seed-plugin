@@ -23,7 +23,6 @@ job("${PROJECT_FOLDER_PATH}/${PROJECT_SEED_NAME}") {
             projectConfig {
                 pipelineConfig {
                     destructor PIPELINE_DESTRUCTOR
-                    commitParameter PIPELINE_COMMIT_PARAMETER
                     authorisations PIPELINE_AUTHORISATIONS
                     branchSCMParameter PIPELINE_BRANCH_SCM_PARAMETER
                     branchParameters PIPELINE_BRANCH_PARAMETERS

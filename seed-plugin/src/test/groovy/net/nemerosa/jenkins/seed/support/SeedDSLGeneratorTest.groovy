@@ -8,7 +8,6 @@ class SeedDSLGeneratorTest {
     @Test
     void 'Default seed DSL generation'() {
         def dsl = SeedDSLGenerator.seedDsl('test', new PipelineConfig())
-        assert dsl.contains("commitParameter ''")
         assert dsl.contains("projectFolderPath ''")
         assert dsl.contains("projectSeedName ''")
         assert dsl.contains("projectDestructorName ''")

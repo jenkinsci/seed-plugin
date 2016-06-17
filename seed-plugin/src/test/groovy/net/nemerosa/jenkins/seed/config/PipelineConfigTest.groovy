@@ -10,7 +10,6 @@ class PipelineConfigTest {
         assert cfg.authorisations == ''
         assert cfg.branchParameters == ''
         assert !cfg.branchSCMParameter
-        assert cfg.commitParameter == ''
         assert !cfg.destructor
 
         def strategy = cfg.namingStrategy

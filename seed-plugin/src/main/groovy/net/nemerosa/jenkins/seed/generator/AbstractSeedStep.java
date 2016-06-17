@@ -56,7 +56,6 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
 
     protected void pipelineConfiguration(ProjectPipelineConfig projectConfig, @SuppressWarnings("UnusedParameters") ProjectParameters parameters, Map<String, String> config) {
         config.put("PIPELINE_DESTRUCTOR", String.valueOf(projectConfig.getPipelineConfig().isDestructor()));
-        config.put("PIPELINE_COMMIT_PARAMETER", Objects.toString(projectConfig.getPipelineConfig().getCommitParameter(), ""));
         config.put("PIPELINE_AUTHORISATIONS", Objects.toString(projectConfig.getPipelineConfig().getAuthorisations(), ""));
         config.put("PIPELINE_BRANCH_SCM_PARAMETER", String.valueOf(projectConfig.getPipelineConfig().isBranchSCMParameter()));
         config.put("PIPELINE_BRANCH_PARAMETERS", Objects.toString(projectConfig.getPipelineConfig().getBranchParameters(), ""));

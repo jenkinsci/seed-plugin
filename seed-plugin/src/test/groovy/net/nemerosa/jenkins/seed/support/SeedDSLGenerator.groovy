@@ -24,7 +24,6 @@ job('${jobName}') {
             projectConfig {
                 pipelineConfig {
                     destructor ${config.destructor}
-                    commitParameter '${config.commitParameter ?: ''}'
                     authorisations '''${config.authorisations ?: ''}'''
                     branchSCMParameter ${config.branchSCMParameter ?: ''}
                     branchParameters '''${config.branchParameters ?: ''}'''

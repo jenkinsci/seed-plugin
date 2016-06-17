@@ -33,9 +33,6 @@
             <f:entry title="Project branch destructor" field="destructor">
                 <f:checkbox checked="${instance.projectConfig.pipelineConfig.destructor}" default="false"/>
             </f:entry>
-            <f:entry title="Commit/revision parameter" field="commitParameter">
-                <f:textbox value="${instance.projectConfig.pipelineConfig.commitParameter}"/>
-            </f:entry>
             <f:entry title="Extra Branch SCM parameter" field="branchSCMParameter">
                 <f:checkbox checked="${instance.projectConfig.pipelineConfig.branchSCMParameter}" default="false"/>
             </f:entry>

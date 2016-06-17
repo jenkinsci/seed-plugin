@@ -20,12 +20,6 @@ public class PipelineConfig {
     private final boolean destructor;
 
     /**
-     * Parameter to pass to the branch start
-     */
-    @Wither
-    private final String commitParameter;
-
-    /**
      * Line separated list of authorisations for a project
      */
     @Wither
@@ -77,7 +71,6 @@ public class PipelineConfig {
     public PipelineConfig() {
         this(
                 false, // No destructor by default
-                "",
                 "", // No authorisations
                 false, // No branch SCM parameter
                 "", // No extra parameter
@@ -95,9 +88,8 @@ public class PipelineConfig {
 
 
     @DataBoundConstructor
-    public PipelineConfig(boolean destructor, String commitParameter, String authorisations, boolean branchSCMParameter, String branchParameters, String generationExtension, String pipelineGenerationExtension, boolean disableDslScript, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
+    public PipelineConfig(boolean destructor, String authorisations, boolean branchSCMParameter, String branchParameters, String generationExtension, String pipelineGenerationExtension, boolean disableDslScript, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
         this.destructor = destructor;
-        this.commitParameter = commitParameter;
         this.authorisations = authorisations;
         this.branchSCMParameter = branchSCMParameter;
         this.branchParameters = branchParameters;
