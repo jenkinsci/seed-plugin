@@ -1,4 +1,4 @@
-package net.nemerosa.seed.config;
+package net.nemerosa.jenkins.seed;
 
 public class CannotFindJobException extends SeedException {
     public CannotFindJobException(String context, String path) {

@@ -1,6 +1,6 @@
 package net.nemerosa.jenkins.seed.config;
 
-import net.nemerosa.seed.config.SeedException;
+import net.nemerosa.jenkins.seed.SeedException;
 
 public class PipelineGeneratorScriptNotAllowedException extends SeedException {
     public PipelineGeneratorScriptNotAllowedException() {

@@ -1,7 +1,6 @@
 package net.nemerosa.jenkins.seed.triggering;
 
-import net.nemerosa.jenkins.seed.triggering.SeedEventType;
-import net.nemerosa.seed.config.SeedException;
+import net.nemerosa.jenkins.seed.SeedException;
 
 public class UnsupportedSeedEventTypeException extends SeedException {
     public UnsupportedSeedEventTypeException(SeedEventType type) {

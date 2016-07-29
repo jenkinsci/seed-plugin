@@ -1,4 +1,4 @@
-package net.nemerosa.seed.config;
+package net.nemerosa.jenkins.seed;
 
 public abstract class SeedException extends RuntimeException {
 

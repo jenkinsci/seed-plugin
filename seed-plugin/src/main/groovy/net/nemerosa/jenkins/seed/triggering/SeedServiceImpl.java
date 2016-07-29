@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.nemerosa.jenkins.seed.cache.ProjectCachedConfig;
 import net.nemerosa.jenkins.seed.cache.ProjectSeedCache;
 import net.nemerosa.jenkins.seed.triggering.connector.RequestNonAuthorizedException;
-import net.nemerosa.seed.config.Constants;
+import net.nemerosa.jenkins.seed.Constants;
 import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
@@ -75,7 +75,7 @@ public class SeedServiceImpl implements SeedService {
             // Gets the path to the branch start job
             String path = config.getBranchStartJob(event.getBranch());
             // Uses the commit (must be specified in the event)
-            String commit = event.getConfiguration().getString("commit", false, "HEAD");
+            String commit = event.getCommitParameter();
             LOGGER.info(
                     format(
                             "Commit %s for branch %s of project %s - starting the pipeline at %s",

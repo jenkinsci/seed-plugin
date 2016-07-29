@@ -1,6 +1,6 @@
 package net.nemerosa.jenkins.seed.test;
 
-import net.nemerosa.seed.config.SeedException;
+import net.nemerosa.jenkins.seed.SeedException;
 
 public class JenkinsHTTPException extends SeedException {
 

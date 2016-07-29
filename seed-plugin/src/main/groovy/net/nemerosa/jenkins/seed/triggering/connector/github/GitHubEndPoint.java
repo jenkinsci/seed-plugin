@@ -37,13 +37,9 @@ public class GitHubEndPoint extends AbstractEndPoint {
         super(seedService);
     }
 
+    @SuppressWarnings("unused")
     public GitHubEndPoint() {
         super();
-    }
-
-    @Deprecated
-    public GitHubEndPoint(boolean v0) {
-        super(v0);
     }
 
     @Override

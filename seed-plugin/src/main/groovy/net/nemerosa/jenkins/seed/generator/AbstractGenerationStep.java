@@ -7,7 +7,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.tasks.Builder;
 import net.nemerosa.jenkins.seed.support.DSLHelper;
-import net.nemerosa.seed.config.SeedDSLHelper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -40,7 +39,7 @@ public abstract class AbstractGenerationStep extends Builder {
         // Generation script
         String scriptPath = getScriptPath();
         listener.getLogger().format("Script: %s%n", scriptPath);
-        String script = IOUtils.toString(SeedDSLHelper.class.getResource(scriptPath));
+        String script = IOUtils.toString(AbstractGenerationStep.class.getResource(scriptPath));
 
         // Traces
         for (Map.Entry<String, String> entry : context.getEnvironment().entrySet()) {

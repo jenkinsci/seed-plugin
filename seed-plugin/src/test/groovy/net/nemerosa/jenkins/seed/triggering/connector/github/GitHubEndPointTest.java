@@ -4,7 +4,6 @@ import net.nemerosa.jenkins.seed.triggering.SeedChannel;
 import net.nemerosa.jenkins.seed.triggering.SeedEvent;
 import net.nemerosa.jenkins.seed.triggering.SeedEventType;
 import net.nemerosa.jenkins.seed.triggering.SeedService;
-import net.nemerosa.seed.triggering.connector.github.GitHubV0EndPoint;
 import org.junit.Test;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;

@@ -33,11 +33,6 @@ public class BitBucketEndPoint extends AbstractEndPoint {
         super();
     }
 
-    @Deprecated
-    public BitBucketEndPoint(boolean v0) {
-        super(v0);
-    }
-
     @Override
     protected SeedEvent extractEvent(StaplerRequest req) throws IOException {
         // Gets the event type sent by BitBucket, and accepts only repo:push events

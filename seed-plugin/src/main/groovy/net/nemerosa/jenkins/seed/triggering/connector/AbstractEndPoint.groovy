@@ -1,14 +1,12 @@
 package net.nemerosa.jenkins.seed.triggering.connector
 
 import com.google.inject.Guice
-import com.google.inject.Module
 import hudson.model.UnprotectedRootAction
 import net.nemerosa.jenkins.seed.generator.MissingParameterException
 import net.nemerosa.jenkins.seed.triggering.SeedEvent
 import net.nemerosa.jenkins.seed.triggering.SeedEventType
 import net.nemerosa.jenkins.seed.triggering.SeedService
 import net.nemerosa.jenkins.seed.triggering.SeedServiceModule
-import net.nemerosa.seed.triggering.SeedServiceV0Module
 import net.sf.json.JSONSerializer
 import org.apache.commons.lang.StringUtils
 import org.kohsuke.stapler.StaplerRequest
@@ -30,15 +28,6 @@ public abstract class AbstractEndPoint implements UnprotectedRootAction {
 
     public AbstractEndPoint() {
         this(Guice.createInjector(new SeedServiceModule()).getInstance(SeedService.class));
-    }
-
-    public AbstractEndPoint(Module module) {
-        this(Guice.createInjector(module).getInstance(SeedService.class));
-    }
-
-    @Deprecated
-    public AbstractEndPoint(boolean v0) {
-        this(v0 ? new SeedServiceV0Module() : new SeedServiceModule());
     }
 
     @Override

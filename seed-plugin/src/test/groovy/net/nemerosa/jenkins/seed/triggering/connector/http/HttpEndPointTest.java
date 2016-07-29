@@ -109,7 +109,7 @@ public class HttpEndPointTest {
         assertEquals(SeedEventType.COMMIT, event.getType());
         assertEquals("nemerosa/seed", event.getProject());
         assertEquals("master", event.getBranch());
-        assertNull(event.getConfiguration().getString("commit", false, null));
+        assertNull(event.getParameters().get("commit"));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class HttpEndPointTest {
         assertEquals(SeedEventType.COMMIT, event.getType());
         assertEquals("nemerosa/seed", event.getProject());
         assertEquals("master", event.getBranch());
-        assertEquals("abcdef", event.getConfiguration().getString("commit"));
+        assertEquals("abcdef", event.getParameters().get("commit"));
     }
 
     @Test

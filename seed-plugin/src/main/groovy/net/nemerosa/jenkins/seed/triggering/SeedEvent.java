@@ -1,11 +1,13 @@
 package net.nemerosa.jenkins.seed.triggering;
 
-import net.nemerosa.seed.config.Configuration;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SeedEvent {
+
+    public static final String EVENT_COMMIT_PARAMETER = "commit";
 
     private final String project;
     private final String branch;
@@ -23,10 +25,6 @@ public class SeedEvent {
     public SeedEvent withParam(String name, Object value) {
         parameters.put(name, value);
         return this;
-    }
-
-    public Configuration getConfiguration() {
-        return new Configuration(parameters);
     }
 
     public String getProject() {
@@ -78,5 +76,14 @@ public class SeedEvent {
                 ", type=" + type +
                 ", channel=" + channel +
                 ", parameters=" + parameters + '}';
+    }
+
+    public String getCommitParameter() {
+        String commit = (String) parameters.get(EVENT_COMMIT_PARAMETER);
+        if (StringUtils.isBlank(commit)) {
+            return "HEAD";
+        } else {
+            return commit;
+        }
     }
 }

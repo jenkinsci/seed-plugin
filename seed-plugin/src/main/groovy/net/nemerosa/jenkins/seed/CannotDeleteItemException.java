@@ -1,6 +1,4 @@
-package net.nemerosa.seed.config;
-
-import net.nemerosa.seed.config.SeedException;
+package net.nemerosa.jenkins.seed;
 
 public class CannotDeleteItemException extends SeedException {
     public CannotDeleteItemException(String path, Exception e) {

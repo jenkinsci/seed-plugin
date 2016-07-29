@@ -1,6 +1,6 @@
 package net.nemerosa.jenkins.seed.triggering.connector;
 
-import net.nemerosa.seed.config.SeedException;
+import net.nemerosa.jenkins.seed.SeedException;
 
 public class CannotHandleRequestException extends SeedException {
     public CannotHandleRequestException(Exception ex) {

@@ -24,13 +24,9 @@ public class HttpEndPoint extends AbstractEndPoint implements UnprotectedRootAct
         super(seedService);
     }
 
+    @SuppressWarnings("unused")
     public HttpEndPoint() {
         super();
-    }
-
-    @Deprecated
-    public HttpEndPoint(boolean v0) {
-        super(v0);
     }
 
     @Override
