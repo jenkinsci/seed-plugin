@@ -3,34 +3,26 @@ package net.nemerosa.jenkins.seed.support;
 import hudson.EnvVars;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import javaposse.jobdsl.dsl.*;
+import javaposse.jobdsl.dsl.DslScriptLoader;
+import javaposse.jobdsl.dsl.GeneratedItems;
+import javaposse.jobdsl.dsl.GeneratedJob;
+import javaposse.jobdsl.dsl.GeneratedView;
 import javaposse.jobdsl.plugin.JenkinsJobManagement;
 import javaposse.jobdsl.plugin.LookupStrategy;
 import jenkins.model.Jenkins;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class DSLHelper {
 
     public static void launchGenerationScript(AbstractBuild<?, ?> build, BuildListener listener, EnvVars env, String script) throws IOException {
 
         // Jobs are created at the Jenkins root level
-        JenkinsJobManagement jm = new JenkinsJobManagement(listener.getLogger(), env, build, LookupStrategy.SEED_JOB);
-
-        // Generation request
-        ScriptRequest scriptRequest = new ScriptRequest(
-                null,
-                script,
-                new URL[0],
-                false // not ignoring existing,
-        );
+        JenkinsJobManagement jm = new JenkinsJobManagement(listener.getLogger(), env, build, build.getWorkspace(), LookupStrategy.SEED_JOB);
 
         // Generation
-        GeneratedItems generatedItems = DslScriptLoader.runDslEngine(
-                scriptRequest,
-                jm
-        );
+        DslScriptLoader scriptLoader = new DslScriptLoader(jm);
+        GeneratedItems generatedItems = scriptLoader.runScript(script);
 
         // Logging
         for (GeneratedJob job : generatedItems.getJobs()) {
