@@ -5,7 +5,7 @@ plugins {
 description = "Seed Jenkins plug-in"
 
 ext {
-    jobDslVersion = '1.50'
+    jobDslVersion = '1.46'
 }
 
 jenkinsPlugin {
