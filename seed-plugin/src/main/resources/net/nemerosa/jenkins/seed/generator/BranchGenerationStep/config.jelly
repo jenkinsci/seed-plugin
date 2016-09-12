@@ -52,6 +52,9 @@
             <f:entry title="Disable DSL scripts" field="disableDslScript">
                 <f:checkbox checked="${instance.projectConfig.pipelineConfig.disableDslScript}" default="false"/>
             </f:entry>
+            <f:entry title="Script directory" field="scriptDirectory">
+                <f:textbox value="${instance.projectConfig.pipelineConfig.scriptDirectory}"/>
+            </f:entry>
             <f:section title="Naming strategy" name="namingStrategy">
                 <f:entry title="Project folder path" field="projectFolderPath">
                     <f:textbox value="${instance.projectConfig.pipelineConfig.namingStrategy.projectFolderPath}"/>

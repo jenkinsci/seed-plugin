@@ -41,6 +41,7 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
             projectScmCredentials PROJECT_SCM_CREDENTIALS
             // Pipeline
             disableDslScript PIPELINE_DISABLE_DSL_SCRIPT
+            scriptDirectory PIPELINE_SCRIPT_DIRECTORY
             // Branch
             branch BRANCH
             // Jenkins-safe names

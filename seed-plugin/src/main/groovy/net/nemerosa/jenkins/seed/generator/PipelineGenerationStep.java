@@ -21,9 +21,10 @@ public class PipelineGenerationStep extends Builder {
     private final String seedProject;
     private final String seedBranch;
     private final boolean disableDslScript;
+    private final String scriptDirectory;
 
     @DataBoundConstructor
-    public PipelineGenerationStep(String project, String projectScmType, String projectScmUrl, String projectScmCredentials, String branch, String seedProject, String seedBranch, boolean disableDslScript) {
+    public PipelineGenerationStep(String project, String projectScmType, String projectScmUrl, String projectScmCredentials, String branch, String seedProject, String seedBranch, boolean disableDslScript, String scriptDirectory) {
         this.project = project;
         this.projectScmType = projectScmType;
         this.projectScmUrl = projectScmUrl;
@@ -32,6 +33,7 @@ public class PipelineGenerationStep extends Builder {
         this.seedProject = seedProject;
         this.seedBranch = seedBranch;
         this.disableDslScript = disableDslScript;
+        this.scriptDirectory = scriptDirectory;
     }
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
@@ -43,7 +45,8 @@ public class PipelineGenerationStep extends Builder {
                 branch,
                 seedProject,
                 seedBranch,
-                disableDslScript
+                disableDslScript,
+                scriptDirectory
         ).perform(build, listener);
     }
 
@@ -91,5 +94,9 @@ public class PipelineGenerationStep extends Builder {
 
     public boolean isDisableDslScript() {
         return disableDslScript;
+    }
+
+    public String getScriptDirectory() {
+        return scriptDirectory;
     }
 }

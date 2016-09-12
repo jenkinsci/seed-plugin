@@ -57,6 +57,12 @@ public class PipelineConfig {
     private final boolean disableDslScript;
 
     /**
+     * Path to the directory which contains the pipeline script. Defaults to <code>seed</code> if not set.
+     */
+    @Wither
+    private final String scriptDirectory;
+
+    /**
      * Naming strategy
      */
     @Wither
@@ -77,6 +83,7 @@ public class PipelineConfig {
                 "", // No extra DSL
                 "", // No extra DSL
                 false, // Allows DSL script
+                "", // Using default
                 new NamingStrategyConfig(), // Default values
                 new EventStrategyConfig() // Default values
         );
@@ -85,10 +92,8 @@ public class PipelineConfig {
     /**
      * Default constructor with default values
      */
-
-
     @DataBoundConstructor
-    public PipelineConfig(boolean destructor, String authorisations, boolean branchSCMParameter, String branchParameters, String generationExtension, String pipelineGenerationExtension, boolean disableDslScript, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
+    public PipelineConfig(boolean destructor, String authorisations, boolean branchSCMParameter, String branchParameters, String generationExtension, String pipelineGenerationExtension, boolean disableDslScript, String scriptDirectory, NamingStrategyConfig namingStrategy, EventStrategyConfig eventStrategy) {
         this.destructor = destructor;
         this.authorisations = authorisations;
         this.branchSCMParameter = branchSCMParameter;
@@ -96,6 +101,7 @@ public class PipelineConfig {
         this.generationExtension = generationExtension;
         this.pipelineGenerationExtension = pipelineGenerationExtension;
         this.disableDslScript = disableDslScript;
+        this.scriptDirectory = scriptDirectory;
         this.namingStrategy = namingStrategy;
         this.eventStrategy = eventStrategy;
     }

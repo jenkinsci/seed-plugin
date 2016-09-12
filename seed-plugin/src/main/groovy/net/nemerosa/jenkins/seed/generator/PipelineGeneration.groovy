@@ -13,15 +13,6 @@ import static net.nemerosa.jenkins.seed.generator.SeedProperties.*
 
 class PipelineGeneration {
 
-    /**
-     * Location of the seed.properties file
-     */
-    static final String PROPERTY_PATH = 'seed/seed.properties'
-
-    public static final String ENV_SEED_GRADLE = 'SEED_GRADLE'
-    public static final String ENV_SEED_PROJECT = 'SEED_PROJECT'
-    public static final String ENV_SEED_BRANCH = 'SEED_BRANCH'
-
     private final String project
     private final String scmType
     private final String scmUrl
@@ -30,8 +21,9 @@ class PipelineGeneration {
     private final String seedProject
     private final String seedBranch
     private final boolean disableDslScript
+    private final String scriptDirectory
 
-    PipelineGeneration(String project, String scmType, String scmUrl, String scmCredentials, String branch, String seedProject, String seedBranch, boolean disableDslScript) {
+    PipelineGeneration(String project, String scmType, String scmUrl, String scmCredentials, String branch, String seedProject, String seedBranch, boolean disableDslScript, String scriptDirectory) {
         this.branch = branch
         this.scmCredentials = scmCredentials
         this.scmUrl = scmUrl
@@ -40,18 +32,25 @@ class PipelineGeneration {
         this.seedProject = seedProject
         this.seedBranch = seedBranch
         this.disableDslScript = disableDslScript
+        this.scriptDirectory = scriptDirectory
     }
 
     boolean perform(AbstractBuild build, BuildListener listener) {
 
+        // Path to the directory containing the pipeline definition files
+        String dirPath = StringUtils.isNotBlank(scriptDirectory) ? scriptDirectory : 'seed'
+
+        // Path to the properties
+        String propertiesPath = dirPath + '/seed.properties'
+
         // Reads the property file (if it exists)
         Properties properties = new Properties()
-        def propertyFile = build.workspace.child(PROPERTY_PATH)
+        def propertyFile = build.workspace.child(propertiesPath)
         if (propertyFile.exists()) {
-            listener.logger.println("[seed] Reading properties from ${PROPERTY_PATH}...")
+            listener.logger.println("[seed] Reading properties from ${propertiesPath}...")
             propertyFile.read().withStream { properties.load(it) }
         } else {
-            listener.logger.println("[seed] No property file at ${PROPERTY_PATH}.")
+            listener.logger.println("[seed] No property file at ${propertiesPath}.")
         }
 
         // Gets the list of dependencies from the property file
@@ -116,7 +115,7 @@ class PipelineGeneration {
 
         // Prepares the Gradle environment (only if script extraction is needed)
         if (scriptExtraction) {
-            def gradleDir = prepareGradleEnvironment(listener, build)
+            def gradleDir = prepareGradleEnvironment(listener, build, dirPath)
 
             // Generates the build.gradle file
             String gradle = generateGradle(listener, repository, dependencies, dslBootstrapDependency, dslBootstrapLocation)
@@ -229,9 +228,9 @@ task prepare(dependsOn: copyLibraries)
         return gradle
     }
 
-    public static FilePath prepareGradleEnvironment(BuildListener listener, AbstractBuild build) {
+    public static FilePath prepareGradleEnvironment(BuildListener listener, AbstractBuild build, String dirPath) {
         listener.logger.println("[seed] Preparing the Gradle environment...")
-        def gradleDir = build.workspace.child('seed')
+        def gradleDir = build.workspace.child(dirPath)
         gradleDir.mkdirs()
         gradleDir.child('gradlew').copyFrom(PipelineGeneration.class.getResource('/gradle/gradlew'))
         gradleDir.child('gradlew.bat').copyFrom(PipelineGeneration.class.getResource('/gradle/gradlew.bat'))
