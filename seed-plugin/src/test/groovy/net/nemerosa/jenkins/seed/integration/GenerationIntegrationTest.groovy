@@ -648,4 +648,70 @@ seed.dsl.script.jar = seed-pipeline-demo
         assert output.contains('SCM type: git')
         assert output.contains("SCM URL: ${git}")
     }
+
+    @Test
+    void 'Custom location for the seed.groovy file'() {
+        // Creates a seed job with a custom setting for the location
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                        .withScriptDirectory("pipeline")
+        )
+        // Project name
+        def projectName = uid('p')
+        // Prepares Git repository with the seed.groovy in a custom directory
+        Map<String, String> resources = [:]
+        GitRepo.loadResource(resources, "seed-location-pipeline.groovy", "pipeline/seed.groovy")
+        def git = GitRepo.prepare('location-pipeline', resources, 'master')
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : projectName,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${projectName}/${projectName}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess()
+        // Checks the branch build is created
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-build")
+    }
+
+    @Test
+    void 'Root directory for the seed.groovy file, using dot'() {
+        // Creates a seed job with a custom setting for the location
+        def seed = jenkins.seed(
+                new PipelineConfig()
+                        .withScriptDirectory(".")
+        )
+        // Project name
+        def projectName = uid('p')
+        // Prepares Git repository with the seed.groovy in a custom directory
+        Map<String, String> resources = [:]
+        GitRepo.loadResource(resources, "seed-location-dot.groovy", "seed.groovy")
+        def git = GitRepo.prepare('location-dot', resources, 'master')
+        // Firing the seed job
+        jenkins.fireJob(seed, [
+                PROJECT         : projectName,
+                PROJECT_SCM_TYPE: 'git',
+                PROJECT_SCM_URL : git,
+        ]).checkSuccess()
+        // Checks the project seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-seed")
+        // Fires the project seed
+        jenkins.fireJob("${projectName}/${projectName}-seed", [
+                BRANCH: 'master'
+        ]).checkSuccess()
+        // Checks the branch seed is created
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-seed")
+        // Fires the branch seed
+        jenkins.fireJob("${projectName}/${projectName}-master/${projectName}-master-seed").checkSuccess()
+        // Checks the branch build is created
+        jenkins.checkJobExists("${projectName}/${projectName}-master/${projectName}-master-build")
+    }
 }

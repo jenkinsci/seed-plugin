@@ -96,6 +96,7 @@ class PipelineGeneration {
                 PROJECT_SCM_TYPE       : scmType,
                 PROJECT_SCM_URL        : scmUrl,
                 PROJECT_SCM_CREDENTIALS: scmCredentials,
+                SEED_GROOVY_PATH       : getSeedGroovyPath(),
         ]
 
         // Logging
@@ -124,6 +125,18 @@ class PipelineGeneration {
 
         // OK
         return true
+    }
+
+    public String getSeedGroovyPath() {
+        if (StringUtils.isNotBlank(scriptDirectory)) {
+            if ("." == scriptDirectory) {
+                return "seed.groovy"
+            } else {
+                return "${scriptDirectory}/seed.groovy"
+            }
+        } else {
+            return 'seed/seed.groovy'
+        }
     }
 
     public static String generateRepositoryGradle(String repositoryUrl, Properties properties, BuildListener listener) {
