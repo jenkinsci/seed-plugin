@@ -67,10 +67,10 @@ then
     cd seed
     chmod u+x gradlew
     ./gradlew prepare --refresh-dependencies --info
+    cd ..
 else
     echo "[seed] No Gradle based library expansion."
 fi
-cd $WORKSPACE
 echo "DEBUG traces"
 pwd
 ls -l
