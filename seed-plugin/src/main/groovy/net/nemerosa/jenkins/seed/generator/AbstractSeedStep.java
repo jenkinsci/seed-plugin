@@ -62,7 +62,7 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
         config.put("PIPELINE_GENERATION_EXTENSION", Objects.toString(projectConfig.getPipelineConfig().getGenerationExtension(), ""));
         config.put("PIPELINE_PIPELINE_GENERATION_EXTENSION", Objects.toString(projectConfig.getPipelineConfig().getPipelineGenerationExtension(), ""));
         config.put("PIPELINE_DISABLE_DSL_SCRIPT", String.valueOf(projectConfig.getPipelineConfig().isDisableDslScript()));
-        config.put("PIPELINE_SCRIPT_DIRECTORY", Objects.toString(projectConfig.getPipelineConfig().getScriptDirectory(), ""));
+        config.put("PIPELINE_SCRIPT_DIRECTORY", String.valueOf(projectConfig.getPipelineConfig().getScriptDirectory()));
         config.put("IGNORED_BRANCH_PREFIXES", Objects.toString(projectConfig.getPipelineConfig().getNamingStrategy().getIgnoredBranchPrefixes(), ""));
     }
 
