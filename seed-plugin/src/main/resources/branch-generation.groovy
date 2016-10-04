@@ -91,7 +91,6 @@ fi
             env('BRANCH', BRANCH)
             env('SEED_PROJECT', SEED_PROJECT)
             env('SEED_BRANCH', SEED_BRANCH)
-            env('SEED_GROOVY_PATH', SEED_GROOVY_PATH)
         }
     }
 
