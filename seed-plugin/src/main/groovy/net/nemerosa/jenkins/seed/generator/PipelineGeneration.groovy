@@ -1,5 +1,6 @@
 package net.nemerosa.jenkins.seed.generator
 
+import hudson.EnvVars
 import hudson.FilePath
 import hudson.model.AbstractBuild
 import hudson.model.BuildListener
@@ -110,6 +111,8 @@ class PipelineGeneration {
                     new StringParameterValue(key, value)
                 }
         ))
+        def vars = build.getEnvironment(listener)
+        vars.putAll(environment)
 
         // Logging
         listener.logger.println("[seed] Gradle script extraction needed: ${scriptExtraction}")
