@@ -59,8 +59,6 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
         injectPasswords()
     }
     steps {
-        // FIXME #29 The SEED_GRADLE and SEED_GROOVY_PATH are not available here although they are injected
-        // as parameters by the previous step
         shell '''\
 #!/bin/bash
 if [ "${SEED_GRADLE}" == "yes" ]
