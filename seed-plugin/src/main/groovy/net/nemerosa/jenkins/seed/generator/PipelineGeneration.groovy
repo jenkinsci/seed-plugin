@@ -1,13 +1,11 @@
 package net.nemerosa.jenkins.seed.generator
 
-import hudson.EnvVars
 import hudson.FilePath
 import hudson.model.AbstractBuild
 import hudson.model.BuildListener
-import hudson.model.ParametersAction
-import hudson.model.StringParameterValue
 import net.nemerosa.jenkins.seed.config.PipelineGeneratorScriptNotAllowedException
 import org.apache.commons.lang.StringUtils
+import org.jenkinsci.plugins.envinject.EnvInjectPluginAction
 
 import static SeedProperties.SEED_DSL_LIBRARIES
 import static net.nemerosa.jenkins.seed.generator.SeedProperties.*
@@ -106,13 +104,10 @@ class PipelineGeneration {
         }
 
         // Injects the environment variables
-        build.addAction(new ParametersAction(
-                environment.collect { key, value ->
-                    new StringParameterValue(key, value)
-                }
+        build.addAction(new EnvInjectPluginAction(
+                build,
+                environment
         ))
-        def vars = build.getEnvironment(listener)
-        vars.putAll(environment)
 
         // Logging
         listener.logger.println("[seed] Gradle script extraction needed: ${scriptExtraction}")

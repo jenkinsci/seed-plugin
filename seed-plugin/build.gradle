@@ -6,6 +6,7 @@ description = "Seed Jenkins plug-in"
 
 ext {
     jobDslVersion = '1.50'
+    envInjectVersion = '1.93.1'
 }
 
 jenkinsPlugin {
@@ -57,6 +58,8 @@ dependencies {
     jenkinsPlugins 'org.jenkins-ci.plugins:cloudbees-folder:5.11@jar'
     jenkinsPlugins 'org.jenkins-ci.plugins:description-setter:1.10@jar'
     jenkinsPlugins 'org.jenkins-ci.plugins:parameterized-trigger:2.26@jar'
+    jenkinsPlugins "org.jenkins-ci.plugins:envinject:${envInjectVersion}@jar"
+    compile 'org.jenkins-ci.lib:envinject-lib:1.24'
     // The Job DSL
     jenkinsPlugins "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     providedCompile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}@jar"
@@ -70,7 +73,7 @@ dependencies {
     jenkinsTest 'org.jenkins-ci.plugins:junit:1.7@jar'
     jenkinsTest 'org.jenkins-ci.plugins:structs:1.1@jar'
     jenkinsTest 'org.jenkins-ci.plugins:matrix-project:1.4@jar'
-    jenkinsTest 'org.jenkins-ci.plugins:envinject:1.92.1'
+    jenkinsTest "org.jenkins-ci.plugins:envinject:${envInjectVersion}"
     jenkinsTest 'org.jenkins-ci.plugins:credentials:1.22@jar'
     jenkinsTest 'org.jenkins-ci.plugins:git:2.3.5'
     // TODO SVN Disable SVN tests until plugin + JenkinsRule situation solved
