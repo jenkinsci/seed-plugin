@@ -76,8 +76,8 @@ public abstract class AbstractSeedStep extends AbstractGenerationStep {
     protected void branchConfiguration(ProjectPipelineConfig projectConfig, ProjectParameters parameters, Map<String, String> config, EnvVars env) {
         config.put("BRANCH_FOLDER_PATH", Objects.toString(projectConfig.getPipelineConfig().getNamingStrategy().getBranchFolderPath(), ""));
         config.put("BRANCH_SEED_NAME", Objects.toString(projectConfig.getPipelineConfig().getNamingStrategy().getBranchSeedName(), ""));
-        config.put("BRANCH_START_NAME", String.valueOf(projectConfig.getPipelineConfig().getNamingStrategy().getBranchStartName()));
-        config.put("BRANCH_NAME", String.valueOf(projectConfig.getPipelineConfig().getNamingStrategy().getBranchName()));
+        config.put("BRANCH_START_NAME", Objects.toString(projectConfig.getPipelineConfig().getNamingStrategy().getBranchStartName(), ""));
+        config.put("BRANCH_NAME", Objects.toString(projectConfig.getPipelineConfig().getNamingStrategy().getBranchName(), ""));
     }
 
     protected void generalConfiguration(ProjectParameters parameters, Map<String, String> config) {

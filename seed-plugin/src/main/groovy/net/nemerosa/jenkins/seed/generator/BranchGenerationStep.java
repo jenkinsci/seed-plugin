@@ -58,8 +58,8 @@ public class BranchGenerationStep extends AbstractSeedStep {
         String branch = getBranchParameter(env);
         config.put("BRANCH_FOLDER_PATH", projectConfig.getPipelineConfig().getBranchFolderPath(parameters.getProject(), branch));
         config.put("BRANCH_SEED_NAME", projectConfig.getPipelineConfig().getBranchSeedName(parameters.getProject(), branch));
-        config.put("BRANCH_START_NAME", String.valueOf(projectConfig.getPipelineConfig().getBranchStartName(parameters.getProject(), branch)));
-        config.put("SEED_BRANCH", String.valueOf(projectConfig.getPipelineConfig().getBranchName(branch)));
+        config.put("BRANCH_START_NAME", projectConfig.getPipelineConfig().getBranchStartName(parameters.getProject(), branch));
+        config.put("SEED_BRANCH", projectConfig.getPipelineConfig().getBranchName(branch));
     }
 
     private String getBranchParameter(EnvVars env) {
