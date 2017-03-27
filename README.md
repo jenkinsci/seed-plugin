@@ -17,6 +17,7 @@ The following presentations are available about the story of the Seed plug-in an
 
 * [Jenkins User Conference, London, June 1025](https://www.youtube.com/watch?v=DC6e9mhYOg8)
 * [BruJUG presentation, Brussels, March 2016](http://www.slideshare.net/DamienCoraboeuf/brujug-jenkins-pipeline-scalability)
+* [All Day DevOps 2016](https://devops.com/one-team-5000-jobs-life-devops-jungle/)
 
 The Seed structure can be generated automatically
 
