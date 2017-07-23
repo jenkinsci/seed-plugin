@@ -1,4 +1,4 @@
 <div>
-    This plug-in interacts with a Jenkins instance in order to pilot [Seed](https://github.com/nemerosa/seed) jobs
-    when some events are received. See the <a href="https://github.com/nemerosa/seed-plugin">documentation</a>.
+    This plug-in interacts with a Jenkins instance in order to pilot Seed jobs
+    when some events are received. See the <a href="https://github.com/jenkinsci/seed-plugin/wiki">documentation</a>.
 </div>
