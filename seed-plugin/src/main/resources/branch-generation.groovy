@@ -55,9 +55,6 @@ job("${BRANCH_FOLDER_PATH}/${BRANCH_SEED_NAME}") {
      * - downloads the dependencies
      * - extract the DSL bootstrap script from the indicated JAR
      */
-    wrappers {
-        injectPasswords()
-    }
     steps {
         shell '''\
 #!/bin/bash
